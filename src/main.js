@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import HelloWorld from './components/HelloWorld'
+import landingPage from './pages/landingPage'
 
 //plugins
 import firebase from 'firebase/app'
@@ -13,7 +13,7 @@ Vue.use(VueRouter)
 Vue.use(Vuetify)
 
 const routes = [
-  {path: "/home", component: HelloWorld},
+  {path: "/home", component: landingPage},
 ]
 
 const router = new VueRouter({
