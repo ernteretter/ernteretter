@@ -6,37 +6,32 @@
             Wie viele Helfer werden benötigt?
         </h3>
         <v-col cols="5" sm="5">
-            <v-text-field v-model="maxHelpers" label="Anzahl" single-line solo></v-text-field>
+            <v-text-field type="number" v-model="maxHelpers" label="Anzahl" single-line solo></v-text-field>
         </v-col>
     </v-card>
 
     <v-card>
-        <h3> Wo liegen deine Felder? </h3>
+        <h3> Wo findet die Ernte/Saat statt? </h3>
         <v-col cols="5" sm="5">
-            <v-text-field v-model="place" label="PLZ/Ort" single-line solo></v-text-field>
+            <v-text-field v-model="place" type="number" label="Postleitzahl" single-line solo></v-text-field>
         </v-col>
     </v-card>
-    <!--
+
     <v-card>
-      <h3> Wobei brauchst du Hilfe? </h3>
-      <v-row>
-      <v-checkbox
-        v-model="checkbox"
-        :label="'Ernte'">
-      </v-checkbox>
-      <v-checkbox
-        v-model="checkbox"
-        :label="'Saat'">
-      </v-checkbox>
-      </v-row>
+        <h3> Wobei brauchst du Hilfe? </h3>
+        <v-row>
+            <v-radio-group v-model="radioErnteSaat">
+                <v-radio :label="'Ernte'" />
+                <v-radio :label="'Saat'" />
+            </v-radio-group>
+        </v-row>
     </v-card>
-    -->
 
     <v-card>
         <h3> Was soll geerntet/gesäht werden? </h3>
         <v-col cols="5" sm="5">
 
-            <v-select v-model="harvestType" :items="items" label="Art der Saat">
+            <v-select v-model="harvestType" :items="items" label="Art der Saat/Ernte">
             </v-select>
         </v-col>
     </v-card>
@@ -48,9 +43,9 @@
     </v-card>
 
     <v-card>
-        <h3> Welche Vergütung bekommen deine Helfer (in Euro)? </h3>
+        <h3> Welche Vergütung bekommen deine Helfer (Euro pro Stunde)? </h3>
         <v-col cols="5" sm="5">
-            <v-text-field v-model="salary" label="Verguetung" single-line solo></v-text-field>
+            <v-text-field type="number" v-model="salary" label="Vergütung" single-line solo></v-text-field>
         </v-col>
 
     </v-card>
@@ -65,7 +60,17 @@
     <v-card>
         <h3> Beschreibe die Tätigkeit für deine Helfer.</h3>
         <v-col cols="5" sm="5">
+            <v-text-field v-model="title" solo label="Titel"></v-text-field>
+        </v-col>
+        <v-col cols="5" sm="5">
             <v-textarea v-model="description" solo label="Beschreibung"></v-textarea>
+        </v-col>
+    </v-card>
+
+    <v-card>
+        <h3> Teile deinen Helfern mit, wo sie hinkommen sollen. </h3>
+        <v-col cols="5" sm="5">
+            <v-textarea v-model="address" solo label="Adresse"></v-textarea>
         </v-col>
     </v-card>
 
@@ -82,11 +87,14 @@ import 'firebase/firestore';
 export default {
     name: 'createOffer',
     data: () => ({
-        maxHelpers: 0,
-        minDuration: 0,
+        address: "",
+        radioErnteSaat: "",
+        title: "",
+        maxHelpers: "",
+        minDuration: "",
         harvestType: "",
         place: "",
-        salary: 0,
+        salary: "",
         description: "",
         equipment: "",
         dates: [],
@@ -97,28 +105,48 @@ export default {
             return this.dates.join(" bis ");
         }
     },
+    watch: {
+        radioErnteSaat: (val, newVal) => {
+            console.log(
+                val == "0" ? true : false);
+        }
+    },
     methods: {
         createOffer() {
-            let userID = 88; //firebase.auth().currentUser.uid;
-            let data = {
-                agrarianId: userID,
-                description: this.description,
-                equipment: this.equipment,
-                place: this.place,
-                harvestType: this.harvestType,
-                helperCount: 0,
-                maxHelpers: this.maxHelpers,
-                minDuration: 5,
-                startDates: this.dates[0],
+            if (firebase.auth().currentUser != null) {
+                let userID = firebase.auth().currentUser.uid;
+                let datesAsDates = this.dates.map((a) => new Date(a));
+                let firstDate = datesAsDates.sort((a, b) => {
+                    return a > b ? 1 : (b > a ? -1 : 0);
+                })[0];
+                let data = {
+                    address: this.address,
+                    title: this.title,
+                    agrarianId: userID,
+                    description: this.description,
+                    equipment: this.equipment,
+                    place: this.place,
+                    harvestType: this.harvestType,
+                    helperCount: 0,
+                    maxHelpers: parseInt(this.maxHelpers),
+                    minDuration: 0,
+                    salary: parseInt(this.salary),
+                    startDate: firstDate,
+                    harvestOrSeed: this.radioErnteSaat == "0" ? true : false
+                }
+
+                let firestore = firebase.firestore();
+                var newOffer = firestore.collection('offers').doc();
+                newOffer.set(data).then(function () {
+                        console.log("Document written successfully!")
+                    })
+                    .catch(function (error) {
+                        console.error("Error writing Document: ", error);
+                        alert("Konnte Datenbank nicht erreichen. Haben sie Internetzugang?");
+                    })
+            } else {
+                alert("Bitte loggen sie sich ein!");
             }
-            let firestore = firebase.firestore();
-            var newOffer = firestore.collection('offers').doc();
-            newOffer.set(data).then(function () {
-                    console.log("Document written successfully!")
-                })
-                .catch(function (error) {
-                    console.error("Error writing Document: ", error);
-                })
         }
     }
 }
