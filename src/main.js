@@ -8,6 +8,7 @@ import VueRouter from 'vue-router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify';
+import createOffer from './pages/createOffer';
 
 //enable plugins
 Vue.use(VueRouter)
@@ -15,6 +16,7 @@ Vue.use(Vuetify)
 
 const routes = [
   {path: "/", component: landingPage},
+  {path: "/createOffer", component: createOffer},
 ]
 
 const router = new VueRouter({
