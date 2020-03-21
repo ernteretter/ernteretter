@@ -109,7 +109,7 @@ export default {
                 helperCount: 0,
                 maxHelpers: this.maxHelpers,
                 minDuration: 5,
-                startDates: this.dates.sort((a, b)),
+                startDates: this.dates[0],
             }
             let firestore = firebase.firestore();
             var newOffer = firestore.collection('offers').doc();
