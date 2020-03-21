@@ -11,6 +11,31 @@
         </v-card>
 
         <v-card>
+            <h3>
+                Wähle ein Passwort
+            </h3>
+            <v-col cols="5" sm="5">
+                <v-text-field
+                        :type="showPassword ? 'text' : 'password'"
+                        label="Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                        @click:append="showPassword = !showPassword"
+                        v-model="password"
+                        single-line
+                        solo
+                />
+            </v-col>
+        </v-card>
+
+        <v-card>
+            <h3>
+                Wie ist deine E-Mail Adresse?
+            </h3>
+            <v-col cols="5" sm="5">
+                <v-text-field v-model="mail" label="E-Mail" single-line solo></v-text-field>
+            </v-col>
+        </v-card>
+
+        <v-card>
             <h3> Für welche Arten der Ernte interessierst du dich? </h3>
             <v-col cols="5" sm="5">
                 <v-checkbox v-for="item in harvestTypesOptions" v-bind:key="item" v-model="harvestTypes" :label="item" :value="item"></v-checkbox>
@@ -102,6 +127,9 @@
         name: 'registerHelper',
         data: () => ({
             name: "",
+            mail: "",
+            password: "",
+            showPassword: false,
             harvestTypes: [],
             harvestTypesOptions: ["Obst", "Gemüse"],
             searchRange: 130,
@@ -117,28 +145,38 @@
         }),
         methods: {
             registerHelper() {
-                if (firebase.auth().currentUser != null) {
-                    let userID = firebase.auth().currentUser.uid;
-                    let data = {
-                        userId: userID,
-                        harvestTypes: this.harvestTypes,
-                        searchRange: this.searchRange,
-                        durationMin: this.durationMin,
-                        durationMinType: this.durationMinType,
-                        durationMax: this.durationMax,
-                        durationMaxType: this.durationMaxType,
-                        experience: this.experience
-                    };
-                    let firestore = firebase.firestore();
-                    let newHelper = firestore.collection('helpers').doc();
-                    newHelper.set(data).then(function () {
-                        console.log("Helper registered successfully!")
-                    }).catch(function (error) {
-                        console.error("Error registering Helper: ", error);
+                firebase.auth().createUserWithEmailAndPassword(this.mail, this.password)
+                    .then(data => {
+                        let helperData = {
+                            uid: data.user.uid,
+                            name: this.name,
+                            harvestTypes: this.harvestTypes,
+                            searchRange: this.searchRange,
+                            durationMin: this.durationMin,
+                            durationMinType: this.durationMinType,
+                            durationMax: this.durationMax,
+                            durationMaxType: this.durationMaxType,
+                            experience: this.experience
+                        };
+                        let firestore = firebase.firestore();
+                        let newHelper = firestore.collection('helpers').doc();
+                        newHelper.set(helperData).then(function () {
+                            console.log("Helper registered successfully!")
+                        }).catch(function (error) {
+                            console.error("Error registering Helper: ", error);
+                        });
+                    })
+                    .catch(function(error) {
+                        // Handle Errors here.
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        if (errorCode == 'auth/weak-password') {
+                            alert('The password is too weak.');
+                        } else {
+                            alert(errorMessage);
+                        }
+                        console.log(error);
                     });
-                } else {
-                    alert("Bitte loggen sie sich ein!");
-                }
             }
         }
     }
