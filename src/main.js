@@ -16,6 +16,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify'
 import createOffer from './pages/createOffer';
+import registerHelper from './pages/registerHelper';
 
 
 //enable plugins
@@ -29,6 +30,8 @@ const routes = [
   {path: "/login", component: login},
   {path: "/createOffer", component: createOffer},
   {path: "/history", component: history},
+  {path: "/registerHelper", component: registerHelper},
+
 ]
 
 const router = new VueRouter({
