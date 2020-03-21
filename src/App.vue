@@ -4,11 +4,11 @@
         <v-spacer>
             <v-icon>mdi-barley</v-icon>
             <router-link to="/">Startseite</router-link>
-            <router-link to="/Offers">Anzeigen</router-link>
-            <router-link to="/History">Termine</router-link>
-            <router-link to="/Settings">Einstellungen</router-link>
+            <router-link to="/offers">Anzeigen</router-link>
+            <router-link to="/history">Termine</router-link>
+            <router-link to="/settings">Einstellungen</router-link>
         </v-spacer>
-        <v-btn color="success" @click="this.$router.push('/login')" v-if="!user" outlined>log out</v-btn>
+        <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined>login</v-btn>
         <v-btn color="red" @click="logout()" v-if="user" outlined>log out</v-btn>
     </v-app-bar>
 
@@ -34,7 +34,6 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 export default {
     name: 'App',
-
     components: {},
     async mounted() {
         await firebase.auth().onAuthStateChanged((user) => {
