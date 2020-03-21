@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import landingPage from './pages/landingPage'
 import OfferDetails from './pages/OfferDetails'
+import OfferList from './pages/OfferList'
 import login from './pages/login'
 
 //plugins
@@ -18,9 +19,11 @@ Vue.use(Vuetify)
 
 const routes = [
   {path: "/", component: landingPage},
+  {path: "/offers", component: OfferList},
   {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
   {path: "/login", component: login},
   {path: "/createOffer", component: createOffer},
+  
 ]
 
 const router = new VueRouter({
