@@ -15,6 +15,7 @@ Vue.use(Vuetify)
 
 const routes = [
   {path: "/", component: landingPage},
+  {path: "/anzeigen", component: offers}
 ]
 
 const router = new VueRouter({
