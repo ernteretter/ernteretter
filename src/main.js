@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import landingPage from './pages/landingPage'
+import offers from './pages/offers'
+import search from './pages/search'
 
 //plugins
 import firebase from 'firebase/app'
@@ -15,7 +17,8 @@ Vue.use(Vuetify)
 
 const routes = [
   {path: "/", component: landingPage},
-  {path: "/anzeigen", component: offers}
+  {path: "/anzeigen", component: offers},
+  {path: "/karte", component: search},
 ]
 
 const router = new VueRouter({
