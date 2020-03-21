@@ -36,7 +36,7 @@ export default {
             } else {
                 this.user = false;
             }
-        });
+        })},
     data() {
         return {
           user: true,
