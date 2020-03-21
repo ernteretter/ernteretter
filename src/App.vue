@@ -6,7 +6,7 @@
 
     <v-app-bar app>
         <!-- -->
-        <v-btn color="red" @click="logout()" v-if="!user">log out</v-btn>
+        <v-btn color="red" @click="logout()" v-if="user">log out</v-btn>
     </v-app-bar>
 
     <!-- Sizes your content based upon application components -->
@@ -33,14 +33,18 @@ export default {
     name: 'App',
 
     components: {},
-    mounted(){
-      if(firebase.auth().currentUser == null){
-        this.user = false;
-      }
+    async mounted() {
+        await firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.user = true;
+            } else {
+                this.user = false;
+            }
+        });
     },
     data() {
         return {
-          user: true,
+            user: true,
         }
     },
     methods: {
