@@ -8,9 +8,23 @@
              <v-col cols="3">
                  <v-expansion-panels>
                  <v-expansion-panel flat>
-                 <v-expansion-panel-header> <strong> {{elements.name}}</strong></v-expansion-panel-header>
+                 <v-expansion-panel-header> <strong> {{elements.title}}</strong></v-expansion-panel-header>
                  <v-expansion-panel-content>
-                     {{elements.Content}}
+                     <v-list>
+                         <v-list-item>
+                         <v-list-item-content>
+                             <v-list-item-title v-text="elements.agrarianId"></v-list-item-title>
+                              <v-list-item-title v-text="elements.maxHelpers"></v-list-item-title>
+                               <v-list-item-title v-text="elements.harvestType"></v-list-item-title>
+                                <v-list-item-title v-text="elements.place"></v-list-item-title>
+                                 <v-list-item-title v-text="elements.startDates"></v-list-item-title>
+                                  <v-list-item-title v-text="elements.salary"></v-list-item-title>
+                                   <v-list-item-title v-text="elements.description"></v-list-item-title>
+                                    <v-list-item-title v-text="elements.equipment"></v-list-item-title>
+                                    <v-list-item-title v-text="elements.helperCount"></v-list-item-title>
+                         </v-list-item-content>
+                         </v-list-item>
+                     </v-list>
                  </v-expansion-panel-content>
                  </v-expansion-panel>
                  </v-expansion-panels>
@@ -33,14 +47,57 @@ export default {
     data() {
         return {
             Anzeigen: [{
-                name: "Thomas",
-                Ort: "Bonn",
-                Content: "Hallo Welt hier sind infos"
+                title: "Bauer Sigmund",
+                agrarianId: "String",
+                maxHelpers: "Number",
+                minDuration:" Number",
+                harvestType: "String",
+                place:" GeoPoint",
+                startDates: "",
+                salary: "Number" ,
+                description: "String",
+                equipment:"Array",
+                helperCount: "Number"
+
             },
             {
-                name: "Martin",
-                Ort: "Hamburg",
-                Content: "Hallo Welt hier sind infos"
+                title: "Bauer Sigmund",
+                agrarianId: "String",
+                maxHelpers: "Number",
+                minDuration:" Number",
+                harvestType: "String",
+                place:" GeoPoint",
+                startDates: "",
+                salary: "Number" ,
+                description: "String",
+                equipment:"Array",
+                helperCount: "Number"
+            },
+            {
+                title: "Bauer Sigmund",
+                agrarianId: "String",
+                maxHelpers: "Number",
+                minDuration:" Number",
+                harvestType: "String",
+                place:" GeoPoint",
+                startDates: "",
+                salary: "Number" ,
+                description: "String",
+                equipment:"Array",
+                helperCount: "Number"
+            },
+            {
+                title: "Bauer Sigmund",
+                agrarianId: "String",
+                maxHelpers: "Number",
+                minDuration:" Number",
+                harvestType: "String",
+                place:" GeoPoint",
+                startDates: "",
+                salary: "Number" ,
+                description: "String",
+                equipment:"Array",
+                helperCount: "Number"
             }],
             AnzeigenID: [],
             
