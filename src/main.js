@@ -3,8 +3,12 @@ import App from './App.vue'
 
 //sites
 import landingPage from './pages/landingPage'
+
+import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
 import history from './pages/history'
+import offers from './pages/offers'
+
 
 //plugins
 import firebase from 'firebase/app'
@@ -22,6 +26,8 @@ Vue.use(Vuetify)
 const routes = [
   {path: "/", component: landingPage},
   {path: "/history", component: history},
+  {path: "/offers", component: offers},
+  {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
   {path: "/login", component: login},
   {path: "/createOffer", component: createOffer},
 ]
