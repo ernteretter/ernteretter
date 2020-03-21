@@ -6,9 +6,8 @@ import landingPage from './pages/landingPage'
 
 import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
-import history from './pages/history'
 import offers from './pages/offers'
-
+import history from './pages/history'
 
 //plugins
 import firebase from 'firebase/app'
@@ -25,11 +24,11 @@ Vue.use(Vuetify)
 
 const routes = [
   {path: "/", component: landingPage},
-  {path: "/history", component: history},
   {path: "/offers", component: offers},
   {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
   {path: "/login", component: login},
   {path: "/createOffer", component: createOffer},
+  {path: "/history", component: history},
 ]
 
 const router = new VueRouter({

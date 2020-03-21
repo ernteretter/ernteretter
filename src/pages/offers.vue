@@ -1,5 +1,6 @@
 <template>
   <div>
+    Es sind {{offercount}} Anzeige(n) online.
     <v-card
       class="mx-auto list-item"
       max-width="auto"
@@ -13,7 +14,9 @@
           <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
         </v-list-item-content>
 
-        <v-list-item-avatar tile size="80" > <img src="profilBildbauer.png"> </v-list-item-avatar>
+        <v-list-item-avatar size="100" color="grey">
+          <img src="profilbildBauer.png" alt="Profilbild Bauer" size="100" />
+        </v-list-item-avatar>
       </v-list-item>
 
       <v-card-actions>
@@ -31,7 +34,8 @@ import "firebase/auth";
 export default {
   name: "OfferList",
   data: () => ({
-    offers: false
+    offers: false,
+    offercount: 0
   }),
 
   methods: {
@@ -58,7 +62,7 @@ export default {
 </script>
 
 <style scoped>
-  .list-item{
-    margin: 15px;
-  }
+.list-item {
+  margin: 15px;
+}
 </style>
