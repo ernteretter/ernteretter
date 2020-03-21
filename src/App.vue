@@ -2,7 +2,7 @@
 <v-app>
     <v-app-bar app>
         <!-- -->
-        <v-btn color="red" @click="logout()" v-if="!user">log out</v-btn>
+        <v-btn color="red" @click="logout()" v-if="user">log out</v-btn>
     </v-app-bar>
 
     <!-- Sizes your content based upon application components -->
