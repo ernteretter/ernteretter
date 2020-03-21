@@ -1,9 +1,5 @@
 <template>
 <v-app>
-    <v-navigation-drawer app>
-        <!-- -->
-    </v-navigation-drawer>
-
     <v-app-bar app>
         <!-- -->
         <v-btn color="red" @click="logout()" v-if="!user">log out</v-btn>
