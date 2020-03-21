@@ -7,13 +7,14 @@ import firebase from 'firebase/app'
 import VueRouter from 'vue-router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import vuetify from './plugins/vuetify';
 
 //enable plugins
 Vue.use(VueRouter)
 Vue.use(Vuetify)
 
 const routes = [
-  {path: "/home", component: landingPage},
+  {path: "/", component: landingPage},
 ]
 
 const router = new VueRouter({
@@ -37,5 +38,6 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
+  vuetify,
   router
 }).$mount('#app')
