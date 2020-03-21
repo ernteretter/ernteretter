@@ -105,12 +105,6 @@ export default {
             return this.dates.join(" bis ");
         }
     },
-    watch: {
-        radioErnteSaat: (val, newVal) => {
-            console.log(
-                val == "0" ? true : false);
-        }
-    },
     methods: {
         createOffer() {
             if (firebase.auth().currentUser != null) {
