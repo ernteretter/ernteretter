@@ -23,24 +23,27 @@
       </div>
 
       <div class="equipment">
-          <div class="equipment-header section-header">
-              Benötigtes Equipment
-          </div>
-          <div class="equipment-body section-body">
-              {{offer.equipment.join(', ')}}
-          </div>
+        <div class="equipment-header section-header">
+          Benötigtes Equipment
+        </div>
+        <div class="equipment-body section-body">
+          {{ offer.equipment.join(", ") }}
+        </div>
       </div>
 
       <div class="section-header">Starttermine</div>
-      <p><b>Hinweis:</b> Die Mindestdauer der Arbeit beträgt <b>{{offer.minDuration}} Tage</b></p>
-      <v-list>
+      <p>
+        <b>Hinweis:</b> Die Mindestdauer der Arbeit beträgt
+        <b>{{ offer.minDuration }} Tage</b>
+      </p>
+      <v-list class="date-list">
         <v-card
           v-for="startDate in offer.startDates"
           :key="startDate.seconds"
           class="date-list-item"
         >
           <v-list-item>
-            <div class="list-date">{{ new Date(startDate.seconds) }}</div>
+            <div class="list-date">{{new Date(startDate.seconds*1000) | formatDate }}</div>
           </v-list-item>
         </v-card>
       </v-list>
@@ -98,7 +101,9 @@ export default {
         console.log(err);
       });
   },
-  filters: {}
+  filters: {
+      formatDate: d => d.toISOString().substr(0,10).split('-').reverse().join('.')
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -119,12 +124,18 @@ h2 {
   border-radius: 5px;
   display: inline-block;
 }
+.date-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 .date-list-item {
   margin-bottom: 8px;
+  display: inline-block;
 }
 .section-header {
-    font-size: 24px;
-    font-weight: 300;
-    margin: 8px 0;
+  font-size: 24px;
+  font-weight: 300;
+  margin: 8px 0;
 }
 </style>
