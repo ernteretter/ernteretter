@@ -29,11 +29,14 @@ export default {
     name: 'App',
 
     components: {},
-    mounted(){
-      if(firebase.auth().currentUser == null){
-        this.user = false;
-      }
-    },
+    async mounted() {
+        await firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.user = true;
+            } else {
+                this.user = false;
+            }
+        });
     data() {
         return {
           user: true,
