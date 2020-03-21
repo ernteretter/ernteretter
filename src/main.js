@@ -1,7 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
 import landingPage from './pages/landingPage'
+<<<<<<< HEAD
 import OfferDetails from './pages/OfferDetails'
+=======
+import login from './pages/login'
+>>>>>>> master
 
 //plugins
 import firebase from 'firebase/app'
@@ -16,7 +20,8 @@ Vue.use(Vuetify)
 
 const routes = [
   {path: "/", component: landingPage},
-  {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails}
+  {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
+  {path: "/login", component: login},
 ]
 
 const router = new VueRouter({
