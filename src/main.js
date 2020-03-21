@@ -3,11 +3,11 @@ import App from './App.vue'
 
 //sites
 import landingPage from './pages/landingPage'
-
 import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
 import offers from './pages/offers'
 import history from './pages/history'
+import settings from './pages/settings'
 
 //plugins
 import firebase from 'firebase/app'
@@ -29,6 +29,7 @@ const routes = [
   {path: "/login", component: login},
   {path: "/createOffer", component: createOffer},
   {path: "/history", component: history},
+  {path: "/settings", component: settings},
 ]
 
 const router = new VueRouter({
