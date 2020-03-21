@@ -126,7 +126,7 @@ export default {
                     minDuration: 0,
                     salary: parseInt(this.salary),
                     startDate: firstDate,
-                    harvestOrSeed: this.radioErnteSaat == "0" ? true : false
+                    workType: this.radioErnteSaat == "0" ? true : false
                 }
 
                 let firestore = firebase.firestore();
