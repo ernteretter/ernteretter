@@ -110,9 +110,11 @@ export default {
             if (firebase.auth().currentUser != null) {
                 let userID = firebase.auth().currentUser.uid;
                 let datesAsDates = this.dates.map((a) => new Date(a));
-                let firstDate = datesAsDates.sort((a, b) => {
+                let datesSorted = datesAsDates.sort((a, b) => {
                     return a > b ? 1 : (b > a ? -1 : 0);
-                })[0];
+                });
+                let firstDate = datesSorted[0]; 
+                let lastDate = datesSorted[1]; 
                 let data = {
                     address: this.address,
                     title: this.title,
@@ -126,6 +128,7 @@ export default {
                     minDuration: 0,
                     salary: parseInt(this.salary),
                     startDate: firstDate,
+                    endDate: lastDate,
                     workType: this.radioErnteSaat == "0" ? true : false
                 }
 
