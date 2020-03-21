@@ -1,18 +1,22 @@
 import Vue from 'vue'
 import App from './App.vue'
+
+//sites
 import landingPage from './pages/landingPage'
 
 import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
 import offers from './pages/offers'
+import history from './pages/history'
 
 //plugins
 import firebase from 'firebase/app'
 import VueRouter from 'vue-router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-import vuetify from './plugins/vuetify';
+import vuetify from './plugins/vuetify'
 import createOffer from './pages/createOffer';
+
 
 //enable plugins
 Vue.use(VueRouter)
@@ -24,6 +28,7 @@ const routes = [
   {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
   {path: "/login", component: login},
   {path: "/createOffer", component: createOffer},
+  {path: "/history", component: history},
 ]
 
 const router = new VueRouter({
