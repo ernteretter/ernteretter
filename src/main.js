@@ -4,7 +4,7 @@ import App from './App.vue'
 //sites
 import landingPage from './pages/landingPage'
 import login from './pages/login'
-import login from './pages/login'
+import history from './pages/history'
 
 //plugins
 import firebase from 'firebase/app'
