@@ -31,7 +31,7 @@ export default {
     },
     data() {
         return {
-            mail: 'jonathan.kinzel@googlemail.com',
+            mail: 'jonathan.kinzel@gmail.com',
             password: 'penis123',
             error: false,
             documents: [],
