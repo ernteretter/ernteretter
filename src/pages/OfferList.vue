@@ -6,8 +6,8 @@
       v-for="offer in offers"
       :key="offer.id"
       :to="{ name: 'offer-details', params: { offerId: offer.id } }"
-      ><v-card>{{ offer.title }}</v-card></router-link
-    >
+      ><v-card>{{ offer.title }}</v-card>
+      </router-link>
   </div>
 </template>
 <script>
