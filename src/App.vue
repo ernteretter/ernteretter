@@ -1,8 +1,15 @@
 <template>
 <v-app>
     <v-app-bar app>
-        <!-- -->
-        <v-btn color="red" @click="logout()" v-if="user">log out</v-btn>
+        <v-spacer>
+            <v-icon>mdi-barley</v-icon>
+            <router-link to="/">Startseite</router-link>
+            <router-link to="/Offers">Anzeigen</router-link>
+            <router-link to="/History">Termine</router-link>
+            <router-link to="/Settings">Einstellungen</router-link>
+        </v-spacer>
+        <v-btn color="success" @click="this.$router.push('/login')" v-if="!user" outlined>log out</v-btn>
+        <v-btn color="red" @click="logout()" v-if="user" outlined>log out</v-btn>
     </v-app-bar>
 
     <!-- Sizes your content based upon application components -->
@@ -36,10 +43,11 @@ export default {
             } else {
                 this.user = false;
             }
-        })},
+        })
+    },
     data() {
         return {
-          user: true,
+            user: true,
         }
     },
     methods: {
