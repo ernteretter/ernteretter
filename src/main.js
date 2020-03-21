@@ -17,11 +17,8 @@ Vue.use(Vuetify)
 
 const routes = [
   {path: "/", component: landingPage},
-<<<<<<< HEAD
   {path: "/login", component: login},
-=======
   {path: "/createOffer", component: createOffer},
->>>>>>> createOffer
 ]
 
 const router = new VueRouter({
