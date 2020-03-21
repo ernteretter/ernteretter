@@ -1,11 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import landingPage from './pages/landingPage'
-<<<<<<< HEAD
 import OfferDetails from './pages/OfferDetails'
-=======
 import login from './pages/login'
->>>>>>> master
 
 //plugins
 import firebase from 'firebase/app'
