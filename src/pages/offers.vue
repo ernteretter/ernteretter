@@ -57,8 +57,8 @@
         </v-list-item-avatar>
       </v-list-item>
 
-      <v-card-actions>
-        <v-btn @click="details(offer.id)" color="primary" class="rounded-button-left">Zu den Details</v-btn>
+      <v-card-actions >
+        <v-btn @click="details(offer.id)" color="primary" id="rounded-button-left-2" > Details </v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -213,5 +213,9 @@ export default {
 }
 #anfragen {
   text-align: center;
+}
+#rounded-button-left-2 {
+  border-radius: 40px 0px 40px 0px;
+  padding: 16px;
 }
 </style>
