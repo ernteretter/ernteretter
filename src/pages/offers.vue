@@ -60,9 +60,9 @@ export default {
       console.log("Farm_Array" + this.farm_plz_arr);
     },
 
-    async getGeoData(/*worker_plz*/){
+    async getGeoData(worker_plz){
       console.log("start");
-      var url = "https://public.opendatasoft.com/api/records/1.0/search//?dataset=postleitzahlen-deutschland&q=64287";// + String(worker_plz);
+      var url = "https://public.opendatasoft.com/api/records/1.0/search//?dataset=postleitzahlen-deutschland&q=" + worker_plz;
       const response = await fetch(url);
       console.log("fetched");
       const myJson = await response.json();
