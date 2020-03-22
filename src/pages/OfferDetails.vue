@@ -2,15 +2,17 @@
   <div class="offer-details" v-if="offer && agrarian">
     <div class="inner">
       <h1>{{ offer.title }}</h1>
-      <div class="status-chip">
-        Status:
-        {{
-          offer.maxHelpers -
-            offer.helperCount +
-            "/" +
-            offer.maxHelpers +
-            " Helfern fehlen noch"
-        }}
+      <div class="action-section">
+        <div class="accept-reject">
+          <v-btn class="action-button" v-if="isAccepted" @click="removeMe"
+            >Abmelden</v-btn
+          >
+          <v-btn class="action-button" v-else @click="addMe">Anmelden</v-btn>
+        </div>
+        <div class="status-chip" v-if="offer.maxHelpers">
+          <b>{{ offer.maxHelpers - helperCount }}</b>
+          Helfer fehlen noch
+        </div>
       </div>
 
       <div class="description">
@@ -22,39 +24,39 @@
         </div>
       </div>
 
-      <div class="equipment">
+      <div class="equipment" v-if="offer.equipment">
         <div class="equipment-header section-header">
           Benötigtes Equipment
         </div>
         <div class="equipment-body section-body">
-          {{ offer.equipment.join(", ") }}
+          {{
+            Array.isArray(offer.equipment)
+              ? offer.equipment.join(", ")
+              : offer.equipment
+          }}
         </div>
       </div>
 
-      <div class="section-header">Starttermine</div>
-      <p>
+      <div class="section-header">Zeitraum</div>
+      <p v-if="offer.minDuration">
         <b>Hinweis:</b> Die Mindestdauer der Arbeit beträgt
         <b>{{ offer.minDuration }} Tage</b>
       </p>
-      <v-list class="date-list">
-        <v-card
-          v-for="startDate in offer.startDates"
-          :key="startDate.seconds"
-          class="date-list-item"
-        >
-          <v-list-item>
-            <div class="list-date">{{new Date(startDate.seconds*1000) | formatDate }}</div>
-          </v-list-item>
-        </v-card>
-      </v-list>
+      <p v-if="offer.startDate">
+        Ab dem {{ new Date(offer.startDate.seconds * 1000) | formatDate }}
+        <span v-if="offer.endDate">
+          bis zum
+          {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
+        </span>
+      </p>
       <h2>Kontakt</h2>
       <div class="contact-box">
-        <div class="address">
+        <div class="address" v-if="offer.address">
           {{ agrarian.name }}
           <br />
-          {{ agrarian.address.street + " " + agrarian.address.number }}
+          {{ offer.address.street + "\n\n " + offer.address.number }}
           <br />
-          {{ agrarian.address.postcode + " " + agrarian.address.city }}
+          {{ offer.address.postCode + " " + offer.address.city }}
         </div>
         <div class="email">
           <a :href="'mailto:' + agrarian.publicEmail">{{
@@ -74,40 +76,146 @@ export default {
   name: "OfferDetails",
   data: () => ({
     offer: false,
-    agrarian: false
+    agrarian: false,
+    isAccepted: false,
+    uid: false,
+    helperCount: 0
   }),
-  created() {
-    let firestore = firebase.firestore();
+  async created() {
     let offerId = this.$route.params.offerId;
-
-    firestore
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.uid = user.uid;
+      } else {
+        this.uid = false;
+        this.isAccepted = false;
+      }
+    });
+    firebase
+      .firestore()
       .doc("offers/" + offerId)
       .get()
       .then(snapshot => {
         if (snapshot.exists) {
           this.offer = { ...snapshot.data(), id: snapshot.id };
-          console.log(snapshot.data().startDates);
-          return firestore.doc("agrarians/" + snapshot.data().agrarianId).get();
+          return firebase
+            .firestore()
+            .doc("agrarians/" + snapshot.data().agrarianId)
+            .get();
         } else {
-          throw snapshot;
+          alert("Anzeige nicht gefunden");
+          this.$router.push("/offers");
+          throw "offer not found";
         }
       })
       .then(snapshot => {
         if (snapshot.exists) {
           this.agrarian = { ...snapshot.data(), id: snapshot.id };
+        } else {
+          alert("Ein Fehler ist aufgetreten: Landwirt nicht gefunden");
+          this.$router.push("/offers");
+        }
+        if (this.uid) {
+          return firebase
+            .firestore()
+            .collection("acceptedOffers")
+            .where("helperId", "==", this.uid)
+            .where("offerId", "==", this.offer.id)
+            .get();
+        } else {
+          throw "user not logged in";
+        }
+      })
+      .then(snapshot => {
+        if (!snapshot.empty) {
+          this.isAccepted = true;
         }
       })
       .catch(err => {
         console.log(err);
       });
+    firebase
+      .firestore()
+      .collection("acceptedOffers")
+      .where("offerId", "==", offerId)
+      .get()
+      .then(snapshot => {
+        this.helperCount = snapshot.size;
+      });
   },
   filters: {
-      formatDate: d => d.toISOString().substr(0,10).split('-').reverse().join('.')
+    formatDate: d =>
+      d
+        .toISOString()
+        .substr(0, 10)
+        .split("-")
+        .reverse()
+        .join(".")
+  },
+  methods: {
+    addMe() {
+      if (!this.uid) {
+        alert("Bitte melde Dich erst an");
+        this.$router.push('/login?redirect=/offers/'+this.offer.id);
+        return;
+      }
+      if (this.isAccepted) {
+        return;
+      }
+      firebase
+        .firestore()
+        .collection("acceptedOffers")
+        .add({
+          offerId: this.offer.id,
+          helperId: this.uid,
+          acceptDate: new Date()
+        })
+        .then(res => {
+          this.isAccepted = true;
+          console.log(res);
+          this.helperCount++;
+        });
+    },
+    removeMe() {
+      firebase
+        .firestore()
+        .collection("acceptedOffers")
+        .where("helperId", "==", this.uid)
+        .where("offerId", "==", this.offer.id)
+        .get()
+        .then(snapshot => {
+          if (!snapshot.empty) {
+            firebase
+              .firestore()
+              .doc("acceptedOffers/" + snapshot.docs[0].id)
+              .delete()
+              .then(res => {
+                this.isAccepted = false;
+                this.helperCount--;
+                console.log(res);
+              });
+          }
+        });
+    }
   }
 };
 </script>
 <style lang="scss" scoped>
-h1,
+@media only screen and (min-width: 1000px) {
+  .inner {
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 0 5px 3px #ccc;
+    padding: 8px;
+    border-radius: 8px;
+  }
+}
+
+h1 {
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 16px;
+}
 h2 {
   font-weight: 300;
 }
@@ -118,20 +226,15 @@ h2 {
 .contact-card {
   padding: 8px;
 }
-.status-chip {
-  padding: 8px;
-  border: 1px solid red;
-  border-radius: 5px;
-  display: inline-block;
+.action-section {
+  display: flex;
+  align-items: center;
 }
-.date-list {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+.action-button {
+  margin: 0 8px 0 0;
 }
-.date-list-item {
-  margin-bottom: 8px;
-  display: inline-block;
+.status-chip b {
+  color: red;
 }
 .section-header {
   font-size: 24px;

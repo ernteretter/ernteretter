@@ -1,15 +1,22 @@
 <template>
 <v-app>
     <v-app-bar app>
-        <v-spacer>
-            <v-icon>mdi-barley</v-icon>
-            <router-link to="/">Startseite</router-link>
-            <router-link to="/offers">Anzeigen</router-link>
-            <router-link to="/history">Termine</router-link>
-            <router-link to="/settings">Einstellungen</router-link>
-        </v-spacer>
-        <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined>login</v-btn>
-        <v-btn color="red" @click="logout()" v-if="user" outlined>log out</v-btn>
+        <v-row align="center" justify="center">
+            <v-col>
+                <v-icon>mdi-barley</v-icon>
+                <router-link to="/">Startseite</router-link>
+                <router-link to="/offers">Anzeigen</router-link>
+                <router-link to="/history">Termine</router-link>
+                <router-link to="/settings">Einstellungen</router-link>
+            </v-col>
+                <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" />
+            <v-col>
+            <!-- </v-col>
+            <v-col> -->
+                <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined>login</v-btn>
+                <v-btn color="red" @click="logout()" v-if="user" outlined>log out</v-btn>
+            </v-col>
+        </v-row>
     </v-app-bar>
 
     <!-- Sizes your content based upon application components -->
@@ -23,8 +30,12 @@
         </v-container>
     </v-content>
 
-    <v-footer app>
-        <!-- -->
+    <v-footer app padless color="grey">
+        <v-col class="text-center" cols="12">
+            <v-card-text class="py-2 white--text text-center">
+                {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+            </v-card-text>
+        </v-col>
     </v-footer>
 </v-app>
 </template>
@@ -56,3 +67,13 @@ export default {
     }
 };
 </script>
+
+<style>
+    .rounded-button-right {
+        border-radius: 0px 40px 0px 40px !important;
+    }
+
+    .rounded-button-left {
+        border-radius: 40px 0px 40px 0px !important;
+    }
+</style>
