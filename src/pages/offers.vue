@@ -9,7 +9,7 @@
           <v-text-field
             id="zipsearch"
             outlined
-            type="number"
+            type="text"
             v-model="zipsearch"
             maxlength="5"
             minlength="4"
