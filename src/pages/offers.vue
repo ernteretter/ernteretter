@@ -41,6 +41,7 @@ export default {
     details(id) {
       this.$router.push({ name: "offer-details", params: { offerId: id } });
     },
+    //creates array of nearby farms
     async create_farm_plz_arr(x, y) {
       var theUrl =
         "https://public.opendatasoft.com/api/records/1.0/search//?dataset=postleitzahlen-deutschland&geofilter.distance=" +
@@ -60,7 +61,7 @@ export default {
       }
       console.log("Farm_Array" + this.farm_plz_arr);
     },
-
+    //gets geodata to postCode
     async getGeoData(worker_plz){
       console.log("start");
       var url = "https://public.opendatasoft.com/api/records/1.0/search//?dataset=postleitzahlen-deutschland&q=" + worker_plz;
@@ -86,7 +87,7 @@ export default {
     firestore
       .collection("offers")
       //postcodes muessen in farm_plz_arr sein um angezeigt zu werden
-      .where("postCode", "in" ,this.farm_plz_arr)
+      .where("address.postCode", "in" ,this.farm_plz_arr)
       .get()
       .then(snapshot => {
         if (!snapshot.empty) {
