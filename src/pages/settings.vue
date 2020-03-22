@@ -31,7 +31,7 @@
                             <v-text-field v-model="user.displayName" label="Name"></v-text-field>
                             <v-text-field v-model="user.email" label="Mail"></v-text-field>
                             <v-row>
-                                <v-col>
+                                <v-col sm="6">
                                     <v-card-text>du bist ein:</v-card-text>
                                 </v-col>
                                 <v-spacer></v-spacer>
@@ -53,15 +53,127 @@
             </v-tab-item>
             <v-tab-item>
                 <v-card flat>
-                    <v-card-text>
-                        <v-text-field label="Wie lange willst du helfen?" v-model="preferences.durationMin" type="number"></v-text-field>
-                        <v-row>
-                            <v-card-text>Suchebereich:</v-card-text>
-                            <v-slider v-model="preferences.searchRange" class="align-center" :max="130" :min="1" hide-details />
-                            <v-text-field v-model="preferences.searchRange" class="pa-2"></v-text-field>
+                    <v-card-text v-if="isAgrarian">
+                        Wo liegt Ihr Hof?
+                        <v-row justify="center">
+                            <v-col cols="1" sm="6">
+                                <v-text-field v-model="place.street" label="Straße" single-line solo></v-text-field>
+                            </v-col>
+                            <v-col cols="5" sm="3">
+                                <v-text-field v-model="place.number" label="Nummer" single-line solo></v-text-field>
+                            </v-col>
                         </v-row>
-                        <v-overflow-btn label='deine Erfahrung' :items="erfahrung" v-model="preferences.experience"></v-overflow-btn>
-                        <v-btn color="success" @click="updatePreferences">Fertig</v-btn>
+                        <v-row justify="center" class="mt-n8">
+                            <v-col cols="5" sm="3">
+                                <v-text-field v-model="place.postcode" label="PLZ" single-line solo></v-text-field>
+                            </v-col>
+                            <v-col cols="5" sm="6">
+                                <v-text-field v-model="place.city" label="Stadt" single-line solo></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-container>
+                            <v-row>
+                                <v-spacer></v-spacer>
+                                <v-btn color="success" @click="updatePreferences">Fertig</v-btn>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-text v-if="!isAgrarian">
+                        Für welche Arten der Ernte interessierst du dich?
+                        <v-row>
+                            <v-col cols="5" sm="5">
+                                <v-checkbox
+                                        class="mt-1 ml-4"
+                                        v-for="item in harvestTypesOptions"
+                                        v-bind:key="item"
+                                        v-model="harvestTypes"
+                                        :label="item"
+                                        :value="item"
+                                >
+                                </v-checkbox>
+                            </v-col>
+                        </v-row>
+                        Wie lange willst du helfen?
+                        <v-row justify="center">
+                            <v-col md="2">
+                                <v-text-field
+                                        class="ml-12"
+                                        label="von"
+                                        v-model="durationMin"
+                                        type="number"
+                                        style="width: 30px"
+                                >
+                                </v-text-field>
+                            </v-col>
+                            <v-col md="3">
+                                <v-select
+                                        d-inline-block
+                                        v-model="durationMinType"
+                                        :items="durationTypeOptions"
+                                        style="width: 100px"
+                                ></v-select>
+                            </v-col>
+                            <v-col md="1">
+                                <v-text-field
+                                        class="ml-0"
+                                        label="bis"
+                                        v-model="durationMax"
+                                        type="number"
+                                        style="width: 30px"
+                                >
+                                </v-text-field>
+                            </v-col>
+                            <v-col md="4">
+                                <v-select
+                                        v-model="durationMaxType"
+                                        :items="durationTypeOptions"
+                                        item-text="text"
+                                        item-value="value"
+                                        style="width: 100px"
+                                ></v-select>
+                            </v-col>
+                        </v-row>
+                        <v-row justify="center">
+                            <v-card-text>
+                                In welchem Umkreis möchtest du Hilfemöglichkeiten vorgschlagen bekommen?
+                                <v-col cols="10" sm="12">
+
+                                    <v-slider
+                                            v-model="searchRange"
+                                            class="align-center"
+                                            :max="searchRangeMax"
+                                            :min="searchRangeMin"
+                                            hide-details
+                                    >
+                                        <template v-slot:append>
+                                            <v-text-field
+                                                    v-model="searchRange"
+                                                    class="mt-0 pt-0"
+                                                    hide-details
+                                                    single-line
+                                                    type="number"
+                                                    style="width: 60px"
+                                            ></v-text-field>
+                                            <v-chip class="ma-2" outlined>
+                                                km
+                                            </v-chip>
+                                        </template>
+                                    </v-slider>
+                                </v-col>
+                            </v-card-text>
+                        </v-row>
+                        <v-row justify="center">
+                            <v-card-text>
+                                Welche Vorerfahrungen hast du?
+                                <v-textarea v-model="experience" label="" solo></v-textarea>
+                            </v-card-text>
+                        </v-row>
+                        <v-container>
+                            <v-row>
+                                <v-spacer></v-spacer>
+                                <v-btn color="success" @click="updatePreferences">Fertig</v-btn>
+                            </v-row>
+                        </v-container>
                     </v-card-text>
                 </v-card>
             </v-tab-item>
@@ -102,12 +214,20 @@ export default {
             overlay: false,
             rightName: false,
             user: [],
-            preferences: {
-                durationMin: 0,
-                searchRange: 0,
-                experience: 0,
-            },
+            harvestTypes: [],
+            durationMin: 0,
+            durationMinType: "days",
+            durationMax: 0,
+            durationMaxType: "days",
+            searchRange: 0,
+            experience: "",
+            harvestTypesOptions: ["Obst", "Gemüse"],
+            durationTypeOptions: [{value: "days", text: "Tage"}, {value: "weeks", text: "Wochen"}],
+            searchRangeMin: 1,
+            searchRangeMax: 500,
+            place: {},
             isAgrarian: false,
+            doc_id: "",
             valid: true,
         }
     },
@@ -118,29 +238,40 @@ export default {
             this.activeButton = true;
         },
         async fetch() {
-            this.user = await firebase.auth().currentUser
-            console.log(this.user)
-
-            var usID = this.user.uid
-            await firebase.firestore().collection('helpers').doc(usID).get().then(async (doc) => {
-                if (doc.exists) {
-                    this.accountData = doc.data()
-                    this.preferences = doc.data().settings
+            this.user = await firebase.auth().currentUser;
+            let usID = this.user.uid;
+            let settings = this;
+            await firebase.firestore().collection('helpers').where("uid", "==", usID).get().then(async (querySnapshot) => {
+                if (querySnapshot.size === 1) {
+                    querySnapshot.forEach(function(doc) {
+                        let data = doc.data();
+                        settings.doc_id = doc.id;
+                        settings.harvestTypes = data.harvestTypes;
+                        settings.durationMin = data.durationMin;
+                        settings.durationMinType = data.durationMinType;
+                        settings.durationMax = data.durationMax;
+                        settings.durationMaxType = data.durationMaxType;
+                        settings.searchRange = data.searchRange;
+                        settings.experience = data.experience;
+                        settings.isAgrarian = false;
+                    });
                 } else {
-                    await firebase.firestore().collection('agrarians').doc(usID).get().then((doc) => {
-                        if (doc.exists) {
-                            this.accountData = doc.data()
-                            this.preferences = doc.data().settings
-                            this.isAgrarian = true
+                    await firebase.firestore().collection('agrarians').where("uid", "==", usID).get().then((querySnapshot) => {
+                        if (querySnapshot.size === 1) {
+                            querySnapshot.forEach(function(doc) {
+                                let data = doc.data();
+                                settings.doc_id = doc.id;
+                                settings.place = data.place;
+                                settings.isAgrarian = true;
+                            });
                         }
-                    })
+                    });
                 }
-
-            })
+            });
         },
         async updateAccount() {
             try {
-                this.user.updateEmail(this.user.email).then((doc) => console.log(doc)).catch((err) => console.log(err))
+                this.user.updateEmail(this.user.email).then((doc) => console.log(doc)).catch((err) => console.log(err));
                 this.user.updateProfile({
                     displayName: this.user.displayName,
                 }).then(() => {
@@ -155,15 +286,21 @@ export default {
         async updatePreferences() {
             try {
                 if (this.isAgrarian) {
-                    firebase.firestore().collection("agrarians").doc(this.user.uid).update({
-                        settings: this.preferences,
+                    firebase.firestore().collection("agrarians").doc(this.doc_id).update({
+                        place: this.place,
                     }).then(() => {
                         setTimeout(() => (this.snackbar = true), 3000);
                         this.snackbar = false
                     })
                 } else {
-                    firebase.firestore().collection("helpers").doc(this.user.uid).update({
-                        settings: this.preferences,
+                    firebase.firestore().collection("helpers").doc(this.doc_id).update({
+                        harvestTypes: this.harvestTypes,
+                        durationMin: this.durationMin,
+                        durationMinType: this.durationMinType,
+                        durationMax: this.durationMax,
+                        durationMaxType: this.durationMaxType,
+                        searchRange: this.searchRange,
+                        experience: this.experience
                     }).then(() => {
                         setTimeout(() => (this.snackbar = true), 3000);
                         this.snackbar = false
