@@ -5,7 +5,7 @@
       <div class="status-chip" @click="addMe">
         {{
           offer.maxHelpers -
-            offer.helperCount +
+            helperCount +
             "/" +
             offer.maxHelpers +
             " Helfern fehlen noch"
@@ -74,12 +74,13 @@ export default {
     offer: false,
     agrarian: false,
     isAccepted: false,
-    uid: false
+    uid: false,
+    helperCount: 0
   }),
   async created() {
     let offerId = this.$route.params.offerId;
     firebase.auth().onAuthStateChanged(user => {
-      this.uid = user.uid;
+      this.uid = user?user.uid:null;
     });
     firebase.firestore()
       .doc("offers/" + offerId)
@@ -97,6 +98,9 @@ export default {
       .then(snapshot => {
         if (snapshot.exists) {
           this.agrarian = { ...snapshot.data(), id: snapshot.id };
+        }else{
+          alert('Ein Fehler ist aufgetreten: Landwirt nicht gefunden');
+          this.$router.push('/offers');
         }
         if (this.uid) {
           return firebase.firestore()
@@ -105,7 +109,6 @@ export default {
             .where("offerId", "==", this.offer.id)
             .get();
         } else {
-          alert("Bitte melde Dich an, um hier teilzunehmen.");
           throw "user not logged in";
         }
       })
@@ -117,6 +120,9 @@ export default {
       .catch(err => {
         console.log(err);
       });
+      firebase.firestore().collection('acceptedOffers').where('offerId', '==', offerId).get().then(snapshot => {
+        this.helperCount = snapshot.size;
+      })
   },
   filters: {
     formatDate: d =>
@@ -129,6 +135,13 @@ export default {
   },
   methods: {
     addMe() {
+      if (!this.uid) {
+        alert('Bitte melde Dich erst an');
+        return;
+      }
+      if (this.isAccepted) {
+        return;
+      }
       firebase.firestore()
         .collection("acceptedOffers")
         .add({
@@ -139,6 +152,7 @@ export default {
         .then(res => {
           this.isAccepted = true;
           console.log(res);
+          this.helperCount ++;
         });
     },
     removeMe() {
@@ -154,6 +168,7 @@ export default {
               .delete()
               .then(res => {
                 this.isAccepted = false;
+                this.helperCount --;
                 console.log(res);
               });
           }
