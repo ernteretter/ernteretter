@@ -111,8 +111,10 @@
             </v-col>
             <v-col md="1">
                 <v-select
-                        v-model="durationMinType"
+                        v-model="durationMaxType"
                         :items="durationTypeOptions"
+                        item-text="text"
+                        item-value="value"
                         style="width: 100px"
                 ></v-select>
             </v-col>
@@ -149,12 +151,11 @@
             searchRangeMin: 1,
             searchRangeMax: 500,
             durationMin: 3,
-            durationMinType: "Tage",
+            durationMinType: "days",
             durationMax: 4,
-            durationMaxType: "Wochen",
-            durationTypeOptions: ["Tage", "Wochen"],
-            experience: "",
-            harvestType: ""
+            durationMaxType: "weeks",
+            durationTypeOptions: [{value: "days", text: "Tage"}, {value: "weeks", text: "Wochen"}],
+            experience: ""
         }),
         methods: {
             registerHelper() {
