@@ -37,7 +37,7 @@
       </v-row>
     </v-card>
     <br />
-    Es sind aktuell {{offers.length}} Anzeige(n) online.
+    Fuer Ihre Suche wurde(n) {{offers.length}} Anzeige(n) gefunden.
     <v-card
       class="mx-auto list-item"
       max-width="auto"
