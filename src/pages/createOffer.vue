@@ -13,18 +13,20 @@
     <v-card>
         <h3> Wo findet die Ernte/Saat statt? </h3>
         <v-col cols="5" sm="5">
-            <v-text-field v-model="place" type="number" label="Postleitzahl" single-line solo></v-text-field>
+            <v-text-field v-model="street" label="Straße"/>
+            <v-text-field v-model="houseNumber" label="Hausnummer"/>
+            <v-text-field v-model="postCode" type="number" label="Postleitzahl" />
+            <v-text-field v-model="city" label="Stadt"/>
         </v-col>
     </v-card>
 
-    <v-card>
+    <v-card
+        class="d-flex">
         <h3> Wobei brauchst du Hilfe? </h3>
-        <v-row>
-            <v-radio-group v-model="radioErnteSaat">
+            <v-radio-group class="d-flex" v-model="radioErnteSaat">
                 <v-radio :label="'Ernte'" />
                 <v-radio :label="'Saat'" />
             </v-radio-group>
-        </v-row>
     </v-card>
 
     <v-card>
@@ -67,14 +69,7 @@
         </v-col>
     </v-card>
 
-    <v-card>
-        <h3> Teile deinen Helfern mit, wo sie hinkommen sollen. </h3>
-        <v-col cols="5" sm="5">
-            <v-textarea v-model="address" solo label="Adresse"></v-textarea>
-        </v-col>
-    </v-card>
-
-    <v-btn rounded color="primary" dark @click="createOffer()">
+    <v-btn class="absendenButton" rounded color="primary" dark @click="createOffer()">
         Absenden
     </v-btn>
 </div>
@@ -87,13 +82,15 @@ import 'firebase/firestore';
 export default {
     name: 'createOffer',
     data: () => ({
-        address: "",
+        street: "",
+        houseNumber: "",
+        postCode: "",
+        city: "",
         radioErnteSaat: "",
         title: "",
         maxHelpers: "",
         minDuration: "",
         harvestType: "",
-        place: "",
         salary: "",
         description: "",
         equipment: "",
@@ -133,14 +130,13 @@ export default {
             let lastDate = datesSorted[1];
             let difference = lastDate.getTime() - firstDate.getTime();
             let duration = difference / 1000 / 60 / 60 / 24;
-            console.log("duration: " + duration);
+            let address = {street: this.street, number: this.houseNumber, postCode: this.postCode, city: this.city};
             let data = {
-                address: this.address,
                 title: this.title,
+                address: address,
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
-                postCode: this.place,
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
@@ -155,6 +151,7 @@ export default {
             var newOffer = firestore.collection('offers').doc();
             newOffer.set(data).then(function () {
                     console.log("Document written successfully!")
+
                 })
                 .catch(function (error) {
                     console.error("Error writing Document: ", error);
@@ -164,3 +161,6 @@ export default {
     }
 }
 </script>
+
+<style>
+</style>

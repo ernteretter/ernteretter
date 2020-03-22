@@ -22,39 +22,30 @@
         </div>
       </div>
 
-      <div class="equipment">
+      <div class="equipment" v-if="offer.equipment">
         <div class="equipment-header section-header">
           Benötigtes Equipment
         </div>
         <div class="equipment-body section-body">
-          {{ offer.equipment.join(", ") }}
+          {{ Array.isArray(offer.equipment)?offer.equipment.join(", "):offer.equipment }}
         </div>
       </div>
 
-      <div class="section-header">Starttermine</div>
+      <div class="section-header">Zeitraum</div>
       <p>
         <b>Hinweis:</b> Die Mindestdauer der Arbeit beträgt
         <b>{{ offer.minDuration }} Tage</b>
       </p>
-      <v-list class="date-list">
-        <v-card
-          v-for="startDate in offer.startDates"
-          :key="startDate.seconds"
-          class="date-list-item"
-        >
-          <v-list-item>
-            <div class="list-date">{{new Date(startDate.seconds*1000) | formatDate }}</div>
-          </v-list-item>
-        </v-card>
-      </v-list>
+      Vom {{ new Date(offer.startDate.seconds * 1000) | formatDate }} bis zum
+      {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
       <h2>Kontakt</h2>
       <div class="contact-box">
-        <div class="address">
+        <div class="address" v-if="offer.address">
           {{ agrarian.name }}
           <br />
-          {{ agrarian.address.street + " " + agrarian.address.number }}
+          {{ offer.address.street + "\n\n " + offer.address.number }}
           <br />
-          {{ agrarian.address.postcode + " " + agrarian.address.city }}
+          {{ offer.address.postCode + " " + offer.address.city }}
         </div>
         <div class="email">
           <a :href="'mailto:' + agrarian.publicEmail">{{
@@ -102,7 +93,13 @@ export default {
       });
   },
   filters: {
-      formatDate: d => d.toISOString().substr(0,10).split('-').reverse().join('.')
+    formatDate: d =>
+      d
+        .toISOString()
+        .substr(0, 10)
+        .split("-")
+        .reverse()
+        .join(".")
   }
 };
 </script>
@@ -125,9 +122,9 @@ h2 {
   display: inline-block;
 }
 .date-list {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .date-list-item {
   margin-bottom: 8px;
