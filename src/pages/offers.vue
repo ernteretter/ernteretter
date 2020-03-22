@@ -51,7 +51,6 @@
           <v-list-item-subtitle>{{offer.description | snippet}}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-avatar tile size="80" color="grey">
-          <img src="profilbildBauer.png" />
         </v-list-item-avatar>
       </v-list-item>
 
