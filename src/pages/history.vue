@@ -146,8 +146,6 @@ export default {
                     console.log(snapshot.size);
                     this.mixedOffers[i].helpCount = this.mixedOffers[i].maxHelpers - snapshot.size;
                     this.mixedOffers[i].startDate = this.mixedOffers[i].startDate.toDate().toLocaleDateString()
-                    console.log(this.mixedOffers);
-                    console.log(this.mixedOffers[i].startDate);
                 })
                 
                 
