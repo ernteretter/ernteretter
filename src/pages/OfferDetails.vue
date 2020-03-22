@@ -2,8 +2,7 @@
   <div class="offer-details" v-if="offer && agrarian">
     <div class="inner">
       <h1>{{ offer.title }}</h1>
-      <div class="status-chip">
-        Status:
+      <div class="status-chip" @click="addMe">
         {{
           offer.maxHelpers -
             offer.helperCount +
@@ -11,6 +10,10 @@
             offer.maxHelpers +
             " Helfern fehlen noch"
         }}
+      </div>
+      <div class="accept-reject">
+        <v-btn v-if="isAccepted" @click="removeMe">Abmelden</v-btn>
+        <v-btn v-else @click="addMe">Anmelden</v-btn>
       </div>
 
       <div class="description">
@@ -27,7 +30,11 @@
           Benötigtes Equipment
         </div>
         <div class="equipment-body section-body">
-          {{ Array.isArray(offer.equipment)?offer.equipment.join(", "):offer.equipment }}
+          {{
+            Array.isArray(offer.equipment)
+              ? offer.equipment.join(", ")
+              : offer.equipment
+          }}
         </div>
       </div>
 
@@ -65,27 +72,46 @@ export default {
   name: "OfferDetails",
   data: () => ({
     offer: false,
-    agrarian: false
+    agrarian: false,
+    isAccepted: false,
+    uid: false
   }),
-  created() {
-    let firestore = firebase.firestore();
+  async created() {
     let offerId = this.$route.params.offerId;
-
-    firestore
+    firebase.auth().onAuthStateChanged(user => {
+      this.uid = user.uid;
+    });
+    firebase.firestore()
       .doc("offers/" + offerId)
       .get()
       .then(snapshot => {
         if (snapshot.exists) {
           this.offer = { ...snapshot.data(), id: snapshot.id };
-          console.log(snapshot.data().startDates);
-          return firestore.doc("agrarians/" + snapshot.data().agrarianId).get();
+          return firebase.firestore().doc("agrarians/" + snapshot.data().agrarianId).get();
         } else {
-          throw snapshot;
+          alert("Anzeige nicht gefunden");
+          this.$router.push("/offers");
+          throw "offer not found";
         }
       })
       .then(snapshot => {
         if (snapshot.exists) {
           this.agrarian = { ...snapshot.data(), id: snapshot.id };
+        }
+        if (this.uid) {
+          return firebase.firestore()
+            .collection("acceptedOffers")
+            .where("helperId", "==", this.uid)
+            .where("offerId", "==", this.offer.id)
+            .get();
+        } else {
+          alert("Bitte melde Dich an, um hier teilzunehmen.");
+          throw "user not logged in";
+        }
+      })
+      .then(snapshot => {
+        if (!snapshot.empty) {
+          this.isAccepted = true;
         }
       })
       .catch(err => {
@@ -100,6 +126,39 @@ export default {
         .split("-")
         .reverse()
         .join(".")
+  },
+  methods: {
+    addMe() {
+      firebase.firestore()
+        .collection("acceptedOffers")
+        .add({
+          offerId: this.offer.id,
+          helperId: this.uid,
+          acceptDate: new Date()
+        })
+        .then(res => {
+          this.isAccepted = true;
+          console.log(res);
+        });
+    },
+    removeMe() {
+      firebase.firestore()
+        .collection("acceptedOffers")
+        .where("helperId", "==", this.uid)
+        .where("offerId", "==", this.offer.id)
+        .get()
+        .then(snapshot => {
+          if (!snapshot.empty) {
+            firebase.firestore()
+              .doc("acceptedOffers/" + snapshot.docs[0].id)
+              .delete()
+              .then(res => {
+                this.isAccepted = false;
+                console.log(res);
+              });
+          }
+        });
+    }
   }
 };
 </script>
