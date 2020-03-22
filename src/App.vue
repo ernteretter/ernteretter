@@ -33,7 +33,7 @@
     <v-footer app padless color="grey">
         <v-col class="text-center" cols="12">
             <v-card-text class="py-2 white--text text-center">
-                {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+                {{ new Date().getFullYear() }} — <strong>ernteretter</strong>
             </v-card-text>
         </v-col>
     </v-footer>
