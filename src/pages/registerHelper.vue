@@ -163,7 +163,6 @@
                     .then(data => {
                         let helperData = {
                             uid: data.user.uid,
-                            name: this.name,
                             harvestTypes: this.harvestTypes,
                             searchRange: this.searchRange,
                             durationMin: this.durationMin,
@@ -172,13 +171,18 @@
                             durationMaxType: this.durationMaxType,
                             experience: this.experience
                         };
-                        let firestore = firebase.firestore();
-                        let newHelper = firestore.collection('helpers').doc();
-                        newHelper.set(helperData).then(function () {
-                            console.log("Helper registered successfully!");
-                            this.$router.push('/registerHelperSuccess');
-                        }).catch(function (error) {
-                            console.error("Error registering Helper: ", error);
+                        let router = this.$router;
+                        data.user.updateProfile({
+                            displayName: this.name
+                        }).then(() => {
+                            let firestore = firebase.firestore();
+                            let newHelper = firestore.collection('helpers').doc();
+                            newHelper.set(helperData).then(function () {
+                                console.log("Helper registered successfully!");
+                                router.push('/registerHelperSuccess');
+                            }).catch(function (error) {
+                                console.error("Error registering Helper: ", error);
+                            });
                         });
                     })
                     .catch(function(error) {
