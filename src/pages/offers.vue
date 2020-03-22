@@ -7,6 +7,7 @@
         </v-col>
         <v-col>
           <v-text-field
+            id="zipsearch"
             outlined
             type="number"
             v-model="zipsearch"
@@ -37,14 +38,14 @@
       </v-row>
     </v-card>
     <br />
-    Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben.
+    <div id="anfragen"> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </div>
     <v-card
       class="mx-auto list-item"
       max-width="auto"
       outlined
       v-for="offer in offers"
       :key="offer.id"
-      :color="item"
+      :color="colorEintrag"
     >
       <v-list-item three-line>
         <v-list-item-content >
@@ -71,6 +72,8 @@ import "firebase/auth";
 export default {
   name: "OfferList",
   data: () => ({
+    colorEintrag : '#fffff',
+    detailbutton : '#fffff',
     //filteredList:[],
     item_color: 'primary',
     offers: [],
@@ -191,19 +194,24 @@ export default {
 
 <style scoped>
 .list-item {
+  margin-left: 500000px;
   margin: 15px;
+  background-color: black;
 }
 
 .search-wrapper {
-  margin-bottom: 20px;
-  border-color: lightgrey;
-  border-width: 1px;
-  border-style: solid;
+  margin-bottom: 20px
 }
 #radiussilder {
   margin-top: 15px;
 }
 #searchbutton {
   margin-top: -25px;
+}
+#inspire {
+  margin: 50px;
+}
+#anfragen {
+  text-align: center;
 }
 </style>
