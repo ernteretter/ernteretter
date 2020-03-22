@@ -194,9 +194,7 @@ export default {
 
 <style scoped>
 .list-item {
-  margin-left: 500000px;
   margin: 15px;
-  background-color: black;
 }
 
 .search-wrapper {
