@@ -22,7 +22,7 @@
                     </v-btn>
                 </v-row>
             </v-col>
-            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" />
+            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" style="{cursor: pointer}"/>
             <v-col>
                 <!-- </v-col>
           <v-col>-->
@@ -100,6 +100,14 @@ export default {
 </script>
 
 <style>
+#bild {
+  cursor: pointer;
+}
+
+.header123 {
+  display: initial;
+}
+
 .rounded-button-right {
     border-radius: 0px 40px 0px 40px !important;
 }
