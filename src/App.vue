@@ -10,12 +10,12 @@
                         <v-spacer />
                         <v-icon small> mdi-view-dashboard-outline </v-icon>
                     </v-btn>
-                    <v-btn small outlined color=primary to="/history" min-width="110">
+                    <v-btn small outlined color=primary to="/history" v-if="user" min-width="110">
                         Termine
                         <v-spacer />
                         <v-icon small> mdi-calendar-range </v-icon>
                     </v-btn>
-                    <v-btn small outlined color=primary to="/settings" min-width="155">
+                    <v-btn small outlined color=primary to="/settings" v-if="user" min-width="155">
                         Einstellungen
                         <v-spacer />
                         <v-icon small> mdi-cog-outline </v-icon>
