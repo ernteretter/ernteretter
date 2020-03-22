@@ -46,8 +46,9 @@
         <v-col class="text-center" cols="12">
             <v-card-text class="py-2 white--text text-center"> Datenschutz | Impressum </v-card-text>
             <v-card-text class="py-2 white--text text-center">
+                <v-icon color="primary">mdi-copyright</v-icon>
                 {{ new Date().getFullYear() }} —
-                <strong>Ernteretter</strong>
+                <strong>ernteretter</strong>
             </v-card-text>
         </v-col>
         <cookie-law>
