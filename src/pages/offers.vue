@@ -37,12 +37,12 @@
       </v-row>
     </v-card>
     <br />
-    Fuer Ihre Suche wurde(n) {{offers.length}} Anzeige(n) gefunden.
+    Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben.
     <v-card
       class="mx-auto list-item"
       max-width="auto"
       outlined
-      v-for="offer in filteredList"
+      v-for="offer in offers"
       :key="offer.id"
     >
       <v-list-item three-line>
@@ -74,7 +74,7 @@ export default {
     offers: [],
     search: "",
     zipsearch: "",
-    number_of_plz_nearby: 1000,
+    number_of_plz_nearby: 300,
     searchradius: "",
     farm_plz_arr: [],
     offercount: 0
@@ -122,20 +122,14 @@ export default {
       return myJson.records[0].fields.geo_point_2d;
     },
     async list_offers() {
-      console.log("zip" + this.zipsearch)
-      console.log("ziplength" + this.zipsearch.length)
-      console.log(this.zipsearch.length != 0)
-      console.log("search" + this.search)
       this.offers = [];
       this.farm_plz_arr = [];
       //????????
-      if (this.zipsearch.length != 0 && this.search.length != 0) {
+      if (this.zipsearch.length != 0) {
         console.log("Bin bei if");
-        var g_Data = await this.getGeoData(/*this.zipsearch*/ 64287);
+        var g_Data = await this.getGeoData(this.zipsearch);
 
         //call createplzarr
-        console.log("x" + g_Data[0]);
-        console.log("y" + g_Data[1]);
         await this.create_farm_plz_arr(g_Data[0], g_Data[1]);
         let firestore = firebase.firestore();
         for (let i = 0; i <= (this.farm_plz_arr.length - 1) / 10; i++) {
@@ -145,10 +139,9 @@ export default {
             .collection("offers")
             //postcodes muessen in farm_plz_arr sein um angezeigt zu werden
             //substring operator bei where(this.search ist substring of title)
-            .where("address.postCode", "in", plzArr).where("title", "==", this.search)
+            .where("address.postCode", "in", plzArr) //.where("title", "==", this.search)
             .get()
             .then(snapshot => {
-              console.log("Foo");
               if (!snapshot.empty) {
                 this.offers = this.offers.concat(
                   snapshot.docs.map(doc => ({
@@ -156,47 +149,20 @@ export default {
                     id: doc.id
                   }))
                 );
-                console.log(this.offers);
+                this.offers = this.offers.filter(offer => {
+                  return offer.title
+                    .toLowerCase()
+                    .includes(this.search.toLowerCase());
+                });
               }
             });
         }
-      }
-      else if(this.zipsearch.length != 0 && this.search.length == 0){
-        var g_Data_2 = await this.getGeoData(/*this.zipsearch*/ 64287);
-
-        //call createplzarr
-        console.log("x" + g_Data_2[0]);
-        console.log("y" + g_Data_2[1]);
-        await this.create_farm_plz_arr(g_Data_2[0], g_Data_2[1]);
-        let firestore = firebase.firestore();
-        for (let i = 0; i <= (this.farm_plz_arr.length - 1) / 10; i++) {
-          let plzArr = this.farm_plz_arr.slice(i * 10, i * 10 + 10);
-          console.log(plzArr);
-          firestore
-            .collection("offers")
-            //postcodes muessen in farm_plz_arr sein um angezeigt zu werden
-            //substring operator bei where(this.search ist substring of title)
-            .where("address.postCode", "in", plzArr)
-            .get()
-            .then(snapshot => {
-              console.log("Foo");
-              if (!snapshot.empty) {
-                this.offers = this.offers.concat(
-                  snapshot.docs.map(doc => ({
-                    ...doc.data(),
-                    id: doc.id
-                  }))
-                );
-                console.log(this.offers);
-              }
-            });
-        }
-      } else {
-        console.log("Bin bei else")
+      } else if (this.zipsearch.length == 0) {
+        console.log("Bin bei else");
         let firestore = firebase.firestore();
         firestore
           .collection("offers")
-          .where("title", "==", this.search)
+          //.where("title", "==", this.search)
           .get()
           .then(snapshot => {
             if (!snapshot.empty) {
@@ -206,27 +172,16 @@ export default {
                   id: doc.id
                 }))
               );
-              console.log("Offers")
-              console.log(this.offers);
+              this.offers = this.offers.filter(offer => {
+                return offer.title
+                  .toLowerCase()
+                  .includes(this.search.toLowerCase());
+              });
             }
           });
+      } else {
+        this.offers = [];
       }
-    },
-    // create_filteredList() {
-    //     this.filteredList = this.offers.filter(offer => {
-    //       return offer.title.match(this.search);
-    //     });
-    //   },
-    async created() {
-      //get plz
-      //translate plz to geo data
-    }
-  },
-  computed: {
-    filteredList: function() {
-      return this.offers.filter(offer => {
-        return offer.title.match(this.search);
-      });
     }
   }
 };
