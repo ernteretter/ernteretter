@@ -30,13 +30,13 @@
       </v-col>
       <cookie-law>
         <div slot-scope="props">
-          <p>Diese Seite verwendet Cookies, um Ihnen eine tolles Surferlebnis zu ermöglichen<router-link to="Datenschutz">Mehr erfahren.</router-link></p>
-          <button class="skew" @click="props.accept">
+          <p>Diese Seite verwendet Cookies, um Ihnen ein tolles Surferlebnis zu ermöglichen.<router-link to="Datenschutz">Mehr erfahren.</router-link></p>
+          <v-btn class="skew" @click="props.accept">
             <span>Ich akzeptiere</span>
-          </button>
-          <button class="skew" @click="props.close">
+          </v-btn>
+          <v-btn class="skew" @click="props.close">
             <span>Ich lehne ab</span>
-          </button>
+          </v-btn>
         </div>
       </cookie-law>
     </v-footer>
@@ -72,3 +72,7 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+</style>
