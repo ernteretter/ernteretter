@@ -31,7 +31,7 @@
       <v-row align="center">
         <v-col></v-col>
         <v-col class="text-center" cols="12" sm="4">
-          <v-btn big color="primary" id="searchbutton" @click="list_offers();">SEARCH</v-btn>
+          <v-btn big color="primary" id="searchbutton" @click="list_offers();">SUCHE</v-btn>
         </v-col>
         <v-col></v-col>
       </v-row>
