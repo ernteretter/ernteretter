@@ -1,6 +1,6 @@
 <template>
 <v-app>
-    <v-card width="60%" class="mx-auto mt-5">
+    <v-card class="mx-auto mt-5">
         <v-card-title class="primary">
             <span class="headline white--text">Termine</span>
             <v-spacer></v-spacer>
@@ -110,7 +110,6 @@ export default {
     },
     methods: {
         async fetch() {
-
             var usID = await firebase.auth()
             this.user = usID.currentUser
             usID = usID.currentUser.uid
