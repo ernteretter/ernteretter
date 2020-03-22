@@ -4,7 +4,7 @@
             <h1 align="center">Sie sind erfolgreich Registriert!</h1>
 
             <v-row justify="center">
-                <v-btn color="success" @click="onRelocateLogin()">weiter zum Login</v-btn>
+                <v-btn color="success" @click="onRelocateLogin()">weiter zum Anzeigen erstellen</v-btn>
             </v-row>
         </v-container>
     </div>

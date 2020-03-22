@@ -16,7 +16,7 @@
         methods: {
             onRelocateLogin()
             {
-                this.$router.push('/offer');
+                this.$router.push('/offers');
             }
         }
     }
