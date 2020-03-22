@@ -86,18 +86,18 @@ export default {
     console.log("y" + g_Data[1]);
     await this.create_farm_plz_arr(g_Data[0], g_Data[1]);
     let firestore = firebase.firestore();
-    for(let i = 0; i <= this.farm_plz_arr.length/10; i++){
-      console.log("Length" + this.farm_plz_arr.length/10);
-      console.log("Splice" + this.farm_plz_arr.splice(i*10, i*10 + 10));
+    for(let i = 0; i <= (this.farm_plz_arr.length-1)/10; i++){
+      let plzArr = this.farm_plz_arr.slice(i*10, i*10 + 10);
+      console.log(plzArr);
       firestore
       .collection("offers")
       //postcodes muessen in farm_plz_arr sein um angezeigt zu werden
-      .where("address.postCode", "in" ,this.farm_plz_arr.splice(i*10, i*10 + 10))
+      .where("address.postCode", "in" ,plzArr)
       .get()
       .then(snapshot => {
         console.log("Foo");
         if (!snapshot.empty) {
-          this.offers.push(snapshot.docs.map(doc => ({
+          this.offers = this.offers.concat(snapshot.docs.map(doc => ({
             ...doc.data(),
             id: doc.id
           })));
