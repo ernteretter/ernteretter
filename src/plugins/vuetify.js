@@ -7,7 +7,7 @@ const vuetify = new Vuetify({
             light: {
                 primary: "#ed9a00",
                 secondary: '#4d4238',
-                gelb: "#ffdf59",
+                accent: "#ffdf59",
                 dunkelgrau: "#282828",
                 schwarz: "#000000",
                 hellgrau: "#a0a0a0"
