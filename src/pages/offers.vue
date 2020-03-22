@@ -56,7 +56,7 @@
       </v-list-item>
 
       <v-card-actions>
-        <v-btn @click="details(offer.id)">Zu den Details</v-btn>
+        <v-btn @click="details(offer.id)" color="primary">Zu den Details</v-btn>
       </v-card-actions>
     </v-card>
   </div>
