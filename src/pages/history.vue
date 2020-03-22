@@ -171,6 +171,20 @@ export default {
 
             }
         },
+        showItem(item) {
+            //TODO
+            const index = this.bills.indexOf(item)
+            console.log('zeige ' + index);
+        },
+        editItem(item) {
+            //TODO
+            console.log('bearbeite ' + item);
+
+        },
+        deleteItem(item) {
+            //TODO
+            console.log('lösche ' + item);
+        },
     }
 }
 </script>
