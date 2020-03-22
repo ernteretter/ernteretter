@@ -2,7 +2,7 @@
   <div class="offer-details" v-if="offer && agrarian">
     <div class="inner">
       <h1>{{ offer.title }}</h1>
-      <div class="status-chip" @click="addMe">
+      <div class="status-chip" v-if="offer.maxHelpers">
         {{
           offer.maxHelpers -
             helperCount +
@@ -39,12 +39,17 @@
       </div>
 
       <div class="section-header">Zeitraum</div>
-      <p>
+      <p v-if="offer.minDuration">
         <b>Hinweis:</b> Die Mindestdauer der Arbeit beträgt
         <b>{{ offer.minDuration }} Tage</b>
       </p>
-      Vom {{ new Date(offer.startDate.seconds * 1000) | formatDate }} bis zum
-      {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
+      <p v-if="offer.startDate">
+        Ab dem {{ new Date(offer.startDate.seconds * 1000) | formatDate }}
+        <span v-if="offer.endDate">
+          bis zum
+          {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
+        </span>
+      </p>
       <h2>Kontakt</h2>
       <div class="contact-box">
         <div class="address" v-if="offer.address">
@@ -80,15 +85,23 @@ export default {
   async created() {
     let offerId = this.$route.params.offerId;
     firebase.auth().onAuthStateChanged(user => {
-      this.uid = user?user.uid:null;
+      if (user) {
+        this.uid = user.uid;
+      } else {
+        this.isAccepted = false;
+      }
     });
-    firebase.firestore()
+    firebase
+      .firestore()
       .doc("offers/" + offerId)
       .get()
       .then(snapshot => {
         if (snapshot.exists) {
           this.offer = { ...snapshot.data(), id: snapshot.id };
-          return firebase.firestore().doc("agrarians/" + snapshot.data().agrarianId).get();
+          return firebase
+            .firestore()
+            .doc("agrarians/" + snapshot.data().agrarianId)
+            .get();
         } else {
           alert("Anzeige nicht gefunden");
           this.$router.push("/offers");
@@ -98,12 +111,13 @@ export default {
       .then(snapshot => {
         if (snapshot.exists) {
           this.agrarian = { ...snapshot.data(), id: snapshot.id };
-        }else{
-          alert('Ein Fehler ist aufgetreten: Landwirt nicht gefunden');
-          this.$router.push('/offers');
+        } else {
+          alert("Ein Fehler ist aufgetreten: Landwirt nicht gefunden");
+          this.$router.push("/offers");
         }
         if (this.uid) {
-          return firebase.firestore()
+          return firebase
+            .firestore()
             .collection("acceptedOffers")
             .where("helperId", "==", this.uid)
             .where("offerId", "==", this.offer.id)
@@ -120,9 +134,14 @@ export default {
       .catch(err => {
         console.log(err);
       });
-      firebase.firestore().collection('acceptedOffers').where('offerId', '==', offerId).get().then(snapshot => {
+    firebase
+      .firestore()
+      .collection("acceptedOffers")
+      .where("offerId", "==", offerId)
+      .get()
+      .then(snapshot => {
         this.helperCount = snapshot.size;
-      })
+      });
   },
   filters: {
     formatDate: d =>
@@ -136,13 +155,14 @@ export default {
   methods: {
     addMe() {
       if (!this.uid) {
-        alert('Bitte melde Dich erst an');
+        alert("Bitte melde Dich erst an");
         return;
       }
       if (this.isAccepted) {
         return;
       }
-      firebase.firestore()
+      firebase
+        .firestore()
         .collection("acceptedOffers")
         .add({
           offerId: this.offer.id,
@@ -152,23 +172,25 @@ export default {
         .then(res => {
           this.isAccepted = true;
           console.log(res);
-          this.helperCount ++;
+          this.helperCount++;
         });
     },
     removeMe() {
-      firebase.firestore()
+      firebase
+        .firestore()
         .collection("acceptedOffers")
         .where("helperId", "==", this.uid)
         .where("offerId", "==", this.offer.id)
         .get()
         .then(snapshot => {
           if (!snapshot.empty) {
-            firebase.firestore()
+            firebase
+              .firestore()
               .doc("acceptedOffers/" + snapshot.docs[0].id)
               .delete()
               .then(res => {
                 this.isAccepted = false;
-                this.helperCount --;
+                this.helperCount--;
                 console.log(res);
               });
           }
