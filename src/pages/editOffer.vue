@@ -1,19 +1,19 @@
 <template>
 <div class="editOffer">
-    <v-card max-width="800" class="mx-auto text-center">
+    <v-card max-width="1000" class="mx-auto text-center">
         <v-container id="header">
-        <v-card-title id="headertitle" class="display-1 justify-center">Updaten sie Ihren Aufruf</v-card-title>
+            <v-card-title class="display-1 justify-center" id="headertitle">Updaten sie Ihren Aufruf</v-card-title>
         </v-container>
         <v-container>
-            <v-text-field type="number" v-model="maxHelpers" label="Wie viele Helfer brauchen Sie?" single-line></v-text-field>
+            <v-text-field :rules="helperRule" type="number" v-model="maxHelpers" label="Wie viele Helfer brauchen Sie?" single-line></v-text-field>
         </v-container>
 
         <v-card-title class="justify-center"> Wo liegen die Felder auf denen Sie Hilfe benötigen? </v-card-title>
         <v-container>
-            <v-text-field v-model="street" label="Straße" />
-            <v-text-field v-model="houseNumber" label="Hausnummer" />
-            <v-text-field v-model="postCode" type="number" label="Postleitzahl" />
-            <v-text-field v-model="city" label="Stadt" />
+            <v-text-field :rules="helperRule" v-model="street" label="Straße" />
+            <v-text-field :rules="helperRule" v-model="houseNumber" label="Hausnummer" />
+            <v-text-field :rules="helperRule" v-model="postCode" type="number" label="Postleitzahl" />
+            <v-text-field :rules="helperRule" v-model="city" label="Stadt" />
         </v-container>
 
         <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
@@ -25,7 +25,7 @@
         </v-row>
 
         <v-container>
-            <v-select v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
+            <v-select :rules="helperRule" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
             </v-select>
         </v-container>
 
@@ -34,7 +34,7 @@
 
         <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
             <template v-slot:activator="{ on }">
-                <v-text-field v-model="datesText" label="Bitte wählen sie einen Zeitraum aus" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+                <v-text-field :rules="helperRule" v-model="datesText" label="Bitte wählen sie einen Zeitraum aus" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
             </template>
             <v-date-picker v-model="dates" @input="menu2 = false" range></v-date-picker>
         </v-menu>
@@ -45,23 +45,22 @@
                 <v-text-field v-model="datesText" label="Zeitraum" prepend-icon="mdi-calendar" disabled></v-text-field>
             </v-row> -->
 
-            <v-text-field type="number" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)" single-line></v-text-field>
+            <v-text-field type="number" :rules="helperRule" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)" single-line></v-text-field>
 
-            <v-text-field v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line></v-text-field>
+            <v-text-field :rules="helperRule" v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line></v-text-field>
 
         </v-container>
 
         <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
 
         <v-container>
-            <v-text-field v-model="title" label="Titel"></v-text-field>
-            <v-textarea v-model="description" outlined label="Beschreibung"></v-textarea>
+            <v-text-field :rules="helperRule" v-model="title" label="Titel"></v-text-field>
+            <v-textarea :rules="helperRule" v-model="description" outlined label="Beschreibung"></v-textarea>
         </v-container>
 
-
-         <v-btn class="rounded-button-left" x-large outlined color="primary" @click="createOffer()">
-           Aufruf updaten 
-        </v-btn> 
+        <v-btn class="rounded-button-left" x-large outlined color="primary" @click="updateOffer()">
+            Update Abschicken
+        </v-btn>
     </v-card>
 </div>
 </template>
@@ -74,19 +73,21 @@ export default {
     name: 'createOffer',
     data: () => ({
         menu2: false,
-        street: "",
-        houseNumber: "",
-        postCode: "",
-        city: "",
-        radioErnteSaat: "",
-        title: "",
-        maxHelpers: "",
-        minDuration: "",
-        harvestType: "",
-        place: "",
-        salary: "",
-        description: "",
-        equipment: "",
+        helperRule: [
+            v => !!v || 'Feld wird benötigt'
+        ],
+        street: null,
+        houseNumber: null,
+        postCode: null,
+        city: null,
+        radioErnteSaat: null,
+        title: null,
+        maxHelpers: null,
+        minDuration: null,
+        harvestType: null,
+        salary: null,
+        description: null,
+        equipment: null,
         dates: [],
         items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren']
     }),
@@ -138,6 +139,10 @@ export default {
     },
     methods: {
         updateOffer() {
+            if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.equipment == null || this.dates == null) {
+                alert("Bitte füllen Sie alle Felder!");
+                return;
+            }
             let userID = firebase.auth().currentUser.uid;
             let datesAsDates = this.dates.map((a) => new Date(a));
             let datesSorted = datesAsDates.sort((a, b) => {
