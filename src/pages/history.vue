@@ -1,35 +1,16 @@
 <template>
 <v-app>
-    <v-timeline align-top dense>
-        <v-timeline-item v-for="offer in offers" :key="offer.name" color="green">
-            <v-row class="1">
-                <v-col cols="3">
-                    <v-expansion-panels>
-                        <v-expansion-panel flat>
-                            <v-expansion-panel-header> <strong> {{offer.title}}</strong></v-expansion-panel-header>
-                            <v-expansion-panel-content>
-                                <v-list>
-                                    <v-list-item>
-                                        <v-list-item-content>
-                                            <v-list-item-title v-text="offer.agrarianId"></v-list-item-title>
-                                            <v-list-item-title v-text="offer.maxHelpers"></v-list-item-title>
-                                            <v-list-item-title v-text="offer.harvestType"></v-list-item-title>
-                                            <v-list-item-title v-text="offer.place"></v-list-item-title>
-                                            <v-list-item-title v-text="offer.startDates"></v-list-item-title>
-                                            <v-list-item-title v-text="offer.salary"></v-list-item-title>
-                                            <v-list-item-title v-text="offer.description"></v-list-item-title>
-                                            <v-list-item-title v-text="offer.equipment"></v-list-item-title>
-                                            <v-list-item-title v-text="offer.helperCount"></v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                </v-list>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                    </v-expansion-panels>
-                </v-col>
-            </v-row>
-        </v-timeline-item>
-    </v-timeline>
+    <v-card width="60%" class="mx-auto mt-5">
+        <v-container>
+            <v-data-table :headers="headers" :items="offers" item-key="id" fixed-header height="300px">
+                <template v-slot:item.action="{item}">
+                    <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil-outline </v-icon>
+                    <v-icon small class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
+                    <v-icon small class="mr-2" @click="showItem(item)">mdi-eye-outline</v-icon>
+                </template>
+            </v-data-table>
+        </v-container>
+    </v-card>
 </v-app>
 </template>
 
@@ -49,7 +30,22 @@ export default {
         return {
             offers: [],
             offerIDs: [],
-
+            headers: [{
+                    text: 'Name',
+                    align: 'left',
+                    value: 'title',
+                },
+                {
+                    text: 'Datum',
+                    align: 'left',
+                    value: 'startDates'
+                },
+                {
+                    text: 'Helper',
+                    align: 'right',
+                    value: 'maxHelpers'
+                },
+            ]
         }
     },
     methods: {
@@ -69,6 +65,20 @@ export default {
                     })
                 }
             })
+        },
+        showItem(item) {
+            //TODO
+            const index = this.bills.indexOf(item)
+            console.log('zeige ' + index);
+        },
+        editItem(item) {
+            //TODO
+            console.log('bearbeite ' + item);
+
+        },
+        deleteItem(item) {
+            //TODO
+            console.log('lösche ' + item);
         },
     }
 }
