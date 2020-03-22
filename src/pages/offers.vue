@@ -31,7 +31,7 @@
       <v-row align="center">
         <v-col></v-col>
         <v-col class="text-center" cols="12" sm="4">
-          <v-btn big color="primary" id="searchbutton" @click="list_offers();">SUCHE</v-btn>
+          <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left">SUCHE</v-btn>
         </v-col>
         <v-col></v-col>
       </v-row>
@@ -44,9 +44,10 @@
       outlined
       v-for="offer in offers"
       :key="offer.id"
+      :color="item"
     >
       <v-list-item three-line>
-        <v-list-item-content>
+        <v-list-item-content >
           <v-list-item-title class="headline mb-1">{{offer.title}}</v-list-item-title>
           <v-list-item-subtitle>{{offer.description | snippet}}</v-list-item-subtitle>
         </v-list-item-content>
@@ -56,7 +57,7 @@
       </v-list-item>
 
       <v-card-actions>
-        <v-btn @click="details(offer.id)" color="primary">Zu den Details</v-btn>
+        <v-btn @click="details(offer.id)" color="primary" class="rounded-button-left">Zu den Details</v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -71,6 +72,7 @@ export default {
   name: "OfferList",
   data: () => ({
     //filteredList:[],
+    item_color: 'primary',
     offers: [],
     search: "",
     zipsearch: "",
@@ -191,6 +193,7 @@ export default {
 .list-item {
   margin: 15px;
 }
+
 .search-wrapper {
   margin-bottom: 20px;
   border-color: lightgrey;
