@@ -10,6 +10,10 @@ import offers from './pages/offers'
 import history from './pages/history'
 import createOffer from './pages/createOffer';
 import editOffer from './pages/editOffer';
+import registerHelper from './pages/registerHelper';
+import registerHelperSuccess from './pages/registerHelperSuccess';
+import registerAgrarian from './pages/registerAgrarian';
+import registerAgrarianSuccess from './pages/registerAgrarianSuccess';
 
 //plugins
 import firebase from 'firebase/app'
@@ -31,6 +35,10 @@ const routes = [
   {path: "/createOffer", component: createOffer},
   {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer},
   {path: "/history", component: history},
+  {path: "/registerHelper", component: registerHelper},
+  {path: "/registerHelperSuccess", component: registerHelperSuccess},
+  {path: "/registerAgrarian", component: registerAgrarian},
+  {path: "/registerAgrarianSuccess", component: registerAgrarianSuccess},
 ]
 
 const router = new VueRouter({

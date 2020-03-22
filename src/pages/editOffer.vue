@@ -13,7 +13,10 @@
     <v-card>
         <h3> Wo findet die Ernte/Saat statt? </h3>
         <v-col cols="5" sm="5">
-            <v-text-field v-model="place" type="number" label="Postleitzahl" single-line solo></v-text-field>
+            <v-text-field v-model="street" label="Straße" />
+            <v-text-field v-model="houseNumber" label="Hausnummer" />
+            <v-text-field v-model="postCode" type="number" label="Postleitzahl" />
+            <v-text-field v-model="city" label="Stadt" />
         </v-col>
     </v-card>
 
@@ -67,13 +70,6 @@
         </v-col>
     </v-card>
 
-    <v-card>
-        <h3> Teile deinen Helfern mit, wo sie hinkommen sollen. </h3>
-        <v-col cols="5" sm="5">
-            <v-textarea v-model="address" solo label="Adresse"></v-textarea>
-        </v-col>
-    </v-card>
-
     <v-btn rounded color="primary" dark @click="updateOffer()">
         Absenden
     </v-btn>
@@ -87,7 +83,10 @@ import 'firebase/firestore';
 export default {
     name: 'createOffer',
     data: () => ({
-        address: "",
+        street: "",
+        houseNumber: "",
+        postCode: "",
+        city: "",
         radioErnteSaat: "",
         title: "",
         maxHelpers: "",
@@ -106,26 +105,30 @@ export default {
         }
     },
     mounted() {
-        // firebase.auth().onAuthStateChanged((user) => {
-        //     if (user) {
-        //         let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
 
-        //         docRef.get().then((doc) => {
-        //             if (!doc.exists) {
-        //                 console.log(2);
-        //                 this.$router.push("/login");
-        //                 alert("Du bist kein Landwirt!");
-        //                 return;
-        //             }
-        //         })
-        //     }
-        // });
+                docRef.get().then((doc) => {
+                    if (!doc.exists) {
+                        console.log(2);
+                        this.$router.push("/login");
+                        alert("Du bist kein Landwirt!");
+                        return;
+                    }
+                })
+            }
+        });
         let offerId = this.$route.params.offerId;
         let firestore = firebase.firestore();
         let docRef = firestore.collection("offers").doc(offerId);
         docRef.get().then((doc) => {
-            if(doc.exists){
+            if (doc.exists) {
                 this.address = doc.data().address;
+                this.street = doc.data().address.street;
+                this.postCode = doc.data().address.postCode;
+                this.houseNumber = doc.data().address.number;
+                this.city = doc.data().address.city;
                 this.title = doc.data().title;
                 this.radioErnteSaat = doc.data().workType ? 1 : 0;
                 this.maxHelpers = doc.data().maxHelpers;
@@ -135,8 +138,7 @@ export default {
                 this.salary = doc.data().salary;
                 this.equipment = doc.data().equipment;
                 this.description = doc.data().description;
-            }
-            else {
+            } else {
                 console.log("Error");
             }
         })
@@ -152,14 +154,19 @@ export default {
             let lastDate = datesSorted[1];
             let difference = lastDate.getTime() - firstDate.getTime();
             let duration = difference / 1000 / 60 / 60 / 24;
-            console.log("duration: " + duration);
+            let address = {
+                street: this.street,
+                number: this.houseNumber,
+                postCode: this.postCode,
+                city: this.city
+            };
             let data = {
-                address: this.address,
+                address: address,
                 title: this.title,
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
-                postCode: this.place,
+                postCode: parseInt(this.place),
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
@@ -184,4 +191,3 @@ export default {
     }
 }
 </script>
-
