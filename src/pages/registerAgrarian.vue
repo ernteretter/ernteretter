@@ -93,7 +93,7 @@
                             displayName: this.name
                         }).then(() => {
                             let firestore = firebase.firestore();
-                            let newAgrarian = firestore.collection('agrarians').doc();
+                            let newAgrarian = firestore.collection('agrarians').doc(agrarianData.uid);
                             newAgrarian.set(agrarianData).then(function () {
                                 console.log("agrarian registered successfully!");
                                 router.push('/registerAgrarianSuccess');
