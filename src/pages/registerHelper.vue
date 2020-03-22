@@ -7,7 +7,7 @@
             </v-row>
             <br/><br/>
 
-            <h1 align="center">Erstelle deinen Profil!</h1>
+            <h1 align="center">Erstelle dein Profil!</h1>
             <br/>
             <v-row justify="center">
                 <v-col cols="5" sm="5">
