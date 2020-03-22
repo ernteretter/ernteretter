@@ -48,6 +48,7 @@ export default {
         "%2C" +
         y +
         "%2C" +
+        //radius kann gewaehlt werden vom user
         "10000";
       const response = await fetch(theUrl);
       const myJson = await response.json(); //extract JSON from the http response
