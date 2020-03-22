@@ -1,30 +1,57 @@
 <template>
     <div class="registerAgrarian">
-        <h1>Erstelle Sie Ihr Profil!</h1>
-        <v-col cols="5" sm="5">
-            <v-text-field v-model="name" label="Wie heißen Sie?" single-line solo></v-text-field>
-            <v-text-field v-model="mail" label="Ihre E-Mail Adresse lautet?" single-line solo></v-text-field>
-            <v-text-field
-                    :type="showPassword ? 'text' : 'password'"
-                    label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append="showPassword = !showPassword"
-                    v-model="password"
-                    single-line
-                    solo
-            />
-            <v-text-field v-model="placeName" label="Wie heißt Ihr Hof?" single-line solo></v-text-field>
-        </v-col>
-        <h3>Wo liegt Ihr Hof?</h3>
-        <v-col>
-            <v-text-field v-model="placeStreet" label="Straße" single-line solo></v-text-field>
-            <v-text-field v-model="placeNumber" label="Nummer" single-line solo></v-text-field>
-            <v-text-field v-model="placePostcode" label="PLZ" single-line solo></v-text-field>
-            <v-text-field v-model="placeCity" label="Stadt" single-line solo></v-text-field>
-        </v-col>
+        <v-container fluid>
+            <v-row justify="center">
+                <v-img :src="require('../assets/ernteretter.png')" max-width="400"></v-img>
+            </v-row>
+            <br/><br/>
 
-        <v-btn rounded color="primary" dark @click="registerAgrarian()">
-            Absenden
-        </v-btn>
+            <h1 align="center">Erstellen Sie Ihr Profil!</h1>
+            <br/>
+            <v-row justify="center">
+                <v-col cols="5" sm="5">
+                    <v-text-field v-model="name" label="Wie heißen Sie?" single-line solo></v-text-field>
+                    <v-text-field v-model="mail" label="Ihre E-Mail Adresse lautet?" single-line solo></v-text-field>
+                    <v-text-field
+                            :type="showPassword ? 'text' : 'password'"
+                            label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                            @click:append="showPassword = !showPassword"
+                            v-model="password"
+                            single-line
+                            solo
+                    />
+                    <v-text-field v-model="placeName" label="Wie heißt Ihr Hof?" single-line solo></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row justify="center">
+                <div>
+                    <h3>Wo liegt Ihr Hof?</h3>
+                </div>
+            </v-row>
+
+            <v-row justify="center">
+                <v-col cols="1" sm="4">
+                    <v-text-field v-model="placeStreet" label="Straße" single-line solo></v-text-field>
+                </v-col>
+                <v-col cols="5" sm="1">
+                    <v-text-field v-model="placeNumber" label="Nummer" single-line solo></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row justify="center" class="mt-n8">
+                <v-col cols="5" sm="2">
+                    <v-text-field v-model="placePostcode" label="PLZ" single-line solo></v-text-field>
+                </v-col>
+                <v-col cols="5" sm="3">
+                    <v-text-field v-model="placeCity" label="Stadt" single-line solo></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row justify="center">
+                <v-btn rounded color="warning" dark @click="registerAgrarian()">
+                    Registrieren
+                </v-btn>
+            </v-row>
+        </v-container>
+
     </div>
 </template>
 
