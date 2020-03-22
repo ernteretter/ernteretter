@@ -50,7 +50,7 @@
       <v-list-item three-line>
         <v-list-item-content >
           <v-list-item-title class="headline mb-1">{{offer.title}}</v-list-item-title>
-          <v-list-item-subtitle>{{offer.description | snippet}}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{offer.description}}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-avatar tile size="80" color="white">
           <v-img :src="require('../../Ernteretter-Logo_03.png')" contain width="5" height="50" />
@@ -79,7 +79,7 @@ export default {
     offers: [],
     search: "",
     zipsearch: "",
-    number_of_plz_nearby: 300,
+    number_of_plz_nearby: 100,
     searchradius: "",
     farm_plz_arr: [],
     offercount: 0
