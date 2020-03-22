@@ -139,10 +139,11 @@
             </v-row>
 
             <v-row justify="center">
-                <v-btn rounded color="primary" dark @click="registerHelper()">
+                <v-btn class="rounded-button-left" x-large outlined color="primary" @click="registerHelper()">
                     Registrieren
                 </v-btn>
             </v-row>
+            <br/>
         </v-container>
     </div>
 </template>
@@ -213,7 +214,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

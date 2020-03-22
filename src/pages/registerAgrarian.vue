@@ -46,7 +46,7 @@
                 </v-col>
             </v-row>
             <v-row justify="center">
-                <v-btn rounded color="primary" dark @click="registerAgrarian()">
+                <v-btn class="rounded-button-left" x-large outlined color="primary" dark @click="registerAgrarian()">
                     Registrieren
                 </v-btn>
             </v-row>
@@ -116,7 +116,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>
