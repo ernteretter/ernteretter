@@ -1,18 +1,28 @@
 <template>
   <div class="offer-details" v-if="offer && agrarian">
     <div class="inner">
-      <div class="page-heading">{{ offer.title }}</div>
-      <div class="page-sub-heading">{{agrarian.name}}</div>
-      <div class="action-section">
-        <div class="accept-cancel">
-          <v-btn class="action-button" id="btn-cancel" v-if="isAccepted" @click="removeMe"
-            >Abmelden</v-btn
-          >
-          <v-btn class="action-button" id="btn-accept" v-else @click="addMe">Anmelden</v-btn>
+      <div class="details-header">
+        <div class="title-section">
+          <div class="page-heading">{{ offer.title }}</div>
+          <div class="page-sub-heading">{{ agrarian.name }}</div>
         </div>
-        <div class="status-chip" v-if="offer.maxHelpers">
-          <b>{{ offer.maxHelpers - helperCount }}</b>
-          Helfer fehlen noch
+        <div class="action-section">
+          <div class="accept-cancel">
+            <v-btn
+              class="action-button rounded-button-left"
+              id="btn-cancel"
+              v-if="isAccepted"
+              @click="removeMe"
+              >Abmelden</v-btn
+            >
+            <v-btn class="action-button rounded-button-left" id="btn-accept" v-else @click="addMe"
+              >Anmelden</v-btn
+            >
+          </div>
+          <div class="status-chip" v-if="offer.maxHelpers">
+            <b>{{ offer.maxHelpers - helperCount }}</b>
+            Helfer fehlen noch
+          </div>
         </div>
       </div>
 
@@ -242,7 +252,7 @@ section {
 }
 .page-heading {
   font-size: 32px;
-  font-weight: 300;
+  font-weight: 400;
 }
 .page-sub-heading {
   font-size: 16px;
@@ -257,7 +267,17 @@ section {
 .contact-card {
   padding: 8px;
 }
+.details-header {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: space-between;
+  border-bottom: 2px solid #ed9a00;
+}
+
 .action-section {
+  margin: 16px 0;
   display: flex;
   align-items: center;
 }
