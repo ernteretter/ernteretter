@@ -27,6 +27,7 @@
                 <!-- </v-col>
           <v-col>-->
                 <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined>login</v-btn>
+                <v-btn color="primary" @click="$router.push('/registerHelper')" v-if="!user" outlined>als Helfer Registrieren</v-btn>
                 <v-btn color="red" @click="logout()" v-if="user" outlined>log out</v-btn>
             </v-col>
         </v-row>
