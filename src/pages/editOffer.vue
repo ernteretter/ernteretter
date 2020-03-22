@@ -1,7 +1,9 @@
 <template>
 <div class="editOffer">
     <v-card max-width="800" class="mx-auto text-center">
-        <v-card-title class="display-1 justify-center">Erstellen sie Ihren Aufruf</v-card-title>
+        <v-container id="header">
+        <v-card-title id="headertitle" class="display-1 justify-center">Updaten sie Ihren Aufruf</v-card-title>
+        </v-container>
         <v-container>
             <v-text-field type="number" v-model="maxHelpers" label="Wie viele Helfer brauchen Sie?" single-line></v-text-field>
         </v-container>
@@ -56,9 +58,10 @@
             <v-textarea v-model="description" outlined label="Beschreibung"></v-textarea>
         </v-container>
 
-        <v-btn rounded color="primary" dark @click="updateOffer()">
-            Aufruf abschicken
-        </v-btn>
+
+         <v-btn class="rounded-button-left" x-large outlined color="primary" @click="createOffer()">
+           Aufruf updaten 
+        </v-btn> 
     </v-card>
 </div>
 </template>
@@ -89,7 +92,9 @@ export default {
     }),
     computed: {
         datesText() {
-            return this.dates.join(" bis ");
+            let niceDates = this.dates.map(a => a.toDate().toLocaleDateString())
+            console.log(niceDates);
+            return niceDates.join(" bis ");
         }
     },
     mounted() {
@@ -180,3 +185,11 @@ export default {
     }
 }
 </script>
+<style>
+#header {
+    background: #ed9a00;
+}
+#headertitle {
+    color: white;
+}
+</style>
