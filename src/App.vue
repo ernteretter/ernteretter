@@ -23,8 +23,15 @@
         </v-container>
     </v-content>
 
-    <v-footer app>
-        <!-- -->
+    <v-footer app padless color="grey">
+        <v-col
+        class="text-center"
+        cols="12"
+      >
+            <v-card-text class="py-2 white--text text-center" >
+                {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+            </v-card-text>
+        </v-col>
     </v-footer>
 </v-app>
 </template>
