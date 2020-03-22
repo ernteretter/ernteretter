@@ -1,32 +1,43 @@
 <template>
   <div class="offer-details" v-if="offer && agrarian">
     <div class="inner">
-      <h1>{{ offer.title }}</h1>
-      <div class="action-section">
-        <div class="accept-reject">
-          <v-btn class="action-button" v-if="isAccepted" @click="removeMe"
-            >Abmelden</v-btn
-          >
-          <v-btn class="action-button" v-else @click="addMe">Anmelden</v-btn>
+      <div class="details-header">
+        <div class="title-section">
+          <div class="page-heading">{{ offer.title }}</div>
+          <div class="page-sub-heading">{{ agrarian.name }}</div>
         </div>
-        <div class="status-chip" v-if="offer.maxHelpers">
-          <b>{{ offer.maxHelpers - helperCount }}</b>
-          Helfer fehlen noch
+        <div class="action-section">
+          <div class="accept-cancel">
+            <v-btn
+              class="action-button rounded-button-left"
+              id="btn-cancel"
+              v-if="isAccepted"
+              @click="removeMe"
+              >Abmelden</v-btn
+            >
+            <v-btn class="action-button rounded-button-left" id="btn-accept" v-else @click="addMe"
+              >Anmelden</v-btn
+            >
+          </div>
+          <div class="status-chip" v-if="offer.maxHelpers">
+            <b>{{ offer.maxHelpers - helperCount }}</b>
+            Helfer fehlen noch
+          </div>
         </div>
       </div>
 
-      <div class="description">
+      <section class="description">
         <div class="description-header section-header">
-          Beschreibung
+          <div class="section-headline">Beschreibung</div>
         </div>
         <div class="description-body section-body">
           {{ offer.description }}
         </div>
-      </div>
+      </section>
 
-      <div class="equipment" v-if="offer.equipment">
+      <section class="equipment" v-if="offer.equipment">
         <div class="equipment-header section-header">
-          Benötigtes Equipment
+          <div class="section-headline">Benötigtes Equipment</div>
         </div>
         <div class="equipment-body section-body">
           {{
@@ -35,35 +46,45 @@
               : offer.equipment
           }}
         </div>
-      </div>
-
-      <div class="section-header">Zeitraum</div>
-      <p v-if="offer.minDuration">
-        <b>Hinweis:</b> Die Mindestdauer der Arbeit beträgt
-        <b>{{ offer.minDuration }} Tage</b>
-      </p>
-      <p v-if="offer.startDate">
-        Ab dem {{ new Date(offer.startDate.seconds * 1000) | formatDate }}
-        <span v-if="offer.endDate">
-          bis zum
-          {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
-        </span>
-      </p>
-      <h2>Kontakt</h2>
-      <div class="contact-box">
-        <div class="address" v-if="offer.address">
-          {{ agrarian.name }}
-          <br />
-          {{ offer.address.street + "\n\n " + offer.address.number }}
-          <br />
-          {{ offer.address.postCode + " " + offer.address.city }}
+      </section>
+      <section>
+        <div class="section-header">
+          <div class="section-headline">Zeitraum</div>
+          <p v-if="offer.minDuration">
+            <b>Hinweis:</b> Mindestdauer
+            <b>{{ offer.minDuration }} Tage</b>
+          </p>
         </div>
-        <div class="email">
-          <a :href="'mailto:' + agrarian.publicEmail">{{
-            agrarian.publicEmail
-          }}</a>
+        <div class="section-body">
+          <p v-if="offer.startDate">
+            <v-icon>mdi-calendar</v-icon
+            >{{ new Date(offer.startDate.seconds * 1000) | formatDate }}
+            <span v-if="offer.endDate">
+              bis
+              {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
+            </span>
+          </p>
         </div>
-      </div>
+      </section>
+      <section>
+        <div class="section-header">
+          <div class="section-headline">Kontakt</div>
+        </div>
+        <div class="section-body">
+          <div class="address" v-if="offer.address">
+            {{ agrarian.name }}
+            <br />
+            {{ offer.address.street + " " + offer.address.number }}
+            <br />
+            {{ offer.address.postCode + " " + offer.address.city }}
+          </div>
+          <div class="email">
+            <a :href="'mailto:' + agrarian.publicEmail">
+              {{ agrarian.publicEmail }}
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -156,7 +177,7 @@ export default {
     addMe() {
       if (!this.uid) {
         alert("Bitte melde Dich erst an");
-        this.$router.push('/login?redirect=/offers/'+this.offer.id);
+        this.$router.push("/login?redirect=/offers/" + this.offer.id);
         return;
       }
       if (this.isAccepted) {
@@ -201,23 +222,43 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+a {
+  margin: 0;
+}
 @media only screen and (min-width: 1000px) {
   .inner {
     max-width: 800px;
     margin: 0 auto;
     box-shadow: 0 0 5px 3px #ccc;
-    padding: 8px;
+    padding: 16px;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
-
-h1 {
-  font-weight: 300;
-  text-align: center;
-  margin-bottom: 16px;
+section {
+  margin-top: 16px;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
 }
-h2 {
+.section-header {
+  min-width: 300px;
+}
+.section-headline {
+  font-size: 24px;
   font-weight: 300;
+}
+.page-heading {
+  font-size: 32px;
+  font-weight: 400;
+}
+.page-sub-heading {
+  font-size: 16px;
+  font-weight: 300;
+  color: #444;
+  margin-bottom: 16px;
 }
 .contact-box {
   display: flex;
@@ -226,19 +267,32 @@ h2 {
 .contact-card {
   padding: 8px;
 }
+.details-header {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: space-between;
+  border-bottom: 2px solid #ed9a00;
+}
+
 .action-section {
+  margin: 16px 0;
   display: flex;
   align-items: center;
 }
 .action-button {
   margin: 0 8px 0 0;
 }
+.action-button#btn-accept {
+  background-color: #ed9a00;
+  color: white;
+}
+.action-button#btn-cancel {
+  background-color: white;
+  border: 1px solid #ed9a00;
+}
 .status-chip b {
   color: red;
-}
-.section-header {
-  font-size: 24px;
-  font-weight: 300;
-  margin: 8px 0;
 }
 </style>

@@ -4,10 +4,12 @@
         <v-card-title class="primary">
             <span class="headline white--text">Termine</span>
             <v-spacer></v-spacer>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
+            <v-text-field v-model="search" append-icon="mdi-magnify" label="Suche" single-line hide-details color="white" dark></v-text-field>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" @click="$router.push('createOffer')">+</v-btn>
+                    <v-btn v-on="on" @click="$router.push('createOffer')">
+                        <v-icon>mdi-plus-circle-outline</v-icon>
+                    </v-btn>
                 </template>
                 <span>neue Anzeige erstellen</span>
             </v-tooltip>
@@ -90,12 +92,12 @@ export default {
                 {
                     text: 'Datum',
                     align: 'left',
-                    value: 'startDates'
+                    value: 'startDate'
                 },
                 {
-                    text: 'Helper',
+                    text: 'fehlende Helfer',
                     align: 'right',
-                    value: 'maxHelpers'
+                    value: 'helpCount'
                 },
                 {
                     text: 'Aktionen',
@@ -108,6 +110,7 @@ export default {
     },
     methods: {
         async fetch() {
+
             var usID = await firebase.auth()
             this.user = usID.currentUser
             usID = usID.currentUser.uid
@@ -128,7 +131,7 @@ export default {
                     })
                 }
             })
-            firebase.firestore().collection('offers').where('agrarianId', '==', usID).get().then(async (querySnapshot) => {
+            await firebase.firestore().collection('offers').where('agrarianId', '==', usID).get().then(async (querySnapshot) => {
                 querySnapshot.forEach(async (doc) => {
                     this.mixedOffers.push({
                         ...doc.data(),
@@ -136,6 +139,18 @@ export default {
                     })
                 })
             })
+            console.log("hello1");
+            for (let i in this.mixedOffers) {
+                console.log("hello3");
+                await firebase.firestore().collection("acceptedOffers").where("offerId", "==", this.mixedOffers[i]).get().then(snapshot => {
+                    console.log(snapshot.size);
+                    this.mixedOffers[i].helpCount = this.mixedOffers[i].maxHelpers - snapshot.size;
+                    this.mixedOffers[i].startDate = this.mixedOffers[i].startDate.toDate().toLocaleDateString()
+                })
+                
+                
+            }
+            console.log("hello2");
 
             /*
             this.mixedOffers = this.mixedOffers.sort((a, b) => {
@@ -144,7 +159,7 @@ export default {
 
         },
         showItem(item) {
-            this.$router.push("offer/" + item.id)
+            this.$router.push("offers/" + item.id)
         },
         editItem(item) {
             this.$router.push("editOffer/" + item.id)
