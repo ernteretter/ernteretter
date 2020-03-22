@@ -106,7 +106,7 @@ export default {
         }
     },
     watch: {
-        radioErnteSaat: (val, newVal) => {
+        radioErnteSaat: (val) => {
             console.log(
                 val == "0" ? true : false);
         }
