@@ -17,6 +17,7 @@ import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify'
 import createOffer from './pages/createOffer';
 import registerHelper from './pages/registerHelper';
+import registerHelperSuccess from './pages/registerHelperSuccess';
 
 
 //enable plugins
@@ -31,6 +32,7 @@ const routes = [
   {path: "/createOffer", component: createOffer},
   {path: "/history", component: history},
   {path: "/registerHelper", component: registerHelper},
+  {path: "/registerHelperSuccess", component: registerHelperSuccess},
 
 ]
 

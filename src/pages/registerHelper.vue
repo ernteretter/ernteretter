@@ -38,7 +38,15 @@
         <v-card>
             <h3> Für welche Arten der Ernte interessierst du dich? </h3>
             <v-col cols="5" sm="5">
-                <v-checkbox v-for="item in harvestTypesOptions" v-bind:key="item" v-model="harvestTypes" :label="item" :value="item"></v-checkbox>
+                <v-checkbox
+                        class="mt-1"
+                        v-for="item in harvestTypesOptions"
+                        v-bind:key="item"
+                        v-model="harvestTypes"
+                        :label="item"
+                        :value="item"
+                >
+                </v-checkbox>
             </v-col>
         </v-card>
 
@@ -72,38 +80,43 @@
 
         <v-card>
             <h3> Wie lange möchtest du helfen? </h3>
-            <v-col cols="5" sm="5">
+            <v-row>
+            <v-col md="1">
                 <v-text-field
+                        class="ml-12"
                         label="von"
                         v-model="durationMin"
                         type="number"
-                        style="width: 40px"
+                        style="width: 30px"
                 >
                 </v-text-field>
-
+            </v-col>
+            <v-col md="1">
                 <v-select
                         d-inline-block
                         v-model="durationMinType"
                         :items="durationTypeOptions"
-                        dense
                         style="width: 100px"
                 ></v-select>
             </v-col>
-            <v-col cols="5" sm="5">
+            <v-col md="1">
                 <v-text-field
+                        class="ml-12"
                         label="bis"
                         v-model="durationMax"
                         type="number"
-                        style="width: 40px"
+                        style="width: 30px"
                 >
                 </v-text-field>
+            </v-col>
+            <v-col md="1">
                 <v-select
                         v-model="durationMinType"
                         :items="durationTypeOptions"
-                        dense
                         style="width: 100px"
                 ></v-select>
             </v-col>
+            </v-row>
         </v-card>
 
         <v-card>
@@ -161,7 +174,8 @@
                         let firestore = firebase.firestore();
                         let newHelper = firestore.collection('helpers').doc();
                         newHelper.set(helperData).then(function () {
-                            console.log("Helper registered successfully!")
+                            console.log("Helper registered successfully!");
+                            this.$router.push('/registerHelperSuccess');
                         }).catch(function (error) {
                             console.error("Error registering Helper: ", error);
                         });
