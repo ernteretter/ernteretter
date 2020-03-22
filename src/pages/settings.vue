@@ -10,7 +10,7 @@
                 <v-row class="mx-auto">
                     <v-btn color="success" @click="overlay=false">abbrechen</v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn :disabled="activeButton" color="red">entgültig Löschen</v-btn>
+                    <v-btn :disabled="activeButton" color="red" @click="finalDeletion">entgültig Löschen</v-btn>
                 </v-row>
             </v-container>
         </v-card>
@@ -24,13 +24,22 @@
             <v-icon left>mdi-lock</v-icon>
             Präferenzen
         </v-tab>
-
         <v-tab-item>
             <v-card flat>
                 <v-card-text>
                     <v-form ref="form" v-model="valid">
                         <v-text-field v-model="user.displayName" label="Name"></v-text-field>
                         <v-text-field v-model="user.email" label="Mail"></v-text-field>
+                        <v-row>
+                            <v-col>
+                                <v-card-text>du bist ein:</v-card-text>
+                            </v-col>
+                            <v-spacer></v-spacer>
+                            <v-col>
+                                <v-card-text v-if="isAgrarian">Landwirt</v-card-text>
+                                <v-card-text v-if="!isAgrarian">Helfer</v-card-text>
+                            </v-col>
+                        </v-row>
                     </v-form>
                     <v-container>
                         <v-row>
@@ -46,25 +55,11 @@
         <v-tab-item>
             <v-card flat>
                 <v-card-text>
-                    <p>
-                        Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Nunc sed turpis.
-                    </p>
-
-                    <p>
-                        Suspendisse feugiat. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In hac habitasse platea dictumst. Fusce ac felis sit amet ligula pharetra condimentum.
-                    </p>
-
-                    <p>
-                        Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Nam commodo suscipit quam. In consectetuer turpis ut velit. Sed cursus turpis vitae tortor. Aliquam eu nunc.
-                    </p>
-
-                    <p>
-                        Etiam ut purus mattis mauris sodales aliquam. Ut varius tincidunt libero. Aenean viverra rhoncus pede. Duis leo. Fusce fermentum odio nec arcu.
-                    </p>
-
-                    <p class="mb-0">
-                        Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. Fusce commodo aliquam arcu. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi.
-                    </p>
+                    <v-text-field label="Wie lange willst du helfen?" preferences.durationMin></v-text-field>
+                    <v-row>
+                        <v-slider v-model="searchRange" class="align-center" :max="130" :min="1" hide-details/>
+                        <v-text-field v-model="searchRange"></v-text-field>
+                    </v-row>
                 </v-card-text>
             </v-card>
         </v-tab-item>
@@ -87,6 +82,7 @@ export default {
     },
     data() {
         return {
+            searchRange: 0,
             activeButton: true,
             tabs: null,
             text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
@@ -94,6 +90,7 @@ export default {
             overlay: false,
             rightName: false,
             user: [],
+            preferences: [],
             isAgrarian: false,
             valid: true,
         }
@@ -129,6 +126,12 @@ export default {
                 displayName: this.user.displayName,
             })
         },
+        async finalDeletion() {
+            this.overlay = false
+            this.user.delete().then(() => {
+                this.$router.push("/")
+            })
+        }
     },
 }
 </script>

@@ -51,10 +51,8 @@ export default {
     methods: {
         async fetch() {
             var usID = await firebase.auth();
-            console.log(usID);
             usID = usID.currentUser.uid
-            console.log("user: " + usID);
-            firebase.firestore().collection('AcceptedOffers').where('helperId', '==', usID).get().then(async (querySnapshot) => {
+            firebase.firestore().collection('acceptedOffers').where('helperId', '==', usID).get().then(async (querySnapshot) => {
                 querySnapshot.forEach(async (doc) => {
                     var data = doc.data()
                     this.offerIDs.push(data.offerId)
