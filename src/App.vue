@@ -66,10 +66,10 @@ export default {
 
 <style>
     .rounded-button-right {
-        border-radius: 0px 40px 0px 40px;
+        border-radius: 0px 40px 0px 40px !important;
     }
 
     .rounded-button-left {
-        border-radius: 40px 0px 40px 0px;
+        border-radius: 40px 0px 40px 0px !important;
     }
 </style>
