@@ -3,11 +3,12 @@ import App from './App.vue'
 
 //sites
 import landingPage from './pages/landingPage'
-
 import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
 import offers from './pages/offers'
 import history from './pages/history'
+
+import settings from './pages/settings'
 import createOffer from './pages/createOffer';
 import editOffer from './pages/editOffer';
 import registerHelper from './pages/registerHelper';
@@ -35,6 +36,7 @@ const routes = [
   {path: "/createOffer", component: createOffer},
   {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer},
   {path: "/history", component: history},
+  {path: "/settings", component: settings},
   {path: "/registerHelper", component: registerHelper},
   {path: "/registerHelperSuccess", component: registerHelperSuccess},
   {path: "/registerAgrarian", component: registerAgrarian},
