@@ -1,0 +1,69 @@
+[debug] [2020-03-22T22:42:56.189Z] ----------------------------------------------------------------------
+[debug] [2020-03-22T22:42:56.191Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Johnny\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2020-03-22T22:42:56.191Z] CLI Version:   7.15.1
+[debug] [2020-03-22T22:42:56.191Z] Platform:      win32
+[debug] [2020-03-22T22:42:56.191Z] Node Version:  v12.13.1
+[debug] [2020-03-22T22:42:56.192Z] Time:          Sun Mar 22 2020 23:42:56 GMT+0100 (GMT+01:00)
+[debug] [2020-03-22T22:42:56.192Z] ----------------------------------------------------------------------
+[debug] [2020-03-22T22:42:56.192Z] 
+[debug] [2020-03-22T22:42:56.198Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-03-22T22:42:56.198Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\Johnny\Documents\ernteretter
+
+Before we get started, keep in mind:
+
+  * You are initializing in an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  .firebaserc already has a default project, using ernteretter.
+[debug] [2020-03-22T22:43:02.795Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/ernteretter  
+ 
+[debug] [2020-03-22T22:43:03.104Z] <<< HTTP RESPONSE 200
+[info] 
+=== Firestore Setup
+[debug] [2020-03-22T22:43:03.107Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-03-22T22:43:03.107Z] > authorizing via signed-in user
+[debug] [2020-03-22T22:43:03.107Z] [iam] checking project ernteretter for permissions ["firebase.projects.get"]
+[debug] [2020-03-22T22:43:03.107Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/ernteretter:testIamPermissions  
+
+[debug] [2020-03-22T22:43:03.905Z] <<< HTTP RESPONSE 200
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2020-03-22T22:43:12.749Z] >>> HTTP REQUEST GET https://firebaserules.googleapis.com/v1/projects/ernteretter/releases?pageSize=10&pageToken=  
+ 
+[debug] [2020-03-22T22:43:13.597Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-22T22:43:13.598Z] Found ruleset: projects/ernteretter/rulesets/50ce8353-6ceb-48d4-9f8f-d83873e5670f
+[debug] [2020-03-22T22:43:13.598Z] >>> HTTP REQUEST GET https://firebaserules.googleapis.com/v1/projects/ernteretter/rulesets/50ce8353-6ceb-48d4-9f8f-d83873e5670f  
+ 
+[debug] [2020-03-22T22:43:14.405Z] <<< HTTP RESPONSE 200
+[info] 
+[info] Firestore indexes allow you to perform complex queries while
+[info] maintaining performance that scales with the size of the result
+[info] set. You can keep index definitions in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
