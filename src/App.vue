@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app>
+    <v-app-bar app >
       <v-row align="center" justify="center">
         <v-col>
           <v-icon>mdi-barley</v-icon>
@@ -9,7 +9,7 @@
           <router-link to="/history">Termine</router-link>
           <router-link to="/settings">Einstellungen</router-link>
         </v-col>
-        <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" />
+        <v-img id="bild" :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" style="{cursor: pointer}"/>
         <v-col>
           <!-- </v-col>
           <v-col>-->
@@ -84,6 +84,10 @@ export default {
 </script>
 
 <style>
+#bild {
+  cursor: pointer;
+}
+
 .rounded-button-right {
   border-radius: 0px 40px 0px 40px !important;
 }
