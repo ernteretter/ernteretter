@@ -188,6 +188,28 @@ export default {
         this.offers = [];
       }
     }
+  },
+  created(){
+    let firestore = firebase.firestore();
+        firestore
+          .collection("offers")
+          //.where("title", "==", this.search)
+          .get()
+          .then(snapshot => {
+            if (!snapshot.empty) {
+              this.offers = this.offers.concat(
+                snapshot.docs.map(doc => ({
+                  ...doc.data(),
+                  id: doc.id
+                }))
+              );
+              this.offers = this.offers.filter(offer => {
+                return offer.title
+                  .toLowerCase()
+                  .includes(this.search.toLowerCase());
+              });
+            }
+          });
   }
 };
 </script>
