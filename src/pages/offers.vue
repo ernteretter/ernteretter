@@ -33,7 +33,9 @@ import "firebase/auth";
 export default {
   name: "OfferList",
   data: () => ({
-    offers: false,
+    offers: [],
+    number_of_plz_nearby: 20,
+    searchradius: 10000,
     farm_plz_arr: []
   }),
 
@@ -44,13 +46,14 @@ export default {
     //creates array of nearby farms
     async create_farm_plz_arr(x, y) {
       var theUrl =
-        "https://public.opendatasoft.com/api/records/1.0/search//?dataset=postleitzahlen-deutschland&geofilter.distance=" +
+        "https://public.opendatasoft.com/api/records/1.0/search//?dataset=postleitzahlen-deutschland&rows=" + this.number_of_plz_nearby + "&geofilter.distance=" +
         x +
         "%2C" +
         y +
         "%2C" +
         //radius kann gewaehlt werden vom user
-        "10000";
+        this.searchradius;
+        console.log(theUrl);
       const response = await fetch(theUrl);
       const myJson = await response.json(); //extract JSON from the http response
       //console.log(myJson.records);
@@ -82,22 +85,26 @@ export default {
     console.log("x" + g_Data[0]);
     console.log("y" + g_Data[1]);
     await this.create_farm_plz_arr(g_Data[0], g_Data[1]);
-    console.log("this farms array" + this.farm_plz_arr);
     let firestore = firebase.firestore();
-    firestore
+    for(let i = 0; i <= this.farm_plz_arr.length/10; i++){
+      console.log("Length" + this.farm_plz_arr.length/10);
+      console.log("Splice" + this.farm_plz_arr.splice(i*10, i*10 + 10));
+      firestore
       .collection("offers")
       //postcodes muessen in farm_plz_arr sein um angezeigt zu werden
-      .where("address.postCode", "in" ,this.farm_plz_arr)
+      .where("address.postCode", "in" ,this.farm_plz_arr.splice(i*10, i*10 + 10))
       .get()
       .then(snapshot => {
+        console.log("Foo");
         if (!snapshot.empty) {
-          this.offers = snapshot.docs.map(doc => ({
+          this.offers.push(snapshot.docs.map(doc => ({
             ...doc.data(),
             id: doc.id
-          }));
-          console.log("Offers" + this.offers);
+          })));
+          console.log(this.offers);
         }
       });
+  console.log("For loop it");}
   }
 };
 </script>
