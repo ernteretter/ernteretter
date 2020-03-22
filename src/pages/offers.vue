@@ -51,6 +51,7 @@
           <v-list-item-subtitle>{{offer.description | snippet}}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-avatar tile size="80" color="grey">
+          <v-img :src="require('../../Ernteretter-Logo_03.png')" contain width="5" height="50" />
         </v-list-item-avatar>
       </v-list-item>
 
