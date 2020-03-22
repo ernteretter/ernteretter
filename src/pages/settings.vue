@@ -3,15 +3,14 @@
     <v-toolbar flat color="primary" dark>
         <v-toolbar-title>Einstellungen</v-toolbar-title>
     </v-toolbar>
-    <v-overlay v-if='overlay' light>
-        <v-card light="true">
-            <v-card-text light="true">Du bist dabei deinen Account zu löschen. Wenn du dir sicher bist, tippe unten deinen Benutzername zum Bestätigen ein.</v-card-text>
-            <v-container light="true">
-                <v-text-field v-model="writtenName"></v-text-field>
+    <v-overlay v-if='overlay'>
+        <v-card>
+            <v-card-text>Bist du sicher, dass du diesen Account entgültig löschen willst?.</v-card-text>
+            <v-container>
                 <v-row class="mx-auto">
                     <v-btn color="success" @click="overlay=false">abbrechen</v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn color="red" disabled="rightName">entgültig Löschen</v-btn>
+                    <v-btn :disabled="activeButton" color="red">entgültig Löschen</v-btn>
                 </v-row>
             </v-container>
         </v-card>
@@ -29,16 +28,15 @@
         <v-tab-item>
             <v-card flat>
                 <v-card-text>
-                    <v-from>
+                    <v-form ref="form" v-model="valid">
                         <v-text-field v-model="user.displayName" label="Name"></v-text-field>
                         <v-text-field v-model="user.email" label="Mail"></v-text-field>
-                        <v-text-field v-model="user.phoneNumber" label="Telefonnummer"></v-text-field>
-                    </v-from>
+                    </v-form>
                     <v-container>
                         <v-row>
                             <v-btn color="red" @click="deleteAccount()">Account löschen</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="success">Fertig</v-btn>
+                            <v-btn color="success" @click="updateAccount">Fertig</v-btn>
                         </v-row>
                     </v-container>
                 </v-card-text>
@@ -79,6 +77,7 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 import "firebase/auth";
 export default {
+    name: 'settings',
     async mounted() {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
@@ -88,24 +87,27 @@ export default {
     },
     data() {
         return {
+            activeButton: true,
             tabs: null,
             text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
             accountData: [],
             overlay: false,
             rightName: false,
-            writtenName: "",
             user: [],
             isAgrarian: false,
+            valid: true,
         }
     },
     methods: {
         deleteAccount() {
             this.overlay = true;
+            setTimeout(() => (this.activeButton = false), 3000);
+            this.activeButton = true;
         },
         async fetch() {
             this.user = await firebase.auth().currentUser
-            console.log(this.user);
-            
+            console.log(this.user)
+
             var usID = this.user.uid
             await firebase.firestore().collection('helpers').doc(usID).get().then(async (doc) => {
                 if (doc.exists) {
@@ -120,15 +122,14 @@ export default {
                 }
 
             })
-        }
+        },
+        async updateAccount() {
+            this.user.updateEmail(this.user.email).then((doc) => console.log(doc)).catch((err) => console.log(err))
+            this.user.updateProfile({
+                displayName: this.user.displayName,
+            })
+        },
     },
-    watch: {
-        writtenName: () => {
-            if (this.writtenName == this.user.displayName) {
-                this.rightName = true;
-            }
-        }
-    }
 }
 </script>
 
