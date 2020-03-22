@@ -70,6 +70,7 @@ import 'firebase/firestore';
 export default {
     name: 'createOffer',
     data: () => ({
+        menu2: false,
         street: "",
         houseNumber: "",
         postCode: "",
@@ -79,18 +80,19 @@ export default {
         maxHelpers: "",
         minDuration: "",
         harvestType: "",
+        place: "",
         salary: "",
         description: "",
         equipment: "",
         dates: [],
-        items: ['Aepfel', 'Birnen', 'JOhnnyStinkt']
+        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren']
     }),
     computed: {
         datesText() {
             return this.dates.join(" bis ");
         }
     },
-    mounted: function () {
+    mounted() {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
@@ -105,10 +107,32 @@ export default {
                 })
             }
         });
-
+        let offerId = this.$route.params.offerId;
+        let firestore = firebase.firestore();
+        let docRef = firestore.collection("offers").doc(offerId);
+        docRef.get().then((doc) => {
+            if (doc.exists) {
+                this.address = doc.data().address;
+                this.street = doc.data().address.street;
+                this.postCode = doc.data().address.postCode;
+                this.houseNumber = doc.data().address.number;
+                this.city = doc.data().address.city;
+                this.title = doc.data().title;
+                this.radioErnteSaat = doc.data().workType ? 1 : 0;
+                this.maxHelpers = doc.data().maxHelpers;
+                this.place = doc.data().postCode;
+                this.harvestType = doc.data().harvestType;
+                this.dates = [doc.data().startDate.toDate().toISOString(), doc.data().endDate.toDate().toISOString()];
+                this.salary = doc.data().salary;
+                this.equipment = doc.data().equipment;
+                this.description = doc.data().description;
+            } else {
+                console.log("Error");
+            }
+        })
     },
     methods: {
-        createOffer() {
+        updateOffer() {
             let userID = firebase.auth().currentUser.uid;
             let datesAsDates = this.dates.map((a) => new Date(a));
             let datesSorted = datesAsDates.sort((a, b) => {
@@ -118,13 +142,19 @@ export default {
             let lastDate = datesSorted[1];
             let difference = lastDate.getTime() - firstDate.getTime();
             let duration = difference / 1000 / 60 / 60 / 24;
-            let address = {street: this.street, number: this.houseNumber, postCode: this.postCode, city: this.city};
+            let address = {
+                street: this.street,
+                number: this.houseNumber,
+                postCode: this.postCode,
+                city: this.city
+            };
             let data = {
-                title: this.title,
                 address: address,
+                title: this.title,
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
+                postCode: parseInt(this.place),
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
@@ -135,10 +165,11 @@ export default {
                 workType: this.radioErnteSaat == "0" ? true : false
             }
 
+            let offerId = this.$route.params.offerId;
             let firestore = firebase.firestore();
-            var newOffer = firestore.collection('offers').doc();
-            newOffer.set(data).then(() => {
-                    console.log("Document written successfully!")
+            var newOffer = firestore.collection('offers').doc(offerId);
+            newOffer.update(data).then(() => {
+                    console.log("Document updated successfully!")
                     this.$router.push("/history");
                 })
                 .catch(function (error) {
@@ -149,6 +180,3 @@ export default {
     }
 }
 </script>
-
-<style>
-</style>
