@@ -1,5 +1,6 @@
 <template>
   <div>
+    Es sind {{offercount}} Anzeige(n) online.
     <v-card
       class="mx-auto list-item"
       max-width="auto"
@@ -13,8 +14,8 @@
           <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
         </v-list-item-content>
 
-        <v-list-item-avatar tile size="80">
-          <img src="profilBildbauer.png" />
+        <v-list-item-avatar size="100" color="grey">
+          <img src="profilbildBauer.png" alt="Profilbild Bauer" size="100" />
         </v-list-item-avatar>
       </v-list-item>
 
@@ -36,7 +37,9 @@ export default {
     offers: [],
     number_of_plz_nearby: 20,
     searchradius: 10000,
-    farm_plz_arr: []
+    farm_plz_arr: [],
+    offercount: 0
+
   }),
 
   methods: {

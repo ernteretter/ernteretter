@@ -1,5 +1,5 @@
 <template>
-<div class="createOffer">
+<div class="editOffer">
     <h1>Erstelle deinen Aufruf!</h1>
     <v-card>
         <h3>
@@ -13,20 +13,21 @@
     <v-card>
         <h3> Wo findet die Ernte/Saat statt? </h3>
         <v-col cols="5" sm="5">
-            <v-text-field v-model="street" label="Straße"/>
-            <v-text-field v-model="houseNumber" label="Hausnummer"/>
+            <v-text-field v-model="street" label="Straße" />
+            <v-text-field v-model="houseNumber" label="Hausnummer" />
             <v-text-field v-model="postCode" type="number" label="Postleitzahl" />
-            <v-text-field v-model="city" label="Stadt"/>
+            <v-text-field v-model="city" label="Stadt" />
         </v-col>
     </v-card>
 
-    <v-card
-        class="d-flex">
+    <v-card>
         <h3> Wobei brauchst du Hilfe? </h3>
-            <v-radio-group class="d-flex" v-model="radioErnteSaat">
+        <v-row>
+            <v-radio-group v-model="radioErnteSaat">
                 <v-radio :label="'Ernte'" />
                 <v-radio :label="'Saat'" />
             </v-radio-group>
+        </v-row>
     </v-card>
 
     <v-card>
@@ -69,7 +70,7 @@
         </v-col>
     </v-card>
 
-    <v-btn class="absendenButton" rounded color="primary" dark @click="createOffer()">
+    <v-btn rounded color="primary" dark @click="updateOffer()">
         Absenden
     </v-btn>
 </div>
@@ -91,6 +92,7 @@ export default {
         maxHelpers: "",
         minDuration: "",
         harvestType: "",
+        place: "",
         salary: "",
         description: "",
         equipment: "",
@@ -102,14 +104,7 @@ export default {
             return this.dates.join(" bis ");
         }
     },
-<<<<<<< HEAD
-    watch: {
-        radioErnteSaat: (val) => {
-            console.log(
-                val == "0" ? true : false);
-        }
-=======
-    mounted: function () {
+    mounted() {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
@@ -124,11 +119,32 @@ export default {
                 })
             }
         });
-
->>>>>>> master
+        let offerId = this.$route.params.offerId;
+        let firestore = firebase.firestore();
+        let docRef = firestore.collection("offers").doc(offerId);
+        docRef.get().then((doc) => {
+            if (doc.exists) {
+                this.address = doc.data().address;
+                this.street = doc.data().address.street;
+                this.postCode = doc.data().address.postCode;
+                this.houseNumber = doc.data().address.number;
+                this.city = doc.data().address.city;
+                this.title = doc.data().title;
+                this.radioErnteSaat = doc.data().workType ? 1 : 0;
+                this.maxHelpers = doc.data().maxHelpers;
+                this.place = doc.data().postCode;
+                this.harvestType = doc.data().harvestType;
+                this.dates = [doc.data().startDate.toDate().toISOString(), doc.data().endDate.toDate().toISOString()];
+                this.salary = doc.data().salary;
+                this.equipment = doc.data().equipment;
+                this.description = doc.data().description;
+            } else {
+                console.log("Error");
+            }
+        })
     },
     methods: {
-        createOffer() {
+        updateOffer() {
             let userID = firebase.auth().currentUser.uid;
             let datesAsDates = this.dates.map((a) => new Date(a));
             let datesSorted = datesAsDates.sort((a, b) => {
@@ -138,13 +154,19 @@ export default {
             let lastDate = datesSorted[1];
             let difference = lastDate.getTime() - firstDate.getTime();
             let duration = difference / 1000 / 60 / 60 / 24;
-            let address = {street: this.street, number: this.houseNumber, postCode: this.postCode, city: this.city};
+            let address = {
+                street: this.street,
+                number: this.houseNumber,
+                postCode: this.postCode,
+                city: this.city
+            };
             let data = {
-                title: this.title,
                 address: address,
+                title: this.title,
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
+                postCode: parseInt(this.place),
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
@@ -155,11 +177,11 @@ export default {
                 workType: this.radioErnteSaat == "0" ? true : false
             }
 
+            let offerId = this.$route.params.offerId;
             let firestore = firebase.firestore();
-            var newOffer = firestore.collection('offers').doc();
-            newOffer.set(data).then(function () {
-                    console.log("Document written successfully!")
-
+            var newOffer = firestore.collection('offers').doc(offerId);
+            newOffer.update(data).then(function () {
+                    console.log("Document updated successfully!")
                 })
                 .catch(function (error) {
                     console.error("Error writing Document: ", error);
@@ -169,6 +191,3 @@ export default {
     }
 }
 </script>
-
-<style>
-</style>
