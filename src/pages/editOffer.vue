@@ -159,7 +159,7 @@ export default {
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
-                postCode: this.place,
+                postCode: parseInt(this.place),
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
