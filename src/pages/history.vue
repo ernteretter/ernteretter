@@ -14,7 +14,7 @@
         </v-card-title>
         <v-spacer></v-spacer>
         <v-container>
-            <v-data-table :headers="headers" :items="mixedOffers" item-key="name" :loading="loading" loading-text="Lädt...Bitte warten" :server-items-length="mixedOffers.length" class="elevation-1" :search="search">
+            <v-data-table :headers="headers" :items="mixedOffers" item-key="id" :loading="loading" loading-text="Lädt...Bitte warten" :server-items-length="mixedOffers.length" class="elevation-1" :search="search">
                 <template v-slot:item.action="{item}">
                     <v-icon small class="mr-2" @click="editItem(item)" v-if="item.agrarianId == user.uid">mdi-pencil-outline </v-icon>
                     <v-icon small class="mr-2" @click="deleteItem(item)" v-if="item.agrarianId == user.uid">mdi-delete</v-icon>
@@ -170,20 +170,6 @@ export default {
                 this.deleteSnackFail = false
 
             }
-        },
-        showItem(item) {
-            //TODO
-            const index = this.bills.indexOf(item)
-            console.log('zeige ' + index);
-        },
-        editItem(item) {
-            //TODO
-            console.log('bearbeite ' + item);
-
-        },
-        deleteItem(item) {
-            //TODO
-            console.log('lösche ' + item);
         },
     }
 }
