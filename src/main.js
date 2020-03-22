@@ -8,6 +8,8 @@ import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
 import offers from './pages/offers'
 import history from './pages/history'
+import createOffer from './pages/createOffer';
+import editOffer from './pages/editOffer';
 
 //plugins
 import firebase from 'firebase/app'
@@ -15,7 +17,6 @@ import VueRouter from 'vue-router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify'
-import createOffer from './pages/createOffer';
 
 
 //enable plugins
@@ -28,6 +29,7 @@ const routes = [
   {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
   {path: "/login", component: login},
   {path: "/createOffer", component: createOffer},
+  {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer},
   {path: "/history", component: history},
 ]
 

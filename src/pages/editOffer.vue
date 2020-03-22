@@ -1,5 +1,5 @@
 <template>
-<div class="createOffer">
+<div class="editOffer">
     <h1>Erstelle deinen Aufruf!</h1>
     <v-card>
         <h3>
@@ -74,7 +74,7 @@
         </v-col>
     </v-card>
 
-    <v-btn rounded color="primary" dark @click="createOffer()">
+    <v-btn rounded color="primary" dark @click="updateOffer()">
         Absenden
     </v-btn>
 </div>
@@ -105,25 +105,44 @@ export default {
             return this.dates.join(" bis ");
         }
     },
-    mounted: function () {
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
+    mounted() {
+        // firebase.auth().onAuthStateChanged((user) => {
+        //     if (user) {
+        //         let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
 
-                docRef.get().then((doc) => {
-                    if (!doc.exists) {
-                        console.log(2);
-                        this.$router.push("/login");
-                        alert("Du bist kein Landwirt!");
-                        return;
-                    }
-                })
+        //         docRef.get().then((doc) => {
+        //             if (!doc.exists) {
+        //                 console.log(2);
+        //                 this.$router.push("/login");
+        //                 alert("Du bist kein Landwirt!");
+        //                 return;
+        //             }
+        //         })
+        //     }
+        // });
+        let offerId = this.$route.params.offerId;
+        let firestore = firebase.firestore();
+        let docRef = firestore.collection("offers").doc(offerId);
+        docRef.get().then((doc) => {
+            if(doc.exists){
+                this.address = doc.data().address;
+                this.title = doc.data().title;
+                this.radioErnteSaat = doc.data().workType ? 1 : 0;
+                this.maxHelpers = doc.data().maxHelpers;
+                this.place = doc.data().postCode;
+                this.harvestType = doc.data().harvestType;
+                this.dates = [doc.data().startDate.toDate().toISOString(), doc.data().endDate.toDate().toISOString()];
+                this.salary = doc.data().salary;
+                this.equipment = doc.data().equipment;
+                this.description = doc.data().description;
             }
-        });
-
+            else {
+                console.log("Error");
+            }
+        })
     },
     methods: {
-        createOffer() {
+        updateOffer() {
             let userID = firebase.auth().currentUser.uid;
             let datesAsDates = this.dates.map((a) => new Date(a));
             let datesSorted = datesAsDates.sort((a, b) => {
@@ -151,10 +170,11 @@ export default {
                 workType: this.radioErnteSaat == "0" ? true : false
             }
 
+            let offerId = this.$route.params.offerId;
             let firestore = firebase.firestore();
-            var newOffer = firestore.collection('offers').doc();
-            newOffer.set(data).then(function () {
-                    console.log("Document written successfully!")
+            var newOffer = firestore.collection('offers').doc(offerId);
+            newOffer.update(data).then(function () {
+                    console.log("Document updated successfully!")
                 })
                 .catch(function (error) {
                     console.error("Error writing Document: ", error);
@@ -164,3 +184,4 @@ export default {
     }
 }
 </script>
+
