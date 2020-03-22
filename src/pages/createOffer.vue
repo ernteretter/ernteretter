@@ -1,77 +1,65 @@
 <template>
-<div class="createOffer">
-    <h1>Erstelle deinen Aufruf!</h1>
-    <v-card>
-        <h3>
-            Wie viele Helfer werden benötigt?
-        </h3>
-        <v-col cols="5" sm="5">
-            <v-text-field type="number" v-model="maxHelpers" label="Anzahl" single-line solo></v-text-field>
-        </v-col>
-    </v-card>
+<div class="editOffer">
+    <v-card max-width="800" class="mx-auto text-center">
+        <v-card-title class="display-1 justify-center">Erstellen sie Ihren Aufruf</v-card-title>
+        <v-container>
+            <v-text-field type="number" v-model="maxHelpers" label="Wie viele Helfer brauchen Sie?" single-line></v-text-field>
+        </v-container>
 
-    <v-card>
-        <h3> Wo findet die Ernte/Saat statt? </h3>
-        <v-col cols="5" sm="5">
-            <v-text-field v-model="street" label="Straße"/>
-            <v-text-field v-model="houseNumber" label="Hausnummer"/>
+        <v-card-title class="justify-center"> Wo liegen die Felder auf denen Sie Hilfe benötigen? </v-card-title>
+        <v-container>
+            <v-text-field v-model="street" label="Straße" />
+            <v-text-field v-model="houseNumber" label="Hausnummer" />
             <v-text-field v-model="postCode" type="number" label="Postleitzahl" />
-            <v-text-field v-model="city" label="Stadt"/>
-        </v-col>
-    </v-card>
+            <v-text-field v-model="city" label="Stadt" />
+        </v-container>
 
-    <v-card
-        class="d-flex">
-        <h3> Wobei brauchst du Hilfe? </h3>
-            <v-radio-group class="d-flex" v-model="radioErnteSaat">
-                <v-radio :label="'Ernte'" />
-                <v-radio :label="'Saat'" />
+        <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
+        <v-row justify="center">
+            <v-radio-group v-model="radioErnteSaat" row class="justify-center align-center">
+                <v-radio label="Ernte"> </v-radio>
+                <v-radio label="Aussaat"> </v-radio>
             </v-radio-group>
-    </v-card>
+        </v-row>
 
-    <v-card>
-        <h3> Was soll geerntet/gesäht werden? </h3>
-        <v-col cols="5" sm="5">
-
-            <v-select v-model="harvestType" :items="items" label="Art der Saat/Ernte">
+        <v-container>
+            <v-select v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
             </v-select>
-        </v-col>
+        </v-container>
+
+        <v-card-title> In welchem Zeitraum benötigen Sie Hilfe?
+        </v-card-title>
+
+        <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+            <template v-slot:activator="{ on }">
+                <v-text-field v-model="datesText" label="Bitte wählen sie einen Zeitraum aus" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+            </template>
+            <v-date-picker v-model="dates" @input="menu2 = false" range></v-date-picker>
+        </v-menu>
+
+        <v-container>
+            <!-- <v-row>
+                <v-date-picker v-model="dates" range></v-date-picker>
+                <v-text-field v-model="datesText" label="Zeitraum" prepend-icon="mdi-calendar" disabled></v-text-field>
+            </v-row> -->
+
+            <v-text-field type="number" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)" single-line></v-text-field>
+
+            <v-text-field v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line></v-text-field>
+
+        </v-container>
+
+        <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
+
+        <v-container>
+            <v-text-field v-model="title" label="Titel"></v-text-field>
+            <v-textarea v-model="description" outlined label="Beschreibung"></v-textarea>
+        </v-container>
+
+        <v-btn rounded color="primary" dark @click="updateOffer()">
+            Aufruf abschicken
+        </v-btn>
     </v-card>
-
-    <v-card>
-        <h3> In welchem Zeitraum? </h3>
-        <v-date-picker v-model="dates" range></v-date-picker>
-        <v-text-field v-model="datesText" label="Zeitraum" prepend-icon="mdi-calendar" readonly />
-    </v-card>
-
-    <v-card>
-        <h3> Welche Vergütung bekommen deine Helfer (Euro pro Stunde)? </h3>
-        <v-col cols="5" sm="5">
-            <v-text-field type="number" v-model="salary" label="Vergütung" single-line solo></v-text-field>
-        </v-col>
-
-    </v-card>
-
-    <v-card>
-        <h3> Welche Ausrüstung wird benötigt?</h3>
-        <v-col cols="5" sm="5">
-            <v-text-field v-model="equipment" label="Ausrüstung" single-line solo></v-text-field>
-        </v-col>
-    </v-card>
-
-    <v-card>
-        <h3> Beschreibe die Tätigkeit für deine Helfer.</h3>
-        <v-col cols="5" sm="5">
-            <v-text-field v-model="title" solo label="Titel"></v-text-field>
-        </v-col>
-        <v-col cols="5" sm="5">
-            <v-textarea v-model="description" solo label="Beschreibung"></v-textarea>
-        </v-col>
-    </v-card>
-
-    <v-btn class="absendenButton" rounded color="primary" dark @click="createOffer()">
-        Absenden
-    </v-btn>
 </div>
 </template>
 
@@ -149,9 +137,9 @@ export default {
 
             let firestore = firebase.firestore();
             var newOffer = firestore.collection('offers').doc();
-            newOffer.set(data).then(function () {
+            newOffer.set(data).then(() => {
                     console.log("Document written successfully!")
-
+                    this.$router.push("/history");
                 })
                 .catch(function (error) {
                     console.error("Error writing Document: ", error);
