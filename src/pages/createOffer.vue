@@ -105,45 +105,68 @@ export default {
             return this.dates.join(" bis ");
         }
     },
+    mounted: function () {
+        // console.log(firebase.auth().currentUser);
+        // if (firebase.auth().currentUser == null) {
+        //     this.$router.push("/login");
+        //     alert("Bitte logge dich ein.");
+        //     return;
+        // }
+        // let userID = firebase.auth().currentUser.uid;
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
+
+                docRef.get().then((doc) => {
+                    if (!doc.exists) {
+                        console.log(2);
+                        this.$router.push("/login");
+                        alert("Du bist kein Landwirt!");
+                        return;
+                    }
+                })
+            }
+        });
+
+    },
     methods: {
         createOffer() {
-            if (firebase.auth().currentUser != null) {
-                let userID = firebase.auth().currentUser.uid;
-                let datesAsDates = this.dates.map((a) => new Date(a));
-                let datesSorted = datesAsDates.sort((a, b) => {
-                    return a > b ? 1 : (b > a ? -1 : 0);
-                });
-                let firstDate = datesSorted[0]; 
-                let lastDate = datesSorted[1]; 
-                let data = {
-                    address: this.address,
-                    title: this.title,
-                    agrarianId: userID,
-                    description: this.description,
-                    equipment: this.equipment,
-                    place: this.place,
-                    harvestType: this.harvestType,
-                    helperCount: 0,
-                    maxHelpers: parseInt(this.maxHelpers),
-                    minDuration: 0,
-                    salary: parseInt(this.salary),
-                    startDate: firstDate,
-                    endDate: lastDate,
-                    workType: this.radioErnteSaat == "0" ? true : false
-                }
-
-                let firestore = firebase.firestore();
-                var newOffer = firestore.collection('offers').doc();
-                newOffer.set(data).then(function () {
-                        console.log("Document written successfully!")
-                    })
-                    .catch(function (error) {
-                        console.error("Error writing Document: ", error);
-                        alert("Konnte Datenbank nicht erreichen. Haben sie Internetzugang?");
-                    })
-            } else {
-                alert("Bitte loggen sie sich ein!");
+            let userID = firebase.auth().currentUser.uid;
+            let datesAsDates = this.dates.map((a) => new Date(a));
+            let datesSorted = datesAsDates.sort((a, b) => {
+                return a > b ? 1 : (b > a ? -1 : 0);
+            });
+            let firstDate = datesSorted[0];
+            let lastDate = datesSorted[1];
+            let difference = lastDate.getTime() - firstDate.getTime();
+            let duration = difference / 1000 / 60 / 60 / 24;
+            console.log("duration: " + duration);
+            let data = {
+                address: this.address,
+                title: this.title,
+                agrarianId: userID,
+                description: this.description,
+                equipment: this.equipment,
+                place: this.place,
+                harvestType: this.harvestType,
+                helperCount: 0,
+                maxHelpers: parseInt(this.maxHelpers),
+                minDuration: duration,
+                salary: parseInt(this.salary),
+                startDate: firstDate,
+                endDate: lastDate,
+                workType: this.radioErnteSaat == "0" ? true : false
             }
+
+            let firestore = firebase.firestore();
+            var newOffer = firestore.collection('offers').doc();
+            newOffer.set(data).then(function () {
+                    console.log("Document written successfully!")
+                })
+                .catch(function (error) {
+                    console.error("Error writing Document: ", error);
+                    alert("Konnte Datenbank nicht erreichen. Haben sie Internetzugang?");
+                })
         }
     }
 }
