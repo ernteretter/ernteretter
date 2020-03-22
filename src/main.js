@@ -39,7 +39,7 @@ const routes = [
   {path: "/settings", component: settings},
   {path: "/registerHelper", component: registerHelper},
   {path: "/registerHelperSuccess", component: registerHelperSuccess},
-  {path: "/registerAgrarian", component: registerAgrarian},
+  {path: "/registerFarmers", component: registerAgrarian},
   {path: "/registerAgrarianSuccess", component: registerAgrarianSuccess},
 ]
 

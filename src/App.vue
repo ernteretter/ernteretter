@@ -22,7 +22,7 @@
                     </v-btn>
                 </v-row>
             </v-col>
-            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" style="{cursor: pointer}"/>
+            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" id="bild"/>
             <v-col>
                 <!-- </v-col>
           <v-col>-->
