@@ -99,20 +99,20 @@ export default {
         }
     },
     mounted() {
-        // firebase.auth().onAuthStateChanged((user) => {
-        //     if (user) {
-        //         let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
 
-        //         docRef.get().then((doc) => {
-        //             if (!doc.exists) {
-        //                 console.log(2);
-        //                 this.$router.push("/login");
-        //                 alert("Du bist kein Landwirt!");
-        //                 return;
-        //             }
-        //         })
-        //     }
-        // });
+                docRef.get().then((doc) => {
+                    if (!doc.exists) {
+                        console.log(2);
+                        this.$router.push("/login");
+                        alert("Du bist kein Landwirt!");
+                        return;
+                    }
+                })
+            }
+        });
         let offerId = this.$route.params.offerId;
         let firestore = firebase.firestore();
         let docRef = firestore.collection("offers").doc(offerId);
