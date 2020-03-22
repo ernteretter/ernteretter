@@ -2,18 +2,17 @@
   <div class="offer-details" v-if="offer && agrarian">
     <div class="inner">
       <h1>{{ offer.title }}</h1>
-      <div class="status-chip" v-if="offer.maxHelpers">
-        {{
-          offer.maxHelpers -
-            helperCount +
-            "/" +
-            offer.maxHelpers +
-            " Helfern fehlen noch"
-        }}
-      </div>
-      <div class="accept-reject">
-        <v-btn v-if="isAccepted" @click="removeMe">Abmelden</v-btn>
-        <v-btn v-else @click="addMe">Anmelden</v-btn>
+      <div class="action-section">
+        <div class="accept-reject">
+          <v-btn class="action-button" v-if="isAccepted" @click="removeMe"
+            >Abmelden</v-btn
+          >
+          <v-btn class="action-button" v-else @click="addMe">Anmelden</v-btn>
+        </div>
+        <div class="status-chip" v-if="offer.maxHelpers">
+          <b>{{ offer.maxHelpers - helperCount }}</b>
+          Helfer fehlen noch
+        </div>
       </div>
 
       <div class="description">
@@ -157,6 +156,7 @@ export default {
     addMe() {
       if (!this.uid) {
         alert("Bitte melde Dich erst an");
+        this.$router.push('/login?redirect=/offers/'+this.offer.id);
         return;
       }
       if (this.isAccepted) {
@@ -201,7 +201,21 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-h1,
+@media only screen and (min-width: 1000px) {
+  .inner {
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 0 5px 3px #ccc;
+    padding: 8px;
+    border-radius: 8px;
+  }
+}
+
+h1 {
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 16px;
+}
 h2 {
   font-weight: 300;
 }
@@ -212,20 +226,15 @@ h2 {
 .contact-card {
   padding: 8px;
 }
-.status-chip {
-  padding: 8px;
-  border: 1px solid red;
-  border-radius: 5px;
-  display: inline-block;
-}
-.date-list {
+.action-section {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
-.date-list-item {
-  margin-bottom: 8px;
-  display: inline-block;
+.action-button {
+  margin: 0 8px 0 0;
+}
+.status-chip b {
+  color: red;
 }
 .section-header {
   font-size: 24px;
