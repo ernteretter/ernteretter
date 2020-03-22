@@ -4,7 +4,7 @@
         <v-row align="center" justify="center">
             <v-col>
                 <v-row>
-                    <v-icon @click="$router.push('/')" style="{cursor: pointer}>mdi-barley</v-icon>
+                    <v-icon>mdi-barley</v-icon>
                     <v-btn small outlined color=primary to="/offers" min-width="115">
                         Anzeigen
                         <v-spacer />
@@ -22,7 +22,7 @@
                     </v-btn>
                 </v-row>
             </v-col>
-            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" style="{cursor: pointer}/>
+            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" style="{cursor: pointer}"/>
             <v-col>
                 <!-- </v-col>
           <v-col>-->
@@ -102,6 +102,10 @@ export default {
 <style>
 #bild {
   cursor: pointer;
+}
+
+.header123 {
+  display: initial;
 }
 
 .rounded-button-right {
