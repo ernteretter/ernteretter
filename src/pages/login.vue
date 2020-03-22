@@ -17,6 +17,8 @@
         </v-card-text>
         <v-card-actions>
             <v-btn color="success" @click="onLogin()">login</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" class="rounded-button-left" outlined @click="onRegisterHelper()">als Helfer Registrieren</v-btn>
         </v-card-actions>
     </v-card>
 </v-app>
@@ -58,6 +60,9 @@ export default {
                 this.overlay = false
                 this.error = true;
             }
+        },
+        async onRegisterHelper() {
+            this.$router.push('/registerHelper');
         },
         async alreadyLoggedIn(router) {
             await firebase.auth().onAuthStateChanged(function (user) {
