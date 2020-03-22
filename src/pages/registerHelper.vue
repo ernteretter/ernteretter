@@ -56,7 +56,7 @@
 
             <v-row justify="center">
                 <div>
-                    <h3> In welchem Umkreis möchtest du Hilfemöglichkeiten vorgschlagen bekommen? </h3>
+                    <h3> In welchem Umkreis möchtest du Hilfemöglichkeiten vorgeschlagen bekommen? </h3>
                     <v-col cols="10" sm="12">
 
                         <v-slider
