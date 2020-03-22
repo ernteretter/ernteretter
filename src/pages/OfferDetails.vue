@@ -88,6 +88,7 @@ export default {
       if (user) {
         this.uid = user.uid;
       } else {
+        this.uid = false;
         this.isAccepted = false;
       }
     });
