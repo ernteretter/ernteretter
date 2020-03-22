@@ -1,11 +1,12 @@
 <template>
     <div class="registerHelperSuccess">
-        <v-card-title>
-            <h1>Du bist erfolgreich Registriert!</h1>
-        </v-card-title>
-        <v-card-actions>
-            <v-btn color="success" @click="onRelocateLogin()">weiter zum Login</v-btn>
-        </v-card-actions>
+        <v-container fluid>
+            <h1 align="center">Du bist erfolgreich Registriert!</h1>
+
+            <v-row justify="center">
+                <v-btn color="success" @click="onRelocateLogin()">weiter zum Login</v-btn>
+            </v-row>
+        </v-container>
     </div>
 </template>
 

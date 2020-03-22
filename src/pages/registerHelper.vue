@@ -139,8 +139,8 @@
             </v-row>
 
             <v-row justify="center">
-                <v-btn rounded color="primary" dark @click="registerHelper()">
-                    Absenden
+                <v-btn rounded color="warning" dark @click="registerHelper()">
+                    Registrieren
                 </v-btn>
             </v-row>
         </v-container>
