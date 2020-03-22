@@ -30,12 +30,12 @@
       </v-col>
       <cookie-law>
         <div slot-scope="props">
+          <p>Diese Seite verwendet Cookies, um Ihnen eine tolles Surferlebnis zu ermöglichen<router-link to="Datenschutz">Mehr erfahren.</router-link></p>
           <button class="skew" @click="props.accept">
-            <span>I accept</span>
+            <span>Ich akzeptiere</span>
           </button>
-          <p>This site uses 🍪</p>
           <button class="skew" @click="props.close">
-            <span>Ignore me</span>
+            <span>Ich lehne ab</span>
           </button>
         </div>
       </cookie-law>
