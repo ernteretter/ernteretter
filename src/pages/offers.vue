@@ -41,7 +41,8 @@
       <v-row align="center">
         <v-col></v-col>
         <v-col class="text-center" cols="12" sm="4">
-          <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left">SUCHE</v-btn>
+          <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left" min-width="200">SUCHE</v-btn>
+          <v-btn big color="secondary" id="searchbutton" @click="createOffer();" class="rounded-button-right" min-width="200">ANZEIGE ERSTELLEN</v-btn>
         </v-col>
         <v-col></v-col>
       </v-row>
@@ -68,7 +69,7 @@
       </v-list-item>
 
       <v-card-actions >
-        <v-btn @click="details(offer.id)" color="primary" id="rounded-button-left-2" > Details </v-btn>
+        <v-btn @click="details(offer.id)" color="primary" class="rounded-button-left" min-width="100"> Details </v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -97,6 +98,9 @@ export default {
   }),
 
   methods: {
+    createOffer() {
+      this.$router.push("/createOffer");
+    },
     details(id) {
       this.$router.push({ name: "offer-details", params: { offerId: id } });
     },
