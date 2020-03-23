@@ -1,8 +1,9 @@
 <template>
 <v-app>
+    
     <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay>
         <v-list dense nav>
-            <v-list-item :to="item.condition? item.route : user ? item.route : null" v-for="item in drawerItems" :key="item.title" >
+            <v-list-item :to="item.condition? item.route : user ? item.route : null" v-for="(item, index) in drawerItems" :key="index" >
                 <v-list-item-icon v-if="item.condition ? true : user">
                     <v-icon color="primary">{{item.icon}}</v-icon>
                 </v-list-item-icon>
@@ -17,12 +18,13 @@
             <v-btn color="red" @click="logout()" v-if="user" outlined class="justify-center">log out</v-btn>
         </template>
     </v-navigation-drawer>
+    
     <v-app-bar app :dense="drawer" v-resize="onResize">
         <v-row align="center" justify="center">
             <v-col>
                 <v-row>
                     <v-icon>mdi-barley</v-icon>
-                    <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer">mdi-menu</v-icon>
+                    <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0">mdi-menu</v-icon>
                     <v-btn v-if="!drawer" small outlined color=primary to="/offers" min-width="115">
                         Anzeigen
                         <v-spacer />
@@ -58,7 +60,7 @@
             <router-view></router-view>
         </v-container>
     </v-content>
-    <v-footer app padless color=dunkelgrau>
+    <v-footer app padless absolute color=dunkelgrau>
         <v-col>
             <v-row class="justify-center" no-gutters>
                 <v-col class="flex-grow-0">
