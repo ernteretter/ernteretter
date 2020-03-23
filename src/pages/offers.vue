@@ -3,14 +3,18 @@
     <v-card id="inspire">
       <v-row class="mb-n6">
         <v-col>
+<<<<<<< HEAD
            <v-responsive :min-width="230" :height="64">
           <v-text-field outlined type="text" v-model="search" placeholder="Suche nach Titel" />
            </v-responsive>
+=======
+          <v-text-field class="ma-3" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
+>>>>>>> c85181ffd212a905f845ceac6b04caaad5acdd7c
         </v-col>
         <v-col>
            <v-responsive :min-width="230" :height="64">
           <v-text-field
-            id="zipsearch"
+            class="ma-3"
             outlined
             type="text"
             v-model="zipsearch"
@@ -21,10 +25,14 @@
           />
            </v-responsive>
         </v-col>
+<<<<<<< HEAD
       </v-row>
       <v-row >
         <v-col id="radiussilder" :align="center_layout" :justify="center_layout ">
             <v-responsive :max-width="600" :min-height="60">
+=======
+        <v-col id="radiussilder" class="mt-6 ma-3" >
+>>>>>>> c85181ffd212a905f845ceac6b04caaad5acdd7c
           <v-slider
           class="pt-7"
             v-model="searchradius"
@@ -49,7 +57,8 @@
     <br />
     <div id="anfragen"> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </div>
     <v-card
-      class="mx-auto list-item"
+      class="ma-11 mt-50"
+      id="list-item"
       max-width="auto"
       outlined
       v-for="offer in offers"
@@ -225,20 +234,18 @@ export default {
 </script>
 
 <style scoped>
-.list-item {
-  margin-left: 500000px;
-  margin: 15px;
-  background-color: black;
+#list-item {
+  margin: 25px;
 }
-
 .search-wrapper {
   margin-bottom: 20px
 }
-#radiussilder {
-  margin-top: 15px;
-}
+
 #searchbutton {
   margin-top: -25px;
+}
+#titlesearch {
+  margin: 5px;
 }
 #inspire {
   margin: 50px;
