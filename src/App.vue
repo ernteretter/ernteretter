@@ -1,21 +1,34 @@
 <template>
 <v-app>
-    <v-app-bar app>
+    <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay>
+        <v-list dense nav>
+            <v-list-item :to="item.route" v-for="item in drawerItems" :key="item.title" >
+                <v-list-icon>
+                    <v-icon color="primary">{{item.icon}}</v-icon>
+                </v-list-icon>
+                <v-list-content>
+                    <v-list-item-title>{{item.title}}</v-list-item-title>
+                </v-list-content>
+            </v-list-item>
+        </v-list>
+    </v-navigation-drawer>
+    <v-app-bar app :dense="drawer" v-resize="onResize">
         <v-row align="center" justify="center">
             <v-col>
                 <v-row>
                     <v-icon>mdi-barley</v-icon>
-                    <v-btn small outlined color=primary to="/offers" min-width="115">
+                    <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer">mdi-menu</v-icon>
+                    <v-btn v-if="!drawer" small outlined color=primary to="/offers" min-width="115">
                         Anzeigen
                         <v-spacer />
                         <v-icon small> mdi-view-dashboard-outline </v-icon>
                     </v-btn>
-                    <v-btn small outlined color=primary to="/history" v-if="user" min-width="110">
+                    <v-btn small outlined color=primary to="/history" v-if="user && !drawer" min-width="110">
                         Termine
                         <v-spacer />
                         <v-icon small> mdi-calendar-range </v-icon>
                     </v-btn>
-                    <v-btn small outlined color=primary to="/settings" v-if="user" min-width="155">
+                    <v-btn small outlined color=primary to="/settings" v-if="user && !drawer" min-width="155">
                         Einstellungen
                         <v-spacer />
                         <v-icon small> mdi-cog-outline </v-icon>
@@ -24,8 +37,7 @@
             </v-col>
             <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" id="bild" />
             <v-col>
-                <!-- </v-col>
-          <v-col>-->
+
                 <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined>login</v-btn>
                 <v-btn color="primary" @click="$router.push('/registerHelper')" v-if="!user" outlined>als Helfer Registrieren</v-btn>
                 <v-btn color="red" @click="logout()" v-if="user" outlined>log out</v-btn>
@@ -41,7 +53,6 @@
             <router-view></router-view>
         </v-container>
     </v-content>
-
     <v-footer app padless color=dunkelgrau>
         <v-col>
             <v-row class="justify-center" no-gutters>
@@ -90,6 +101,7 @@ export default {
         CookieLaw
     },
     async mounted() {
+        this.onResize()
         await firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 this.user = true;
@@ -100,12 +112,26 @@ export default {
     },
     data() {
         return {
-            user: true
+            drawer: false,
+            displayDrawer: false,
+            user: true,
+            drawerItems : [
+                { title: 'Anzeigen', icon: 'mdi-view-dashboard-outline', route: '/offers'},
+                { title: 'Termine', icon: 'mdi-calendar-range', route: '/history'},
+                { title: 'Einstellungen', icon: 'mdi-cog-outline', route: '/settings'},
+            ]
         };
     },
     methods: {
         logout() {
             firebase.auth().signOut();
+        },
+        onResize() {
+            if (window.innerWidth < 1360) {
+                this.drawer = true
+            } else {
+                this.drawer = false
+            }
         },
         gotoDatenschutz() {
             this.$router.push("/datenschutz");
