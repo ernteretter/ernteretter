@@ -8,7 +8,7 @@
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" @click="$router.push('createOffer')">
-                        <v-icon>mdi-plus-circle-outline</v-icon>
+                        <v-icon color="primary">mdi-plus-circle-outline</v-icon>
                     </v-btn>
                 </template>
                 <span>neue Anzeige erstellen</span>
