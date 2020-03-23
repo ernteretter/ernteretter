@@ -4,7 +4,8 @@
             <h1 align="center">Sie sind erfolgreich Registriert!</h1>
 
             <v-row justify="center">
-                <v-btn color="success" @click="onRelocateLogin()">weiter zum Anzeigen erstellen</v-btn>
+                <v-btn color="primary" @click="gotoCreateOffer()">Anzeige erstellen</v-btn>
+                <v-btn color="primary" @click="gotoOffers()">bestehende Anzeigen</v-btn>
             </v-row>
         </v-container>
     </div>
@@ -14,9 +15,12 @@
     export default {
         name: "registerAgrarianSuccess",
         methods: {
-            onRelocateLogin()
+            gotoCreateOffer()
             {
                 this.$router.push('/createOffer');
+            },
+            gotoOffers() {
+                this.$router.push('/offers');
             }
         }
     }
