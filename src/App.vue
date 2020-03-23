@@ -15,7 +15,7 @@
         <template v-slot:append>
             <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined class="justify-center">login</v-btn>
             <v-btn color="primary" @click="$router.push('/registerHelper')" v-if="!user" outlined>als Helfer Registrieren</v-btn>
-            <v-btn color="red" @click="logout()" v-if="user" outlined class="justify-center">log out</v-btn>
+            <v-btn color="red" @click="logout()" v-if="user" outlined class="justify-center">log out</v-btn>    
         </template>
     </v-navigation-drawer>
 
@@ -26,7 +26,7 @@
                     <v-icon>mdi-barley</v-icon>
                     <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0">mdi-menu</v-icon>
                     <div v-for="(item, index) in drawerItems" :key="index">
-                        <v-btn v-if="!drawer && item.condition ? true : user" small outlined color=primary :to="item.route" min-width="115">
+                        <v-btn v-if="!drawer && (item.condition ? true : user)" small outlined color=primary :to="item.route" min-width="115">
                             {{item.title}}
                             <v-spacer />
                             <v-icon small> {{item.icon}} </v-icon>
@@ -111,6 +111,7 @@ export default {
     },
     data() {
         return {
+            snackBarAlert: true,
             drawer: false,
             displayDrawer: false,
             user: true,
@@ -136,8 +137,10 @@ export default {
         };
     },
     methods: {
-        logout() {
-            firebase.auth().signOut();
+        async logout() {
+            await firebase.auth().signOut().then(() => {
+                    this.$router.push('/')
+            })
         },
         onResize() {
             if (window.innerWidth < 1360) {
