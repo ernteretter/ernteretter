@@ -1,13 +1,16 @@
 <template>
   <div>
     <v-card id="inspire">
-      <v-row>
+      <v-row class="mb-n6">
         <v-col>
-          <v-text-field outlined type="text" v-model="search" placeholder="Suche nach Titel" />
+           <v-responsive :min-width="230" :height="64">
+          <v-text-field class="mb-3 mr-3 ml-3" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
+           </v-responsive>
         </v-col>
         <v-col>
+           <v-responsive :min-width="230" :height="64">
           <v-text-field
-            id="zipsearch"
+            class="mb-3 mr-3 ml-3"
             outlined
             type="text"
             v-model="zipsearch"
@@ -16,9 +19,14 @@
             minval
             placeholder="Suche nach PLZ"
           />
+           </v-responsive>
         </v-col>
-        <v-col id="radiussilder">
+      </v-row>
+      <v-row >
+        <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-3">
+            <v-responsive :max-width="600" :min-height="60">
           <v-slider
+          class="pt-7"
             v-model="searchradius"
             label="Radius (km)"
             :min_="1"
@@ -27,12 +35,16 @@
             thumb-size="24"
             thumb-color="primary"
           ></v-slider>
+            </v-responsive>
         </v-col>
       </v-row>
       <v-row align="center">
         <v-col></v-col>
         <v-col class="text-center" cols="12" sm="4">
-          <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left">SUCHE</v-btn>
+          <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left ml-1" min-width="200">SUCHE</v-btn>
+        </v-col>
+        <v-col>
+          <v-btn big color="secondary" id="searchbutton" @click="createOffer();" class="rounded-button-right ml-4" min-width="200">ANZEIGE ERSTELLEN</v-btn>
         </v-col>
         <v-col></v-col>
       </v-row>
@@ -40,7 +52,8 @@
     <br />
     <div id="anfragen"> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </div>
     <v-card
-      class="mx-auto list-item"
+      class="ma-11 mt-50"
+      id="list-item"
       max-width="auto"
       outlined
       v-for="offer in offers"
@@ -58,7 +71,7 @@
       </v-list-item>
 
       <v-card-actions >
-        <v-btn @click="details(offer.id)" color="primary" id="rounded-button-left-2" > Details </v-btn>
+        <v-btn @click="details(offer.id)" color="primary" class="rounded-button-left" min-width="100"> Details </v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -72,6 +85,7 @@ import "firebase/auth";
 export default {
   name: "OfferList",
   data: () => ({
+    center_layout : 'center',
     colorEintrag : '#fffff',
     detailbutton : '#fffff',
     //filteredList:[],
@@ -86,6 +100,9 @@ export default {
   }),
 
   methods: {
+    createOffer() {
+      this.$router.push("/createOffer");
+    },
     details(id) {
       this.$router.push({ name: "offer-details", params: { offerId: id } });
     },
@@ -215,18 +232,18 @@ export default {
 </script>
 
 <style scoped>
-.list-item {
-  margin: 15px;
+#list-item {
+  margin: 25px;
 }
-
 .search-wrapper {
   margin-bottom: 20px
 }
-#radiussilder {
-  margin-top: 15px;
-}
+
 #searchbutton {
   margin-top: -25px;
+}
+#titlesearch {
+  margin: 5px;
 }
 #inspire {
   margin: 50px;

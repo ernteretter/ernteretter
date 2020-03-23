@@ -49,10 +49,19 @@
             <router-view></router-view>
         </v-container>
     </v-content>
-
-    <v-footer app fixed="false" padless color=dunkelgrau>
-        <v-col class="text-center" cols="12">
-            <v-card-text class="py-2 white--text text-center"> Datenschutz | Impressum </v-card-text>
+    <v-footer app padless color=dunkelgrau>
+        <v-col>
+            <v-row class="justify-center" no-gutters>
+                <v-col class="flex-grow-0">
+                    <v-card-text id="bild" @click="gotoDatenschutz()" class="py-2 white--text"> Datenschutz</v-card-text>
+                </v-col>
+                <v-col class="flex-grow-0">
+                    <v-card-text class="py-2 white--text">|</v-card-text>
+                </v-col>
+                <v-col class="flex-grow-0">
+                    <v-card-text id="bild" @click="gotoImpressum()" class="py-2 white--text">Impressum</v-card-text>
+                </v-col>
+            </v-row>
             <v-card-text class="py-2 white--text text-center">
                 <v-icon color="primary">mdi-copyright</v-icon>
                 {{ new Date().getFullYear() }} —
@@ -115,6 +124,12 @@ export default {
                 this.drawer = false
             }
         },
+        gotoDatenschutz() {
+            this.$router.push("/datenschutz");
+        },
+        gotoImpressum() {
+            this.$router.push("/impressum");
+        }
     }
 };
 </script>

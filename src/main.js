@@ -15,6 +15,8 @@ import registerHelper from './pages/registerHelper';
 import registerHelperSuccess from './pages/registerHelperSuccess';
 import registerAgrarian from './pages/registerAgrarian';
 import registerAgrarianSuccess from './pages/registerAgrarianSuccess';
+import datenschutz from './pages/datenschutz';
+import impressum from './pages/impressum';
 
 //plugins
 import firebase from 'firebase/app'
@@ -41,6 +43,8 @@ const routes = [
   {path: "/registerHelperSuccess", component: registerHelperSuccess},
   {path: "/registerFarmers", component: registerAgrarian},
   {path: "/registerFarmerSuccess", component: registerAgrarianSuccess},
+  {path: "/datenschutz", component: datenschutz},
+  {path: "/impressum", component: impressum}
 ]
 
 const router = new VueRouter({
