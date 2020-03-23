@@ -41,8 +41,10 @@
       <v-row align="center">
         <v-col></v-col>
         <v-col class="text-center" cols="12" sm="4">
-          <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left" min-width="200">SUCHE</v-btn>
-          <v-btn big color="secondary" id="searchbutton" @click="createOffer();" class="rounded-button-right" min-width="200">ANZEIGE ERSTELLEN</v-btn>
+          <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left ml-1" min-width="200">SUCHE</v-btn>
+        </v-col>
+        <v-col>
+          <v-btn big color="secondary" id="searchbutton" @click="createOffer();" class="rounded-button-right ml-4" min-width="200">ANZEIGE ERSTELLEN</v-btn>
         </v-col>
         <v-col></v-col>
       </v-row>
