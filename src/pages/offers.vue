@@ -3,18 +3,14 @@
     <v-card id="inspire">
       <v-row class="mb-n6">
         <v-col>
-<<<<<<< HEAD
            <v-responsive :min-width="230" :height="64">
-          <v-text-field outlined type="text" v-model="search" placeholder="Suche nach Titel" />
+          <v-text-field class="mb-3 mr-3 ml-3" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
            </v-responsive>
-=======
-          <v-text-field class="ma-3" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
->>>>>>> c85181ffd212a905f845ceac6b04caaad5acdd7c
         </v-col>
         <v-col>
            <v-responsive :min-width="230" :height="64">
           <v-text-field
-            class="ma-3"
+            class="mb-3 mr-3 ml-3"
             outlined
             type="text"
             v-model="zipsearch"
@@ -25,14 +21,10 @@
           />
            </v-responsive>
         </v-col>
-<<<<<<< HEAD
       </v-row>
       <v-row >
-        <v-col id="radiussilder" :align="center_layout" :justify="center_layout ">
+        <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-3">
             <v-responsive :max-width="600" :min-height="60">
-=======
-        <v-col id="radiussilder" class="mt-6 ma-3" >
->>>>>>> c85181ffd212a905f845ceac6b04caaad5acdd7c
           <v-slider
           class="pt-7"
             v-model="searchradius"
