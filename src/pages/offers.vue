@@ -3,13 +3,13 @@
     <v-card id="inspire">
       <v-row>
         <v-col>
-          <v-text-field outlined type="text" v-model="search" placeholder="Suche nach Titel" />
+          <v-text-field class="ma-3" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
         </v-col>
         <v-col>
           <v-text-field
-            id="zipsearch"
+            class="ma-3"
             outlined
-            type="number"
+            type="text"
             v-model="zipsearch"
             maxlength="5"
             minlength="4"
@@ -17,7 +17,7 @@
             placeholder="Suche nach PLZ"
           />
         </v-col>
-        <v-col id="radiussilder">
+        <v-col id="radiussilder" class="mt-6 ma-3" >
           <v-slider
             v-model="searchradius"
             label="Radius (km)"
@@ -40,7 +40,8 @@
     <br />
     <div id="anfragen"> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </div>
     <v-card
-      class="mx-auto list-item"
+      class="ma-11 mt-50"
+      id="list-item"
       max-width="auto"
       outlined
       v-for="offer in offers"
@@ -215,20 +216,18 @@ export default {
 </script>
 
 <style scoped>
-.list-item {
-  margin-left: 500000px;
-  margin: 15px;
-  background-color: black;
+#list-item {
+  margin: 25px;
 }
-
 .search-wrapper {
   margin-bottom: 20px
 }
-#radiussilder {
-  margin-top: 15px;
-}
+
 #searchbutton {
   margin-top: -25px;
+}
+#titlesearch {
+  margin: 5px;
 }
 #inspire {
   margin: 50px;
