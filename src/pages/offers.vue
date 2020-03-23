@@ -1,24 +1,32 @@
 <template>
   <div>
     <v-card id="inspire">
-      <v-row>
+      <v-row class="mb-n6">
         <v-col>
+           <v-responsive :min-width="230" :height="64">
           <v-text-field outlined type="text" v-model="search" placeholder="Suche nach Titel" />
+           </v-responsive>
         </v-col>
         <v-col>
+           <v-responsive :min-width="230" :height="64">
           <v-text-field
             id="zipsearch"
             outlined
-            type="number"
+            type="text"
             v-model="zipsearch"
             maxlength="5"
             minlength="4"
             minval
             placeholder="Suche nach PLZ"
           />
+           </v-responsive>
         </v-col>
-        <v-col id="radiussilder">
+      </v-row>
+      <v-row >
+        <v-col id="radiussilder" :align="center_layout" :justify="center_layout ">
+            <v-responsive :max-width="600" :min-height="60">
           <v-slider
+          class="pt-7"
             v-model="searchradius"
             label="Radius (km)"
             :min_="1"
@@ -27,6 +35,7 @@
             thumb-size="24"
             thumb-color="primary"
           ></v-slider>
+            </v-responsive>
         </v-col>
       </v-row>
       <v-row align="center">
@@ -72,6 +81,7 @@ import "firebase/auth";
 export default {
   name: "OfferList",
   data: () => ({
+    center_layout : 'center',
     colorEintrag : '#fffff',
     detailbutton : '#fffff',
     //filteredList:[],
