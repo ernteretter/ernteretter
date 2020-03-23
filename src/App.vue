@@ -1,9 +1,9 @@
 <template>
 <v-app>
-    
+
     <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay>
         <v-list dense nav>
-            <v-list-item :to="item.condition? item.route : user ? item.route : null" v-for="(item, index) in drawerItems" :key="index" >
+            <v-list-item :to="item.condition? item.route : user ? item.route : null" v-for="(item, index) in drawerItems" :key="index">
                 <v-list-item-icon v-if="item.condition ? true : user">
                     <v-icon color="primary">{{item.icon}}</v-icon>
                 </v-list-item-icon>
@@ -18,28 +18,20 @@
             <v-btn color="red" @click="logout()" v-if="user" outlined class="justify-center">log out</v-btn>
         </template>
     </v-navigation-drawer>
-    
+
     <v-app-bar app :dense="drawer" v-resize="onResize">
         <v-row align="center" justify="center">
             <v-col>
                 <v-row>
                     <v-icon>mdi-barley</v-icon>
                     <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0">mdi-menu</v-icon>
-                    <v-btn v-if="!drawer" small outlined color=primary to="/offers" min-width="115">
-                        Anzeigen
-                        <v-spacer />
-                        <v-icon small> mdi-view-dashboard-outline </v-icon>
-                    </v-btn>
-                    <v-btn small outlined color=primary to="/history" v-if="user && !drawer" min-width="110">
-                        Termine
-                        <v-spacer />
-                        <v-icon small> mdi-calendar-range </v-icon>
-                    </v-btn>
-                    <v-btn small outlined color=primary to="/settings" v-if="user && !drawer" min-width="155">
-                        Einstellungen
-                        <v-spacer />
-                        <v-icon small> mdi-cog-outline </v-icon>
-                    </v-btn>
+                    <div v-for="(item, index) in drawerItems" :key="index">
+                        <v-btn v-if="!drawer && item.condition ? true : user" small outlined color=primary :to="item.route" min-width="115">
+                            {{item.title}}
+                            <v-spacer />
+                            <v-icon small> {{item.icon}} </v-icon>
+                        </v-btn>
+                    </div>
                 </v-row>
             </v-col>
             <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" id="bild" />
