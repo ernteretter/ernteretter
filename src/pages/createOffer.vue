@@ -93,7 +93,15 @@ export default {
     }),
     computed: {
         datesText() {
-            return this.dates.join(" bis ");
+            return this.dates
+                .map(d =>
+                    new Date(d)
+                    .toISOString()
+                    .substr(0, 10)
+                    .split("-")
+                    .reverse()
+                    .join("."))
+                .join(" bis ");
         }
     },
     mounted: function () {
@@ -103,12 +111,15 @@ export default {
 
                 docRef.get().then((doc) => {
                     if (!doc.exists) {
-                        console.log(2);
                         this.$router.push("/login");
                         alert("Du bist kein Landwirt!");
                         return;
                     }
                 })
+            } else {
+                this.$router.push("/login");
+                alert("Du bist nicht eingeloggt!");
+                return;
             }
         });
 

@@ -111,6 +111,10 @@ export default {
                         return;
                     }
                 })
+            }else {
+                this.$router.push("/login");
+                alert("Du bist nicht eingeloggt!");
+                return;
             }
         });
         let offerId = this.$route.params.offerId;

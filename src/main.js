@@ -40,7 +40,7 @@ const routes = [
   {path: "/registerHelper", component: registerHelper},
   {path: "/registerHelperSuccess", component: registerHelperSuccess},
   {path: "/registerFarmers", component: registerAgrarian},
-  {path: "/registerAgrarianSuccess", component: registerAgrarianSuccess},
+  {path: "/registerFarmerSuccess", component: registerAgrarianSuccess},
 ]
 
 const router = new VueRouter({
