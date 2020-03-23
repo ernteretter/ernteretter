@@ -1,10 +1,15 @@
 <template>
 <v-app>
     <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay>
-        <v-list>
-                <v-list-item>
-
-                </v-list-item>
+        <v-list dense nav>
+            <v-list-item :to="item.route" v-for="item in drawerItems" :key="item.title" >
+                <v-list-icon>
+                    <v-icon color="primary">{{item.icon}}</v-icon>
+                </v-list-icon>
+                <v-list-content>
+                    <v-list-item-title>{{item.title}}</v-list-item-title>
+                </v-list-content>
+            </v-list-item>
         </v-list>
     </v-navigation-drawer>
     <v-app-bar app :dense="drawer" v-resize="onResize">
@@ -32,8 +37,7 @@
             </v-col>
             <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" id="bild" />
             <v-col>
-                <!-- </v-col>
-          <v-col>-->
+
                 <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined>login</v-btn>
                 <v-btn color="primary" @click="$router.push('/registerHelper')" v-if="!user" outlined>als Helfer Registrieren</v-btn>
                 <v-btn color="red" @click="logout()" v-if="user" outlined>log out</v-btn>
@@ -110,15 +114,20 @@ export default {
         return {
             drawer: false,
             displayDrawer: false,
-            user: true
+            user: true,
+            drawerItems : [
+                { title: 'Anzeigen', icon: 'mdi-view-dashboard-outline', route: '/offers'},
+                { title: 'Termine', icon: 'mdi-calendar-range', route: '/history'},
+                { title: 'Einstellungen', icon: 'mdi-cog-outline', route: '/settings'},
+            ]
         };
     },
     methods: {
         logout() {
             firebase.auth().signOut();
         },
-        onResize(){
-            if(window.innerWidth < 960){
+        onResize() {
+            if (window.innerWidth < 1360) {
                 this.drawer = true
             } else {
                 this.drawer = false
