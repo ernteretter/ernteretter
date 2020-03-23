@@ -22,7 +22,7 @@
                     </v-btn>
                 </v-row>
             </v-col>
-            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" id="bild"/>
+            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" id="bild" />
             <v-col>
                 <!-- </v-col>
           <v-col>-->
@@ -43,8 +43,18 @@
     </v-content>
 
     <v-footer app padless color=dunkelgrau>
-        <v-col class="text-center" cols="12">
-            <v-card-text class="py-2 white--text text-center"> Datenschutz | Impressum </v-card-text>
+        <v-col>
+            <v-row class="justify-center" no-gutters>
+                <v-col class="flex-grow-0">
+                    <v-card-text id="bild" @click="gotoDatenschutz()" class="py-2 white--text"> Datenschutz</v-card-text>
+                </v-col>
+                <v-col class="flex-grow-0">
+                    <v-card-text class="py-2 white--text">|</v-card-text>
+                </v-col>
+                <v-col class="flex-grow-0">
+                    <v-card-text id="bild" @click="gotoImpressum()" class="py-2 white--text">Impressum</v-card-text>
+                </v-col>
+            </v-row>
             <v-card-text class="py-2 white--text text-center">
                 <v-icon color="primary">mdi-copyright</v-icon>
                 {{ new Date().getFullYear() }} —
@@ -96,6 +106,12 @@ export default {
     methods: {
         logout() {
             firebase.auth().signOut();
+        },
+        gotoDatenschutz() {
+            this.$router.push("/datenschutz");
+        },
+        gotoImpressum() {
+            this.$router.push("/impressum");
         }
     }
 };
@@ -103,11 +119,11 @@ export default {
 
 <style>
 #bild {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .header123 {
-  display: initial;
+    display: initial;
 }
 
 .rounded-button-right {
