@@ -1,7 +1,7 @@
 <template>
 <v-app>
 
-    <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay>
+    <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay fixed>
         <v-list dense nav>
             <v-list-item :to="item.condition? item.route : user ? item.route : null" v-for="(item, index) in drawerItems" :key="index">
                     <v-list-item-icon v-if="item.condition ? true : user">
