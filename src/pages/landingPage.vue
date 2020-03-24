@@ -1,15 +1,14 @@
 <template>
 <v-card class="mx-auto" max-width="1000px">
-    <v-card-title id="title" class="headline font-weight-bold "> Auch in dieser besondern Zeit wachsen unsere Pflanzen und versorgen uns alle mit Nahrung</v-card-title>
-    <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto" @click="$router.push('/')" max-width="80%" style="{cursor: pointer}" />
-    <v-row class="justify-center" no-gutters>
-        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
-        <v-btn color="primary" outlined class="rounded-button-left" :x-small="responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
-    </v-row>
+    <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto " @click="$router.push('/')" max-width="80%" style="{cursor: pointer}" />
     <v-spacer></v-spacer>
-    <v-card-subtitle id="title" class="title font-weight-bol"> ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
+    <v-card-subtitle id="title" class="title py-10"><strong class="display-1 font-weight-bold">Auch in dieser besondern Zeit</strong> wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
         Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.
     </v-card-subtitle>
+    <v-row class="justify-center" no-gutters>
+        <v-btn color="primary" outlined class="rounded-button-right mx-10" :small="responiveNeeded" :large="!responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
+        <v-btn color="primary" outlined class="rounded-button-left mx-10" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
+    </v-row>
     <v-row>
         <router-link to="/information" class="mx-auto display-1">
             <v-btn color="primary" dense outlined class="py-0 my-0">Weitere Informationen</v-btn>
@@ -65,7 +64,6 @@ export default {
 <style>
 #title {
     word-break: keep-all;
-    text-align: center;
 }
 
 #iframeContainer {
