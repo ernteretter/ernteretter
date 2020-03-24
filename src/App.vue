@@ -15,11 +15,12 @@
         <template v-slot:append>
             <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined class="justify-center">login</v-btn>
             <v-btn color="primary" @click="$router.push('/registerHelper')" v-if="!user" outlined>als Helfer Registrieren</v-btn>
-            <v-btn color="red" @click="logout()" v-if="user" outlined class="justify-center">log out</v-btn>    
+            <v-btn color="red" @click="logout()" v-if="user" outlined class="justify-center">log out</v-btn>
         </template>
     </v-navigation-drawer>
 
     <v-app-bar app :dense="drawer" v-resize="onResize">
+
         <v-row align="center" justify="center">
             <v-col>
                 <v-row>
@@ -48,6 +49,14 @@
     <v-content>
         <!-- Provides the application the proper gutter -->
         <v-container fluid>
+            <v-alert type="info" color="primary" v-model="prototype" to="/information">
+                <v-row>
+                    Dies ist ein Prototyp, wir bitten um Verständniss.
+                    <v-btn class="ma-0 ml-3" outlined small @click="$router.push('information')"> Weitere Informationen</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-icon class="pa-0 ma-0 mr-2" @click="prototype = false">mdi-close</v-icon>
+                </v-row>
+            </v-alert>
             <!-- If using vue-router -->
             <router-view></router-view>
         </v-container>
@@ -111,7 +120,7 @@ export default {
     },
     data() {
         return {
-            snackBarAlert: true,
+            prototype: true,
             drawer: false,
             displayDrawer: false,
             user: true,
@@ -133,13 +142,19 @@ export default {
                     route: '/settings',
                     condition: false
                 },
+                {
+                    title: 'Informationen',
+                    icon: 'mdi-information',
+                    route: '/informationen',
+                    condition: false
+                },
             ]
         };
     },
     methods: {
         async logout() {
             await firebase.auth().signOut().then(() => {
-                    this.$router.push('/')
+                this.$router.push('/')
             })
         },
         onResize() {
