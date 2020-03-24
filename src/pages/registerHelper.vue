@@ -1,6 +1,6 @@
 <template>
     <div class="registerHelper">
-
+        <v-card class="mx-auto" max-width="1000">
         <v-container fluid>
             <v-row justify="center">
                 <v-img :src="require('../assets/ernteretter.png')" max-width="400"></v-img>
@@ -155,6 +155,7 @@
             </v-row>
             <br/>
         </v-container>
+        </v-card>
     </div>
 </template>
 
