@@ -1,12 +1,12 @@
 <template>
 <v-app>
     <v-alert v-if="error" dismissible type="error" width="400px" class="mx-auto mt-5">Passwort und/oder Nutzname falsch</v-alert>
-    <v-card width="400px" class="mx-auto mt-5">
-        <v-card-title>
-            <h1>Login</h1>
-        </v-card-title>
-        <v-card-text>
-            <v-form>
+    <v-col cols="12">
+        <v-card class="mx-auto mt-5 col-sm-12 col-md-5 ">
+            <v-card-title>
+                <h1>Login</h1>
+            </v-card-title>
+            <v-form class="mx-auto col-sm-12 col-md-12">
                 <v-text-field v-model="mail" label="Username" />
                 <v-text-field :type="showPassword ? 'text' : 'password'" label="Password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" v-model="password" />
                 <v-overlay :absolute="true" :value="overlay">
@@ -14,13 +14,13 @@
                     </v-progress-circular>
                 </v-overlay>
             </v-form>
-        </v-card-text>
-        <v-card-actions>
-            <v-btn color="success" @click="onLogin()">login</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" class="rounded-button-left" outlined @click="onRegisterHelper()">als Helfer Registrieren</v-btn>
-        </v-card-actions>
-    </v-card>
+            <v-card-actions>
+                <v-btn color="success" @click="onLogin()">login</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" class="rounded-button-left" outlined @click="onRegisterHelper()">als Helfer Registrieren</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-col>
 </v-app>
 </template>
 
