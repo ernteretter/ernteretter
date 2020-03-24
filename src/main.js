@@ -7,7 +7,6 @@ import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
 import offers from './pages/offers'
 import history from './pages/history'
-
 import settings from './pages/settings'
 import createOffer from './pages/createOffer';
 import editOffer from './pages/editOffer';
@@ -17,6 +16,8 @@ import registerAgrarian from './pages/registerAgrarian';
 import registerAgrarianSuccess from './pages/registerAgrarianSuccess';
 import datenschutz from './pages/datenschutz';
 import impressum from './pages/impressum';
+import information from './pages/information';
+import error from './pages/error';
 
 //plugins
 import firebase from 'firebase/app'
@@ -31,6 +32,7 @@ Vue.use(VueRouter)
 Vue.use(Vuetify)
 
 const routes = [
+  {path:'*', component: error},
   {path: "/", component: landingPage},
   {path: "/offers", component: offers},
   {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
@@ -44,7 +46,8 @@ const routes = [
   {path: "/registerFarmers", component: registerAgrarian},
   {path: "/registerFarmerSuccess", component: registerAgrarianSuccess},
   {path: "/datenschutz", component: datenschutz},
-  {path: "/impressum", component: impressum}
+  {path: "/impressum", component: impressum},
+  {path: "/information", component: information},
 ]
 
 const router = new VueRouter({

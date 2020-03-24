@@ -145,7 +145,7 @@ export default {
                 {
                     title: 'Informationen',
                     icon: 'mdi-information',
-                    route: '/informationen',
+                    route: '/information',
                     condition: false
                 },
             ]
