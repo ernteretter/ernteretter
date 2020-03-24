@@ -70,8 +70,8 @@
                 <v-btn class="skew" @click="props.accept">
                     <span>Ich akzeptiere</span>
                 </v-btn>
-                <v-btn class="skew" @click="props.close">
-                    <span>Ich lehne ab</span>
+                <v-btn class="skew" @click="gotoDatenschutz">
+                    <span>Datenschutz</span>
                 </v-btn>
             </div>
         </cookie-law>
