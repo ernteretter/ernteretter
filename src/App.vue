@@ -4,12 +4,12 @@
     <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay>
         <v-list dense nav>
             <v-list-item :to="item.condition? item.route : user ? item.route : null" v-for="(item, index) in drawerItems" :key="index">
-                <v-list-item-icon v-if="item.condition ? true : user">
-                    <v-icon color="primary">{{item.icon}}</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content v-if="item.condition ? true : user">
-                    <v-list-item-title>{{item.title}}</v-list-item-title>
-                </v-list-item-content>
+                    <v-list-item-icon v-if="item.condition ? true : user">
+                        <v-icon color="primary">{{item.icon}}</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content v-if="item.condition ? true : user">
+                        <v-list-item-title>{{item.title}}</v-list-item-title>
+                    </v-list-item-content>
             </v-list-item>
         </v-list>
         <template v-slot:append>
@@ -124,12 +124,19 @@ export default {
             drawer: false,
             displayDrawer: false,
             user: true,
-            drawerItems: [{
+            drawerItems: [
+                {
+                    title: 'Informationen',
+                    icon: 'mdi-information',
+                    route: '/information',
+                    condition: true
+                },{
                     title: 'Anzeigen',
                     icon: 'mdi-view-dashboard-outline',
                     route: '/offers',
                     condition: true,
                 },
+                
                 {
                     title: 'Termine',
                     icon: 'mdi-calendar-range',
@@ -142,12 +149,7 @@ export default {
                     route: '/settings',
                     condition: false
                 },
-                {
-                    title: 'Informationen',
-                    icon: 'mdi-information',
-                    route: '/information',
-                    condition: false
-                },
+                
             ]
         };
     },
