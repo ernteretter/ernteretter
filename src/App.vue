@@ -1,7 +1,7 @@
 <template>
 <v-app>
 
-    <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay>
+    <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay fixed>
         <v-list dense nav>
             <v-list-item :to="item.condition? item.route : user ? item.route : null" v-for="(item, index) in drawerItems" :key="index">
                     <v-list-item-icon v-if="item.condition ? true : user">
@@ -51,7 +51,7 @@
         <v-container fluid>
             <v-alert type="info" color="primary" v-model="prototype" to="/information">
                 <v-row>
-                    Dies ist ein Prototyp, wir bitten um Verständniss.
+                    Dies ist ein Prototyp, wir bitten um Verständnis.
                     <v-btn class="ma-0 ml-3" outlined small @click="$router.push('information')"> Weitere Informationen</v-btn>
                     <v-spacer></v-spacer>
                     <v-icon class="pa-0 ma-0 mr-2" @click="prototype = false">mdi-close</v-icon>
