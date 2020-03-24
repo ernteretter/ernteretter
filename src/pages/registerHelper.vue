@@ -10,14 +10,18 @@
             <h1 align="center">Erstelle dein Profil!</h1>
             <br/>
             <v-row justify="center">
-                <v-col cols="5" sm="5">
+                <v-col justify="center" cols="auto">
+                    <v-responsive :min-width="250" :max-width="500">
                     <v-text-field v-model="name" label="Wie heißt du?" single-line solo></v-text-field>
+                    </v-responsive>
                 </v-col>
             </v-row>
 
 
             <v-row justify="center">
-                <v-col cols="5" sm="5">
+                <v-col cols="auto">
+                    
+                    <v-responsive :min-width="250" :max-width="500">
                     <v-text-field
                             :type="showPassword ? 'text' : 'password'"
                             label="Wähle ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -26,12 +30,16 @@
                             single-line
                             solo
                     />
+                    </v-responsive>
+                    
                 </v-col>
             </v-row>
 
             <v-row justify="center">
-                <v-col cols="5" sm="5">
+                <v-col justify="center" cols="auto">
+                    <v-responsive :min-width="250" :max-width="500">
                     <v-text-field v-model="mail" label="Deine E-Mail-Adresse lautet?" single-line solo></v-text-field>
+                    </v-responsive>
                 </v-col>
             </v-row>
             <br/>
@@ -133,8 +141,10 @@
             <br/>
 
             <v-row justify="center">
-                <v-col cols="5" sm="5">
+                <v-col cols="auto">
+                    <v-responsive :min-width="270">
                     <v-textarea v-model="experience" label="Welche Vorerfahrungen hast du?" solo></v-textarea>
+                    </v-responsive>
                 </v-col>
             </v-row>
 
