@@ -100,35 +100,34 @@
             </v-row>
 
             <v-row justify="center">
-                <v-col md="1">
+                <v-col cols="auto">
+                    <v-row align-content="center">
                     <v-text-field
-                            class="ml-12"
                             label="von"
                             v-model="durationMin"
                             type="number"
                             style="width: 30px"
                     >
                     </v-text-field>
-                </v-col>
-                <v-col md="1">
                     <v-select
                             d-inline-block
                             v-model="durationMinType"
                             :items="durationTypeOptions"
                             style="width: 100px"
                     ></v-select>
+                    </v-row>
                 </v-col>
-                <v-col md="1">
+                <v-col cols="auto">
+                </v-col>
+                <v-col cols="auto">
+                    <v-row>
                     <v-text-field
-                            class="ml-12"
                             label="bis"
                             v-model="durationMax"
                             type="number"
                             style="width: 30px"
                     >
                     </v-text-field>
-                </v-col>
-                <v-col md="1">
                     <v-select
                             v-model="durationMaxType"
                             :items="durationTypeOptions"
@@ -136,6 +135,7 @@
                             item-value="value"
                             style="width: 100px"
                     ></v-select>
+                    </v-row>
                 </v-col>
             </v-row>
             <br/>
