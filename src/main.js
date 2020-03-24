@@ -17,6 +17,7 @@ import registerAgrarian from './pages/registerAgrarian';
 import registerAgrarianSuccess from './pages/registerAgrarianSuccess';
 import datenschutz from './pages/datenschutz';
 import impressum from './pages/impressum';
+import chat from './pages/chat';
 
 //plugins
 import firebase from 'firebase/app'
@@ -44,7 +45,8 @@ const routes = [
   {path: "/registerFarmers", component: registerAgrarian},
   {path: "/registerFarmerSuccess", component: registerAgrarianSuccess},
   {path: "/datenschutz", component: datenschutz},
-  {path: "/impressum", component: impressum}
+  {path: "/impressum", component: impressum},
+  {name: "chat", path: "/chat/:agrarianId", component: chat},
 ]
 
 const router = new VueRouter({
