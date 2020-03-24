@@ -4,7 +4,7 @@
       <v-row class="mb-n6">
         <v-col>
            <v-responsive :min-width="230" :height="64">
-          <v-text-field class="mb-3 mr-3 ml-3" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
+          <v-text-field v-bind="size" class="mb-3 mr-3 ml-3" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
            </v-responsive>
         </v-col>
         <v-col>
@@ -23,10 +23,10 @@
         </v-col>
       </v-row>
       <v-row >
-        <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-3">
-            <v-responsive :max-width="600" :min-height="60">
+        <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-3 mr-6">
+            <v-responsive :max-width="600" :min-height="60" >
           <v-slider
-          class="pt-7"
+          class="pt-7 mr-5 ml-3"
             v-model="searchradius"
             label="Radius (km)"
             :min_="1"
@@ -39,8 +39,8 @@
         </v-col>
       </v-row>
       <v-row class="justify-center">
-        <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left ma-3" min-width="200">SUCHE</v-btn>
-        <v-btn big color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-3" min-width="200">ANZEIGE ERSTELLEN</v-btn>
+        <v-btn v-bind="size" color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
+        <v-btn v-bind="size" color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-3" min-width="11%" >ANZEIGE ERSTELLEN</v-btn>
       </v-row>
     </v-card>
     <br />
@@ -93,6 +93,12 @@ export default {
     offercount: 0
   }),
 
+  computed: {
+    size() {
+      const size = {xs:'x-small',sm:'small',lg:'large',xl:'x-large'}[this.$vuetify.breakpoint.name];
+      return size ? { [size]: true } : {}
+    }
+  },
   methods: {
     createOffer() {
       this.$router.push("/createOffer");
