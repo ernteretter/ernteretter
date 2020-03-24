@@ -1,5 +1,5 @@
 <template>
-<v-card class="mx-auto" max-width="1200">
+<v-card class="mx-auto" max-width="1000px">
     <v-card-title id="title" class="headline font-weight-bold "> Auch in dieser besondern Zeit wachsen unsere Pflanzen und versorgen uns alle mit Nahrung</v-card-title>
     <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto" @click="$router.push('/')" max-width="80%" style="{cursor: pointer}" />
     <v-row class="justify-center" no-gutters>

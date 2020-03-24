@@ -1,5 +1,5 @@
 <template>
-<v-card class='mx-auto pa-3' width="800">
+<v-card class='mx-auto pa-3' width="1000px">
     <h1>Impressum</h1>
     <p>Angaben gemäß § 5 TMG</p>
     <p>Andreas Kotowicz <br>

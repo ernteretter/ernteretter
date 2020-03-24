@@ -24,10 +24,10 @@
         <v-row align="center" justify="center">
             <v-col>
                 <v-row>
-                    <v-icon>mdi-barley</v-icon>
+                    <v-icon color="secondary">mdi-barley</v-icon>
                     <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0">mdi-menu</v-icon>
                     <div v-for="(item, index) in drawerItems" :key="index">
-                        <v-btn v-if="!drawer && (item.condition ? true : user)" small outlined color=primary :to="item.route" min-width="115">
+                        <v-btn v-if="!drawer && (item.condition ? true : user)" small outlined color=primary color-text="white" :to="item.route" min-width="115">
                             {{item.title}}
                             <v-spacer />
                             <v-icon small> {{item.icon}} </v-icon>
@@ -130,13 +130,13 @@ export default {
                     icon: 'mdi-information',
                     route: '/information',
                     condition: true
-                },{
+                },
+                {
                     title: 'Anzeigen',
                     icon: 'mdi-view-dashboard-outline',
                     route: '/offers',
                     condition: true,
                 },
-                
                 {
                     title: 'Termine',
                     icon: 'mdi-calendar-range',

@@ -1,6 +1,6 @@
 <template>
 <v-app>
-    <v-card class="mx-auto mt-5">
+    <v-card class="mx-auto mt-5" max-width="1000px">
         <v-card-title class="primary">
             <span class="headline white--text">Termine</span>
             <v-spacer></v-spacer>
