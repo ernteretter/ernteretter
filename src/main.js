@@ -24,6 +24,12 @@ import VueRouter from 'vue-router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify'
+import VueAnalytics from 'vue-analytics'
+
+//Analytics Config
+Vue.use(VueAnalytics, {
+  id: 'UA-161710564-1'
+});
 
 
 //enable plugins
