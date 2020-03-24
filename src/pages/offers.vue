@@ -232,11 +232,6 @@ export default {
 .search-wrapper {
   margin-bottom: 20px
 }
-
-#searchbutton {
-}
-#cratebutton{
-}
 #titlesearch {
   margin: 5px;
 }
