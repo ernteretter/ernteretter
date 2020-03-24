@@ -186,11 +186,6 @@
                   <br />Wird für die Kommunikation zwischen Landwirt/Betrieb und Erntehelfer benötigt.
                 </span>
               </p>
-              <p>
-                Klicken Sie
-                <a href="#" @click.prevent="disableTracking">Hier</a>,
-                um das Tracking durch Google Analytics zu deaktivieren.
-              </p>
             </li>
           </ol>
         </li>
@@ -201,5 +196,6 @@
         style="font-size:11pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"
       >Die Daten werden lediglich zur Kommunikation zwischen Stellenausschreiber und Erntehelfer gespeichert. Sie werden nicht an weitere Dritter gegeben. Sobald eine Löschung der Anzeige bzw. des Profil erfolgt werden alle Daten unwiederbringlich gelöscht.</span>
     </p>
+    
   </v-card>
 </template>
