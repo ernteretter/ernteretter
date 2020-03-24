@@ -39,8 +39,8 @@
         </v-col>
       </v-row>
       <v-row class="justify-center">
-        <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left ma-5" min-width="200">SUCHE</v-btn>
-        <v-btn big color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-5" min-width="200">ANZEIGE ERSTELLEN</v-btn>
+        <v-btn big color="primary" id="searchbutton" @click="list_offers();" class="rounded-button-left ma-3" min-width="200">SUCHE</v-btn>
+        <v-btn big color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-3" min-width="200">ANZEIGE ERSTELLEN</v-btn>
       </v-row>
     </v-card>
     <br />
