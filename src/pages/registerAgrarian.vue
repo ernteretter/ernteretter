@@ -79,6 +79,8 @@
                     .then(data => {
                         let agrarianData = {
                             uid: data.user.uid,
+                            publicEmail: data.user.email,
+                            photoURL: data.user.photoURL, 
                             place: {
                                 name: this.placeName,
                                 street: this.placeStreet,

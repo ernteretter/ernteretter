@@ -34,7 +34,7 @@ Vue.use(Vuetify)
 const routes = [
   {name: "landingPage", path: "/", component: landingPage},
   {name: "offers", path: "/offers", component: offers},
-  {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails, meta: {requiresAuth: true}},
+  {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
   {name: "login", path: "/login", component: login, meta: {requiresNotAuth: true}},
   {name: "createOffers", path: "/createOffer", component: createOffer, meta: {requiresAuth: true}},
   {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer, meta: {requiresAuth: true}},

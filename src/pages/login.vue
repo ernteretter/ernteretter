@@ -1,13 +1,13 @@
 <template>
 <v-app>
-    <v-alert v-if="error" dismissible type="error" width="400px" class="mx-auto mt-5">Passwort und/oder Nutzname falsch</v-alert>
+    <v-alert v-if="displayAlert" dismissible :type="alertType" width="400px" class="mx-auto mt-5">{{alertText}}</v-alert>
     <v-col cols="12">
-        <v-card class="mx-auto mt-5 col-sm-12 col-md-5 ">
+        <v-card class="mx-auto mt-5 col-sm-12 col-md-5 " transition="slide-x-transition" v-if="!displayPasswordForgotten">
             <v-card-title>
                 <h1>Login</h1>
             </v-card-title>
             <v-form class="mx-auto col-sm-12 col-md-12">
-                <v-text-field v-model="mail" label="Username" />
+                <v-text-field v-model="mail" label="E-Mail" />
                 <v-text-field :type="showPassword ? 'text' : 'password'" label="Password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" v-model="password" />
                 <v-overlay :absolute="true" :value="overlay">
                     <v-progress-circular indeterminate>
@@ -15,9 +15,28 @@
                 </v-overlay>
             </v-form>
             <v-card-actions>
-                <v-btn color="success" @click="onLogin()">login</v-btn>
-                <v-spacer></v-spacer>
                 <v-btn color="primary" class="rounded-button-left" outlined @click="onRegisterHelper()">als Helfer Registrieren</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="info" @click="displayPasswordForgotten  = !displayPasswordForgotten">Passwort vergessen?</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="success" @click="onLogin()">login</v-btn>
+            </v-card-actions>
+        </v-card>
+        <v-card class="mx-auto mt-5 col-sm-12 col-md-5 " v-if="displayPasswordForgotten">
+            <v-card-title>
+                <h1>Login</h1>
+            </v-card-title>
+            <v-form class="mx-auto col-sm-12 col-md-12">
+                <v-text-field v-model="mail" label="E-Mail" />
+                <v-overlay :absolute="true" :value="overlay">
+                    <v-progress-circular indeterminate>
+                    </v-progress-circular>
+                </v-overlay>
+            </v-form>
+            <v-card-actions>
+                <v-btn color="error" @click="displayPasswordForgotten  = !displayPasswordForgotten"> abbruch</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="success" @click="resetPassword()">Passwort zurücksetzen</v-btn>
             </v-card-actions>
         </v-card>
     </v-col>
@@ -33,9 +52,12 @@ export default {
     },
     data() {
         return {
+            alertText: "",
+            alertType: "error",
+            displayPasswordForgotten: false,
             mail: '',
             password: '',
-            error: false,
+            displayAlert: false,
             documents: [],
             showPassword: false,
             overlay: false,
@@ -49,17 +71,17 @@ export default {
             this.$router.push('/reset')
         },
         async onLogin() {
-            try {
-                this.overlay = true
-                await firebase.auth().signInWithEmailAndPassword(this.mail, this.password).then(user => {
-                    if (user) {
-                        this.$router.push('/')
-                    }
-                })
-            } catch (err) {
+            this.overlay = true
+            await firebase.auth().signInWithEmailAndPassword(this.mail, this.password).then(user => {
+                if (user) {
+                    this.$router.push('/')
+                }
+            }).catch(() => {
                 this.overlay = false
-                this.error = true;
-            }
+                this.alertText = "Passwort und/oder Nutzname falsch"
+                this.alertType = "error"
+                this.displayAlert = true
+            })
         },
         async onRegisterHelper() {
             this.$router.push('/registerHelper');
@@ -70,6 +92,20 @@ export default {
                     router.push('/')
                 }
             });
+        },
+        async resetPassword() {
+            this.overlay = true
+            await firebase.auth().sendPasswordResetEmail(this.mail).then(() => {
+                this.displayAlert = true
+                this.alertText = "Zurücksetzen erfolgreich"
+                this.alertType = "success"
+            }).catch( () => {
+                this.displayAlert = true
+                this.alertText = "Etwas ist schief gegangen"
+                this.alertType = "error"
+            });
+            this.overlay = false
+
         }
 
     },
