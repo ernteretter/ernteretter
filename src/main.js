@@ -1,24 +1,53 @@
 import Vue from 'vue'
 import App from './App.vue'
+
+//sites
 import landingPage from './pages/landingPage'
+import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
+import offers from './pages/offers'
+import history from './pages/history'
+import settings from './pages/settings'
+import createOffer from './pages/createOffer';
+import editOffer from './pages/editOffer';
+import registerHelper from './pages/registerHelper';
+import registerHelperSuccess from './pages/registerHelperSuccess';
+import registerAgrarian from './pages/registerAgrarian';
+import registerAgrarianSuccess from './pages/registerAgrarianSuccess';
+import datenschutz from './pages/datenschutz';
+import impressum from './pages/impressum';
+import information from './pages/information';
+import error from './pages/error';
 
 //plugins
 import firebase from 'firebase/app'
 import VueRouter from 'vue-router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-import vuetify from './plugins/vuetify';
-import createOffer from './pages/createOffer';
+import vuetify from './plugins/vuetify'
+
 
 //enable plugins
 Vue.use(VueRouter)
 Vue.use(Vuetify)
 
 const routes = [
-  {path: "/", component: landingPage},
-  {path: "/login", component: login},
-  {path: "/createOffer", component: createOffer},
+  {name: "landingPage", path: "/", component: landingPage},
+  {name: "offers", path: "/offers", component: offers},
+  {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
+  {name: "login", path: "/login", component: login, meta: {requiresNotAuth: true}},
+  {name: "createOffers", path: "/createOffer", component: createOffer, meta: {requiresAuth: true}},
+  {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer, meta: {requiresAuth: true}},
+  {name: "history", path: "/history", component: history, meta: {requiresAuth: true}},
+  {name: "settings", path: "/settings", component: settings, meta: {requiresAuth: true}},
+  {name: "registerHelper", path: "/registerHelper", component: registerHelper, meta: {requiresNotAuth: true}},
+  {name: "registerHelperSuccess", path: "/registerHelperSuccess", component: registerHelperSuccess, meta: {requiresNotAuth: true}},
+  {name: "registerFarmers", path: "/registerFarmers", component: registerAgrarian, meta: {requiresNotAuth: true}},
+  {name: "registerFarmerSuccess", path: "/registerFarmerSuccess", component: registerAgrarianSuccess, meta: {requiresNotAuth: true}},
+  {name: "datenschutz", path: "/datenschutz", component: datenschutz},
+  {name: "impressum", path: "/impressum", component: impressum},
+  {name: "information", path: "/information", component: information},
+  {name: "error", path:'*', component: error},
 ]
 
 const router = new VueRouter({
@@ -39,9 +68,34 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 Vue.config.productionTip = false
+router.beforeEach(async (to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)){
+    firebase.auth().onAuthStateChanged((user) => {
+      if(user){
+        next()
+      } else {
+        next({name: "login"})
+      }
+    })
+  } else if(to.matched.some(record => record.meta.requiresNotAuth)){
+    firebase.auth().onAuthStateChanged((user) => {
+      if(user){
+        next({name: "landingPage"})
+      } else {
+        next()
+      }
+    })
+  } else {
+    next()
+  }
+})
+
+export default router 
 
 new Vue({
   render: h => h(App),
   vuetify,
   router
 }).$mount('#app')
+
+

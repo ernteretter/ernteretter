@@ -2,7 +2,7 @@
 <div class="editOffer">
     <v-card max-width="1000" class="mx-auto text-center">
         <v-container id="header">
-            <v-card-title class="display-1 justify-center" id="headertitle">Erstellen sie Ihren Aufruf</v-card-title>
+            <v-card-title class="display-1 justify-center" id="headertitle">Updaten sie Ihren Aufruf</v-card-title>
         </v-container>
         <v-container>
             <v-text-field :rules="helperRule" type="number" v-model="maxHelpers" label="Wie viele Helfer brauchen Sie?" single-line></v-text-field>
@@ -58,8 +58,8 @@
             <v-textarea :rules="helperRule" v-model="description" outlined label="Beschreibung"></v-textarea>
         </v-container>
 
-        <v-btn class="rounded-button-left" x-large outlined color="primary" @click="createOffer()">
-            Aufruf Abschicken
+        <v-btn class="rounded-button-left" x-large outlined color="primary" @click="updateOffer()">
+            Update Abschicken
         </v-btn>
     </v-card>
 </div>
@@ -93,39 +93,56 @@ export default {
     }),
     computed: {
         datesText() {
-            return this.dates
-                .map(d =>
-                    new Date(d)
-                    .toISOString()
-                    .substr(0, 10)
-                    .split("-")
-                    .reverse()
-                    .join("."))
-                .join(" bis ");
+            let niceDates = this.dates.map(a => a.toDate().toLocaleDateString())
+            console.log(niceDates);
+            return niceDates.join(" bis ");
         }
     },
-    mounted: function () {
+    mounted() {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
 
                 docRef.get().then((doc) => {
                     if (!doc.exists) {
+                        console.log(2);
                         this.$router.push("/login");
                         alert("Du bist kein Landwirt!");
                         return;
                     }
                 })
-            } else {
+            }else {
                 this.$router.push("/login");
                 alert("Du bist nicht eingeloggt!");
                 return;
             }
         });
-
+        let offerId = this.$route.params.offerId;
+        let firestore = firebase.firestore();
+        let docRef = firestore.collection("offers").doc(offerId);
+        docRef.get().then((doc) => {
+            if (doc.exists) {
+                this.address = doc.data().address;
+                this.street = doc.data().address.street;
+                this.postCode = doc.data().address.postCode;
+                this.houseNumber = doc.data().address.number;
+                this.city = doc.data().address.city;
+                this.title = doc.data().title;
+                this.radioErnteSaat = doc.data().workType ? 1 : 0;
+                this.maxHelpers = doc.data().maxHelpers;
+                this.place = doc.data().postCode;
+                this.harvestType = doc.data().harvestType;
+                this.dates = [doc.data().startDate.toDate().toISOString(), doc.data().endDate.toDate().toISOString()];
+                this.salary = doc.data().salary;
+                this.equipment = doc.data().equipment;
+                this.description = doc.data().description;
+            } else {
+                console.log("Error");
+            }
+        })
     },
     methods: {
-        createOffer() {
+        updateOffer() {
             if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.equipment == null || this.dates == null) {
                 alert("Bitte füllen Sie alle Felder!");
                 return;
@@ -146,11 +163,12 @@ export default {
                 city: this.city
             };
             let data = {
-                title: this.title,
                 address: address,
+                title: this.title,
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
+                postCode: parseInt(this.place),
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
@@ -161,10 +179,11 @@ export default {
                 workType: this.radioErnteSaat == "0" ? true : false
             }
 
+            let offerId = this.$route.params.offerId;
             let firestore = firebase.firestore();
-            var newOffer = firestore.collection('offers').doc();
-            newOffer.set(data).then(() => {
-                    console.log("Document written successfully!")
+            var newOffer = firestore.collection('offers').doc(offerId);
+            newOffer.update(data).then(() => {
+                    console.log("Document updated successfully!")
                     this.$router.push("/history");
                 })
                 .catch(function (error) {
@@ -175,12 +194,10 @@ export default {
     }
 }
 </script>
-
 <style>
 #header {
     background: #ed9a00;
 }
-
 #headertitle {
     color: white;
 }
