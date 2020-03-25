@@ -2,9 +2,9 @@
 <v-app>
     <v-alert v-if="displayAlert" dismissible :type="alertType" width="400px" class="mx-auto mt-5">{{alertText}}</v-alert>
     <v-col cols="12">
-        <v-card class="mx-auto mt-5 col-sm-12 col-md-5 " transition="slide-x-transition" v-if="!displayPasswordForgotten">
-            <v-card-title>
-                <h1>Login</h1>
+        <v-card class="mx-auto mt-5 col-sm-12 col-md-5" transition="slide-x-transition" v-if="!displayPasswordForgotten">
+            <v-card-title class="secondary--text">
+                <h1 class="mx-auto">Login</h1>
             </v-card-title>
             <v-form class="mx-auto col-sm-12 col-md-12">
                 <v-text-field v-model="mail" label="E-Mail" />
@@ -15,11 +15,9 @@
                 </v-overlay>
             </v-form>
             <v-card-actions>
-                <v-btn color="primary" class="rounded-button-left" outlined @click="onRegisterHelper()">als Helfer Registrieren</v-btn>
+                <v-btn color="secondary" @click="displayPasswordForgotten  = !displayPasswordForgotten" outlined>Passwort vergessen?</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="info" @click="displayPasswordForgotten  = !displayPasswordForgotten">Passwort vergessen?</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn color="success" @click="onLogin()">login</v-btn>
+                <v-btn color="primary" class="rounded-button-left px-5" outlined @click="onLogin()">login</v-btn>
             </v-card-actions>
         </v-card>
         <v-card class="mx-auto mt-5 col-sm-12 col-md-5 " v-if="displayPasswordForgotten">
@@ -34,9 +32,9 @@
                 </v-overlay>
             </v-form>
             <v-card-actions>
-                <v-btn color="error" @click="displayPasswordForgotten  = !displayPasswordForgotten"> abbruch</v-btn>
+                <v-btn color="secondary" @click="displayPasswordForgotten  = !displayPasswordForgotten" outlined> abbruch</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="resetPassword()">Passwort zurücksetzen</v-btn>
+                <v-btn color="primary" @click="resetPassword()" outlined>Passwort zurücksetzen</v-btn>
             </v-card-actions>
         </v-card>
     </v-col>
@@ -82,9 +80,6 @@ export default {
                 this.alertType = "error"
                 this.displayAlert = true
             })
-        },
-        async onRegisterHelper() {
-            this.$router.push('/registerHelper');
         },
         async alreadyLoggedIn(router) {
             await firebase.auth().onAuthStateChanged(function (user) {

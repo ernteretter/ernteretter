@@ -2,6 +2,13 @@
 <v-app>
 
     <v-navigation-drawer app disable-resize-watcher v-model="displayDrawer" hide-overlay fixed>
+        <template>
+            <v-btn color="primary" @click="$router.push('/login')" v-if="!user" outlined class="justify-center">login</v-btn>
+            <v-btn color="secondary" @click="$router.push('/register')" v-if="!user" outlined>registrieren</v-btn>
+            <v-btn color="red" @click="logout()" v-if="user" outlined class="justify-center">log out</v-btn>
+            <v-spacer></v-spacer>
+            <v-divider class="mt-5"></v-divider>
+        </template>
         <v-list dense nav>
             <v-list-item :to="item.condition? item.route : user ? item.route : null" v-for="(item, index) in drawerItems" :key="index">
                     <v-list-item-icon v-if="item.condition ? true : user">
@@ -12,11 +19,6 @@
                     </v-list-item-content>
             </v-list-item>
         </v-list>
-        <template v-slot:append>
-            <v-btn color="success" @click="$router.push('/login')" v-if="!user" outlined class="justify-center">login</v-btn>
-            <v-btn color="primary" @click="$router.push('/registerHelper')" v-if="!user" outlined>als Helfer Registrieren</v-btn>
-            <v-btn color="red" @click="logout()" v-if="user" outlined class="justify-center">log out</v-btn>
-        </template>
     </v-navigation-drawer>
 
     <v-app-bar app :dense="drawer" v-resize="onResize">
@@ -38,8 +40,8 @@
             <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" id="bild" />
             <v-col>
 
-                <v-btn color="success" @click="$router.push('/login')" v-if="!user && !drawer" outlined>login</v-btn>
-                <v-btn color="primary" @click="$router.push('/registerHelper')" v-if="!user && !drawer" outlined>als Helfer Registrieren</v-btn>
+                <v-btn color="primary" @click="$router.push('/login')" v-if="!user && !drawer" outlined>login</v-btn>
+                <v-btn color="secondary" @click="$router.push('/register')" v-if="!user && !drawer" outlined>registrieren</v-btn>
                 <v-btn color="red" @click="logout()" v-if="user && !drawer" outlined>log out</v-btn>
             </v-col>
         </v-row>
