@@ -10,6 +10,7 @@ import history from './pages/history'
 import settings from './pages/settings'
 import createOffer from './pages/createOffer';
 import editOffer from './pages/editOffer';
+import register from './pages/register';
 import registerHelper from './pages/registerHelper';
 import registerHelperSuccess from './pages/registerHelperSuccess';
 import registerAgrarian from './pages/registerAgrarian';
@@ -40,6 +41,7 @@ const routes = [
   {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer, meta: {requiresAuth: true}},
   {name: "history", path: "/history", component: history, meta: {requiresAuth: true}},
   {name: "settings", path: "/settings", component: settings, meta: {requiresAuth: true}},
+  {name: "register", path: "/register", component: register, meta: {requiresNotAuth: true}},
   {name: "registerHelper", path: "/registerHelper", component: registerHelper, meta: {requiresNotAuth: true}},
   {name: "registerHelperSuccess", path: "/registerHelperSuccess", component: registerHelperSuccess, meta: {requiresNotAuth: true}},
   {name: "registerFarmers", path: "/registerFarmers", component: registerAgrarian, meta: {requiresNotAuth: true}},

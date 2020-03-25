@@ -44,7 +44,7 @@ export default {
     name: 'landingPage',
     data(){
         return{
-            responiveNeeded: 'false'
+            responiveNeeded: false
         }
     },
     methods:{
