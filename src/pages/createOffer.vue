@@ -4,16 +4,24 @@
         <v-container id="header">
             <v-card-title class="display-1 justify-center" id="headertitle">Erstellen sie Ihren Aufruf</v-card-title>
         </v-container>
+
+        <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
+
         <v-container>
-            <v-text-field :rules="helperRule" type="number" v-model="maxHelpers" label="Wie viele Helfer brauchen Sie?" single-line></v-text-field>
+            <v-text-field :rules="helperRule" v-model="title" label="Titel" single-line solo></v-text-field>
+            <v-textarea :rules="helperRule" v-model="description" single-line solo label="Beschreibung"></v-textarea>
         </v-container>
 
-        <v-card-title class="justify-center"> Wo liegen die Felder auf denen Sie Hilfe benötigen? </v-card-title>
         <v-container>
-            <v-text-field :rules="helperRule" v-model="street" label="Straße" />
-            <v-text-field :rules="helperRule" v-model="houseNumber" label="Hausnummer" />
-            <v-text-field :rules="helperRule" v-model="postCode" type="number" label="Postleitzahl" />
-            <v-text-field :rules="helperRule" v-model="city" label="Stadt" />
+            <v-text-field :rules="helperRule" type="number" v-model="maxHelpers" single-line solo label="Wie viele Helfer brauchen Sie?"></v-text-field>
+        </v-container>
+
+        <v-card-title class="justify-center" single-line solo> Wo liegen die Felder auf denen Sie Hilfe benötigen? </v-card-title>
+        <v-container>
+            <v-text-field :rules="helperRule" v-model="street" label="Straße" single-line solo/>
+            <v-text-field :rules="helperRule" v-model="houseNumber" label="Hausnummer" single-line solo/>
+            <v-text-field :rules="helperRule" v-model="postCode" type="number" label="Postleitzahl" single-line solo/>
+            <v-text-field :rules="helperRule" v-model="city" label="Stadt" single-line solo/>
         </v-container>
 
         <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
@@ -25,7 +33,7 @@
         </v-row>
 
         <v-container>
-            <v-select :rules="helperRule" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
+            <v-select single-line solo :rules="helperRule" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
             </v-select>
         </v-container>
 
@@ -34,28 +42,17 @@
 
         <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
             <template v-slot:activator="{ on }">
-                <v-text-field :rules="helperRule" v-model="datesText" label="Bitte wählen sie einen Zeitraum aus" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+                <v-text-field single-line solo :rules="helperRule" v-model="datesText" label="Bitte wählen sie einen Zeitraum aus" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
             </template>
             <v-date-picker v-model="dates" @input="menu2 = false" range></v-date-picker>
         </v-menu>
 
         <v-container>
-            <!-- <v-row>
-                <v-date-picker v-model="dates" range></v-date-picker>
-                <v-text-field v-model="datesText" label="Zeitraum" prepend-icon="mdi-calendar" disabled></v-text-field>
-            </v-row> -->
 
-            <v-text-field type="number" :rules="helperRule" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)" single-line></v-text-field>
+            <v-text-field single-line solo type="number" :rules="helperRule" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
 
-            <v-text-field :rules="helperRule" v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line></v-text-field>
+            <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
 
-        </v-container>
-
-        <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
-
-        <v-container>
-            <v-text-field :rules="helperRule" v-model="title" label="Titel"></v-text-field>
-            <v-textarea :rules="helperRule" v-model="description" outlined label="Beschreibung"></v-textarea>
         </v-container>
 
         <v-btn class="rounded-button-left" x-large outlined color="primary" @click="createOffer()">
