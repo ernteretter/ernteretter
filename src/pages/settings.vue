@@ -1,5 +1,5 @@
 <template>
-    <v-card max-width="600" class="mx-auto" id="hello">
+    <v-card max-width="1000px" class="mx-auto" id="hello">
         <v-toolbar flat color="primary" dark>
             <v-toolbar-title>Einstellungen</v-toolbar-title>
         </v-toolbar>
