@@ -12,6 +12,7 @@
                 <v-col cols="5" sm="5">
                     <v-text-field v-model="name" label="Wie heißen Sie?" single-line solo></v-text-field>
                     <v-text-field v-model="mail" label="Ihre E-Mail Adresse lautet?" single-line solo></v-text-field>
+                    <p id="hinweis">Hinweis: Helfer werden sich bei dieser E-Mail melden.</p>
                     <v-text-field
                             :type="showPassword ? 'text' : 'password'"
                             label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -118,3 +119,9 @@
         }
     }
 </script>
+<style>
+#hinweis {
+    font-size: small;
+    padding-bottom: 30px;
+}
+</style>
