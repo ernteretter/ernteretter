@@ -22,25 +22,36 @@
     <v-app-bar app :dense="drawer" v-resize="onResize">
 
         <v-row align="center" justify="center">
-            <v-col>
+            <v-col cols="4">
                 <v-row>
-                    <v-icon color="secondary">mdi-barley</v-icon>
+                    <!--<v-icon color="secondary">mdi-barley</v-icon>-->
                     <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0">mdi-menu</v-icon>
                     <div v-for="(item, index) in drawerItems" :key="index">
-                        <v-btn v-if="!drawer && (item.condition ? true : user)" small outlined color=primary color-text="white" :to="item.route" min-width="115">
-                            {{item.title}}
-                            <v-spacer />
-                            <v-icon small> {{item.icon}} </v-icon>
-                        </v-btn>
+                        <v-tooltip bottom v-if="!drawer && (item.condition ? true : user)">
+                            <template v-slot:activator="{ on }">
+                                <v-btn icon :to="item.route">
+                        <v-avatar x-small color-text="white" v-on="on" >
+                            <!--{{item.title}}-->
+                            
+                            <v-icon color="primary" small> {{item.icon}} </v-icon>
+                        </v-avatar>
+                                </v-btn>
+                            </template>
+                            <span>{{item.title}}</span>
+                        </v-tooltip>
                     </div>
                 </v-row>
             </v-col>
-            <v-img :src="require('../Ernteretter-Logo_03.png')" contain width="5" height="50" @click="$router.push('/')" id="bild" />
-            <v-col>
-
-                <v-btn color="success" @click="$router.push('/login')" v-if="!user && !drawer" outlined>login</v-btn>
-                <v-btn color="primary" @click="$router.push('/registerHelper')" v-if="!user && !drawer" outlined>als Helfer Registrieren</v-btn>
-                <v-btn color="red" @click="logout()" v-if="user && !drawer" outlined>log out</v-btn>
+            <v-col cols="4">
+            <v-img :src="require('../Ernteretter-Logo_03.png')" contain max-width="256" height="50" @click="$router.push('/')" id="bild" class="mx-auto" />
+            </v-col>
+            <v-col cols="1"><v-spacer></v-spacer></v-col>
+            <v-col cols="1">
+                <v-btn color="primary" @click="$router.push('/login')" v-if="!user && !drawer" outlined right>login</v-btn>
+            </v-col>
+            <v-col cols="2">
+                <v-btn color="red" @click="logout()" v-if="user && !drawer" outlined >log out</v-btn>
+                <v-btn color="secondary" @click="$router.push('/register')" v-if="!user && !drawer" outlined>registrieren</v-btn>
             </v-col>
         </v-row>
     </v-app-bar>
