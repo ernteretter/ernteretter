@@ -213,7 +213,9 @@ export default {
                 return;
             }
             let userID = firebase.auth().currentUser.uid;
-            let difference = this.startDate.getTime() - this.endDate.getTime();
+            let startDate = new Date(this.startDate);
+            let endDate = new Date(this.endDate);
+            let difference = startDate.getTime() - endDate.getTime();
             let duration = difference / 1000 / 60 / 60 / 24;
             let address = {
                 street: this.street,
@@ -233,8 +235,8 @@ export default {
                 maxHelpers: parseInt(this.maxHelpers),
                 minDuration: duration,
                 salary: parseInt(this.salary),
-                startDate: this.startDate,
-                endDate: this.endDate,
+                startDate: startDate,
+                endDate: endDate,
                 workType: this.radioErnteSaat
             };
 
