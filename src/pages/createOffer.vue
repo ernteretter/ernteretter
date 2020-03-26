@@ -170,7 +170,6 @@ export default {
             let firestore = firebase.firestore();
             var newOffer = firestore.collection('offers').doc();
             newOffer.set(data).then(() => {
-                    console.log("Document written successfully!");
                     this.$router.push("/history");
                 })
                 .catch(function (error) {

@@ -136,7 +136,6 @@ export default {
         let firestore = firebase.firestore();
         let docRef = firestore.collection("offers").doc(offerId);
         docRef.get().then((doc) => {
-            console.log("getting offers");
             if (doc.exists) {
                 this.address = doc.data().address;
                 this.street = doc.data().address.street;
@@ -154,7 +153,6 @@ export default {
                 this.driverslicence = doc.data().driverslicence;
                 this.description = doc.data().description;
             } else {
-                console.log("Error");
             }
         })
     },
@@ -201,11 +199,9 @@ export default {
             let firestore = firebase.firestore();
             var newOffer = firestore.collection('offers').doc(offerId);
             newOffer.update(data).then(() => {
-                    console.log("Document updated successfully!")
                     this.$router.push("/history");
                 })
                 .catch(function (error) {
-                    console.error("Error writing Document: ", error);
                     alert("Konnte Datenbank nicht erreichen. Haben sie Internetzugang?");
                 })
         }

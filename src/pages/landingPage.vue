@@ -76,7 +76,6 @@ export default {
             if(user){
                 firebase.firestore().collection('agrarians').doc(user.uid).get().then(async (doc) => {
                     if(doc.exists){
-                        console.log(true);
                         
                         this.needHelp = '/createOffer'
                     } else {
