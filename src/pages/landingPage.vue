@@ -52,6 +52,16 @@ export default {
             responiveNeeded: false
         }
     },
+    metaInfo() {
+        return {
+            title: 'ernteretter',
+            meta : [ {
+                name: 'description',
+                content: 'Super-Duper tolle Beschreibung'
+            }
+            ]
+        }
+    },
     methods:{
         onResize(){
             if(window.innerWidth < 452){
