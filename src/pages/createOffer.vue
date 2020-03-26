@@ -96,6 +96,7 @@ export default {
         salary: "",
         description: "",
         equipment: "",
+        driverslicence: "",
         dates: [],
         items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges'],
         rules: {
