@@ -108,6 +108,7 @@
                         {{ agrarian.publicEmail }}
                     </a>
                 </div>
+                <v-btn @click="gotoChat()">Chat</v-btn>
             </div>
         </section>
     </div>
@@ -208,7 +209,7 @@ export default {
     },
     methods: {
         gotoChat() {
-            this.$router.push("/chat/" + this.agrarian.uid);
+            this.$router.push("/chat/" + this.agrarian.id);
         },
         addMe() {
             if (!this.uid) {

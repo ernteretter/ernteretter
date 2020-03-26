@@ -55,9 +55,11 @@ export default {
                 author2: this.secondUserID
             };
             let firestore = firebase.firestore();
-            firestore.collection("chats").doc(this.chatID).set({
+            firestore.collection("chats").doc(this.chatID).set(
                 data
-            }).catch(error => {
+            ).catch(error => {
+                console.log("logged in as: " + this.firstUserID);
+                console.log("second user: " + this.secondUserID);
                 console.log(this.chatID);
                 console.log(data);
                 console.log(error);
@@ -66,35 +68,34 @@ export default {
         fetchMessages() {
             console.log("fetching messages");
             let firestore = firebase.firestore();
-            firestore.collection("chats").doc(this.chatID).collection(this.chatID).get()
+            firestore.collection("chats").doc(this.chatID).collection("messages").get()
                 .then((snapshot) => {
                     snapshot.forEach(doc => {
-                        this.messages.push(doc.data().message);
+                        console.log("found message: " + doc.data());
+                        this.messages.push(doc.data());
                     });
-                }).catch(error => {
-                    alert("Konnte Nachrichten nicht lesen.");
-                    this.$router.push("/error");
-                    console.log(error);
-                })
+                });
         },
         createMessage() {
+            console.log("creating message");
             if (this.currentMessage == null) {
                 return;
             }
             let firestore = firebase.firestore();
-            var newMessage = firestore.collection("chats").doc(this.chatID).collection(this.chatID).doc(Date.now().toString());
+            var newMessage = firestore.collection("chats").doc(this.chatID).collection("messages").doc(Date.now().toString());
             let message = {
                 author: firebase.auth().currentUser.uid,
                 text: this.currentMessage,
             }
-            newMessage.set({
+            newMessage.set(
                 message
-            }).then(() => {
+            ).then(() => {
                 console.log("Chat written!");
                 this.messages.push(message);
             }).catch(error => {
-                alert("Konnte nachricht nicht abschicken.");
+                console.log("message:" + message.text);
                 console.log(error);
+                alert("Konnte nachricht nicht abschicken.");
                 this.$router.push("/error");
             })
         }
