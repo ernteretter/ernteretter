@@ -92,7 +92,6 @@ export default {
     farm_plz_arr: [],
     offercount: 0
   }),
-
   computed: {
     size() {
       const size = {sm:'small',lg:'large',xl:'x-large'}[this.$vuetify.breakpoint.name];
