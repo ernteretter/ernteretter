@@ -25,27 +25,27 @@ export default {
     },
     mounted() {
         firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                this.firstUserID = user.uid;
-            } else {
+            if (!user) {
                 this.$router.push("/login");
                 alert("Du bist nicht eingeloggt!");
                 return;
+            } else {
+                this.firstUserID = user.uid;
+                this.secondUserID = this.$route.params.agrarianId
+                this.chatID = this.firstUserID + "_" + this.secondUserID;
+                let firestore = firebase.firestore();
+                firestore.collection("chats").doc(this.chatID).get().then((snapshot) => {
+                    if (!snapshot.exists) {
+                        this.createRoom();
+                    } else {
+                        this.fetchMessages();
+                    }
+                }).catch(error => {
+                    console.log(error);
+                })
             }
         });
-        this.secondUserID = this.$route.params.agrarianId
-        this.chatID = this.firstUserID + "_" + this.secondUserID;
-        let firestore = firebase.firestore();
-        firestore.collection("chats").doc(this.chatID).get().then((snapshot) => {
-           if(!snapshot.exists) {
-               this.createRoom();
-           } 
-           else{
-               this.fetchMessages();
-           }
-        }).catch(error => {
-            console.log(error);
-        })
+
     },
     methods: {
         createRoom() {
@@ -55,8 +55,11 @@ export default {
                 author2: this.secondUserID
             };
             let firestore = firebase.firestore();
-            firestore.collection("chats").doc(this.chatID).set({data}).catch(error =>
-            {
+            firestore.collection("chats").doc(this.chatID).set({
+                data
+            }).catch(error => {
+                console.log(this.chatID);
+                console.log(data);
                 console.log(error);
             });
         },
