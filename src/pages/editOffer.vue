@@ -152,7 +152,6 @@ export default {
                 this.equipment = doc.data().equipment;
                 this.driverslicence = doc.data().driverslicence;
                 this.description = doc.data().description;
-            } else {
             }
         })
     },
@@ -200,7 +199,7 @@ export default {
             newOffer.update(data).then(() => {
                     this.$router.push("/history");
                 })
-                .catch(function (error) {
+                .catch(() => {
                     alert("Konnte Datenbank nicht erreichen. Haben sie Internetzugang?");
                 })
         }

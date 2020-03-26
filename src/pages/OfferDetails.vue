@@ -184,8 +184,6 @@ export default {
                     this.isAccepted = true;
                 }
             })
-            .catch(err => {
-            });
         firebase
             .firestore()
             .collection("acceptedOffers")
@@ -222,7 +220,7 @@ export default {
                     helperId: this.uid,
                     acceptDate: new Date()
                 })
-                .then(res => {
+                .then(() => {
                     this.isAccepted = true;
                     this.helperCount++;
                 });
@@ -240,7 +238,7 @@ export default {
                             .firestore()
                             .doc("acceptedOffers/" + snapshot.docs[0].id)
                             .delete()
-                            .then(res => {
+                            .then(() => {
                                 this.isAccepted = false;
                                 this.helperCount--;
                             });
