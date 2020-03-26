@@ -39,15 +39,78 @@
                 </v-select>
             </v-container>
 
-            <v-card-title> In welchem Zeitraum benötigen Sie Hilfe?
-            </v-card-title>
+            <v-card-title class="justify-center"> In welchem Zeitraum benötigen Sie Hilfe? </v-card-title>
 
-            <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
-                <template v-slot:activator="{ on }">
-                    <v-text-field single-line solo :rules="rules.datesText" v-model="datesText" label="Bitte wählen sie einen Zeitraum aus" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
-                </template>
-                <v-date-picker v-model="dates" @input="menu2 = false" range></v-date-picker>
-            </v-menu>
+            <v-row justify="center">
+                <v-col cols="10" sm="3">
+                    <v-menu
+                            ref="menuStartDate"
+                            v-model="menuStartDate"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y min-width="290px"
+                    >
+                        <template v-slot:activator="{ on }">
+                            <v-text-field
+                                    single-line
+                                    solo
+                                    :rules="rules.startDateText"
+                                    v-model="startDateText"
+                                    label="Anfangsdatum"
+                                    hint="von"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-on="on"
+                            />
+                        </template>
+                        <v-date-picker
+                                v-model="startDate"
+                                :min="dateNow"
+                                locale="de-DE"
+                        >
+                            <v-spacer></v-spacer>
+                            <v-btn text outlined color="primary" @click="menuStartDate = false">Abbrechen</v-btn>
+                            <v-btn text outlined color="primary" @click="$refs.menuStartDate.save(startDate)">OK</v-btn>
+                        </v-date-picker>
+                    </v-menu>
+                </v-col>
+                <v-col cols="100" sm="1" class="mt-3">
+                    <p>bis</p>
+                </v-col>
+                <v-col cols="10" sm="3">
+                    <v-menu
+                            ref="menuEndDate"
+                            v-model="menuEndDate"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y min-width="290px"
+                    >
+                        <template v-slot:activator="{ on }">
+                            <v-text-field
+                                    single-line
+                                    solo
+                                    :rules="rules.endDateText"
+                                    v-model="endDateText"
+                                    label="Enddatum"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-on="on"
+                            />
+                        </template>
+                        <v-date-picker
+                                v-model="endDate"
+                                :min="(startDate && (startDate > dateNow)) ? startDate : dateNow"
+                                locale="de-DE"
+                        >
+                            <v-spacer></v-spacer>
+                            <v-btn text outlined color="primary" @click="menuEndDate = false">Abbrechen</v-btn>
+                            <v-btn text outlined color="primary" @click="$refs.menuEndDate.save(endDate)">OK</v-btn>
+                        </v-date-picker>
+                    </v-menu>
+                </v-col>
+            </v-row>
 
             <v-container>
 
@@ -83,10 +146,13 @@ export default {
     data: () => ({
         valid: true,
         formWarning: false,
-        menu2: false,
-        helperRule: [
-            v => !!v || 'Feld wird benötigt'
-        ],
+        dateNow: new Date().toISOString().substr(0, 10),
+        startDate: null,
+        endDate: null,
+        startDateText: "",
+        endDateText: "",
+        menuStartDate: false,
+        menuEndDate: false,
         street: "",
         houseNumber: "",
         postCode: "",
@@ -100,7 +166,6 @@ export default {
         description: "",
         equipment: "",
         driverslicence: "",
-        dates: [],
         items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges'],
         rules: {
             title: [value => !!value.trim() || 'Titel wird benötigt.'],
@@ -118,22 +183,10 @@ export default {
             city: [value => !!value || 'Stadt wird benötigt.'],
             radioErnteSaat: [value => !!value || 'Hilfe-Typ wird benötigt.'],
             harvestType: [value => !!value || 'Art der Ernte/Aussaat wird benötigt.'],
-            datesText: [value => !!value || 'Zeitraum wird benötigt.']
+            startDateText: [value => !!value || 'Anfangsdatum wird benötigt.'],
+            endDateText: [value => !!value || 'Enddatum wird benötigt.']
         }
     }),
-    computed: {
-        datesText() {
-            return this.dates
-                .map(d =>
-                    new Date(d)
-                    .toISOString()
-                    .substr(0, 10)
-                    .split("-")
-                    .reverse()
-                    .join("."))
-                .join(" bis ");
-        }
-    },
     mounted() {
         let offerId = this.$route.params.offerId;
         let firestore = firebase.firestore();
@@ -150,7 +203,8 @@ export default {
                 this.maxHelpers = doc.data().maxHelpers;
                 this.place = doc.data().postCode;
                 this.harvestType = doc.data().harvestType;
-                this.dates = [doc.data().startDate.toDate().toISOString(), doc.data().endDate.toDate().toISOString()];
+                this.startDate = this.formatDateObject(doc.data().startDate.toDate());
+                this.endDate = this.formatDateObject(doc.data().endDate.toDate());
                 this.salary = doc.data().salary;
                 this.equipment = doc.data().equipment;
                 this.driverslicence = doc.data().driverslicence;
@@ -159,20 +213,41 @@ export default {
             }
         })
     },
+    watch: {
+        startDate(val) {
+            this.startDateText = this.formatDate(val);
+            if (this.endDate && (val > this.endDate)) {
+                this.endDate = val;
+            }
+        },
+        endDate(val) {
+            this.endDateText = this.formatDate(val);
+        }
+    },
     methods: {
+        formatDateObject(date) {
+            if (!date) {
+                return "";
+            }
+            let month = date.getMonth()+1;
+            return date.getFullYear() + "-" + (month < 10 ? "0" + month : month) + "-" + date.getDate();
+        },
+        formatDate(date) {
+            if (!date) {
+                return null;
+            }
+            const [year, month, day] = date.split('-');
+            return `${day}.${month}.${year}`;
+        },
         updateOffer() {
             this.formWarning = !this.$refs.form.validate();
             if (this.formWarning) {
                 return;
             }
             let userID = firebase.auth().currentUser.uid;
-            let datesAsDates = this.dates.map((a) => new Date(a));
-            let datesSorted = datesAsDates.sort((a, b) => {
-                return a > b ? 1 : (b > a ? -1 : 0);
-            });
-            let firstDate = datesSorted[0];
-            let lastDate = datesSorted[1];
-            let difference = lastDate.getTime() - firstDate.getTime();
+            let startDate = new Date(this.startDate);
+            let endDate = new Date(this.endDate);
+            let difference = startDate.getTime() - endDate.getTime();
             let duration = difference / 1000 / 60 / 60 / 24;
             let address = {
                 street: this.street,
@@ -192,8 +267,8 @@ export default {
                 maxHelpers: parseInt(this.maxHelpers),
                 minDuration: duration,
                 salary: parseInt(this.salary),
-                startDate: firstDate,
-                endDate: lastDate,
+                startDate: startDate,
+                endDate: endDate,
                 workType: this.radioErnteSaat
             }
 
