@@ -38,8 +38,8 @@ const routes = [
   {name: "offers", path: "/offers", component: offers},
   {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
   {name: "login", path: "/login", component: login, meta: {requiresNotAuth: true}},
-  {name: "createOffers", path: "/createOffer", component: createOffer, meta: {requiresAuth: true}},
-  {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer, meta: {requiresAuth: true}},
+  {name: "createOffers", path: "/createOffer", component: createOffer, meta: {requiresAuth: true, requiresFarmer: true}},
+  {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer, meta: {requiresAuth: true, requiresFarmer: true}},
   {name: "history", path: "/history", component: history, meta: {requiresAuth: true}},
   {name: "settings", path: "/settings", component: settings, meta: {requiresAuth: true}},
   {name: "register", path: "/register", component: register, meta: {requiresNotAuth: true}},
@@ -73,11 +73,26 @@ firebase.initializeApp(firebaseConfig);
 
 Vue.config.productionTip = false
 router.beforeEach(async (to, from, next) => {
+  //muss angemeldet sein
   if(to.matched.some(record => record.meta.requiresAuth)){
     firebase.auth().onAuthStateChanged((user) => {
       if(user){
-        next()
+        //ist angemeldet
+        if(to.matched.some(record => record.meta.requiresFarmer)){
+          firebase.firestore().collection("agrarians").doc(user.uid).get().then((doc) => {
+            //muss farmer sein
+            if(doc.exists){
+              next()
+            } else {
+              //ist kein farmer
+            }
+          })
+        } else {
+          //muss kein farmer sein
+          next()
+        }    
       } else {
+        //ist nicht angemeldet
         next({name: "login"})
       }
     })

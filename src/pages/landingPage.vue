@@ -3,12 +3,12 @@
     <v-card-title id="title" class="headline font-weight-bold "> Auch in dieser besondern Zeit wachsen unsere Pflanzen und versorgen uns alle mit Nahrung</v-card-title>
     <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto" @click="$router.push('/')" max-width="80%" style="{cursor: pointer}" />
     <v-row class="justify-center" no-gutters>
-        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize"  to="/registerFarmers">Ich brauche Hilfe</v-btn>
+        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize"  :to="needHelp" >Ich brauche Hilfe</v-btn>
         <v-btn color="primary" outlined class="rounded-button-left" :x-small="responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
     </v-row>
     <v-spacer></v-spacer>
-    <v-card-subtitle id="title" class="title font-weight-bol"> ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
-        Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.
+    <v-card-subtitle id="title" class="title font-weight-bol"> Ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
+        Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten. <br><br> <strong>Und das alles kostenlos und unkompliziert!</strong>
     </v-card-subtitle>
     <v-row>
         <router-link to="/information" class="mx-auto display-1">
@@ -40,10 +40,15 @@
 </template>
 
 <script>
+import * as firebase from "firebase";
+import "firebase/firestore";
+import "firebase/auth";
+
 export default {
     name: 'landingPage',
     data(){
         return{
+            needHelp: '/registerFarmers',
             responiveNeeded: false
         }
     },
@@ -55,6 +60,23 @@ export default {
                 this.responiveNeeded = false
             }
         }
+    },
+    mounted(){
+        firebase.auth().onAuthStateChanged((user) => {
+            if(user){
+                firebase.firestore().collection('agrarians').doc(user.uid).get().then(async (doc) => {
+                    if(doc.exists){
+                        console.log(true);
+                        
+                        this.needHelp = '/createOffer'
+                    } else {
+                        this.needHelp = '/offers'
+                    }
+                })
+            } else {
+                this.needHelp = '/registerFarmers'
+            }
+        })
     }
 }
 

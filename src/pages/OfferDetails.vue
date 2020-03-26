@@ -27,6 +27,28 @@
             </div>
         </section>
 
+        <section class="harvesttype" v-if="offer.harvestType">
+            <div class="equipment-header section-header">
+                <div class="section-headline">Ernte/Saat-Typ</div>
+            </div>
+            <div class="equipment-body section-body">
+                {{
+            offer.harvestType
+          }}
+            </div>
+        </section>
+
+        <section class="salary" v-if="offer.salary">
+            <div class="equipment-header section-header">
+                <div class="section-headline">Vergütung</div>
+            </div>
+            <div class="equipment-body section-body">
+                {{
+            offer.salary
+          }} €
+            </div>
+        </section>
+
         <section class="equipment" v-if="offer.equipment">
             <div class="equipment-header section-header">
                 <div class="section-headline">Benötigtes Equipment</div>
@@ -39,6 +61,18 @@
           }}
             </div>
         </section>
+
+        <section class="driverslicence" v-if="offer.driverslicence">
+            <div class="equipment-header section-header">
+                <div class="section-headline">Benötigter Führerschein</div>
+            </div>
+            <div class="equipment-body section-body">
+                {{
+            offer.driverslicence
+          }}
+            </div>
+        </section>
+
         <section>
             <div class="section-header">
                 <div class="section-headline">Zeitraum</div>
@@ -74,9 +108,6 @@
                         {{ agrarian.publicEmail }}
                     </a>
                 </div>
-            </div>
-            <div class="section-tail">
-                <v-btn class="action-button rounded-button-left" id="btn-accept" @click="gotoChat()">Chat</v-btn>
             </div>
         </section>
     </div>
@@ -117,6 +148,7 @@ export default {
                         ...snapshot.data(),
                         id: snapshot.id
                     };
+                    console.log(this.offer);
                     return firebase
                         .firestore()
                         .doc("agrarians/" + snapshot.data().agrarianId)
