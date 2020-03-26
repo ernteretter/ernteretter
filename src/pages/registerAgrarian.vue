@@ -1,58 +1,72 @@
 <template>
     <v-card class="registerAgrarian mx-auto" max-width="1000">
-        <v-container fluid>
-            <v-row justify="center">
-                <v-img :src="require('../assets/ernteretter.png')" max-width="400"></v-img>
-            </v-row>
-            <br/><br/>
+        <v-form ref="form" v-model="valid" lazy-validation style="width: 100%">
+            <v-container fluid>
+                <v-row justify="center">
+                    <v-img :src="require('../assets/ernteretter.png')" max-width="400"/>
+                </v-row>
+                <br/><br/>
 
-            <h1 align="center">Erstellen Sie Ihr Profil!</h1>
-            <br/>
-            <v-row justify="center">
-                <v-col cols="5" sm="5">
-                    <v-text-field v-model="name" label="Wie heißen Sie?" single-line solo></v-text-field>
-                    <v-text-field v-model="mail" label="Ihre E-Mail Adresse lautet?" single-line solo></v-text-field>
-                    <p id="hinweis">Hinweis: Helfer werden sich bei dieser E-Mail melden.</p>
-                    <v-text-field
-                            :type="showPassword ? 'text' : 'password'"
-                            label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                            @click:append="showPassword = !showPassword"
-                            v-model="password"
-                            single-line
-                            solo
-                    />
-                    <v-text-field v-model="placeName" label="Wie heißt Ihr Hof?" single-line solo></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row justify="center">
-                <div>
-                    <h3>Wo liegt Ihr Hof?</h3>
-                </div>
-            </v-row>
+                <h1 align="center">Erstellen Sie Ihr Profil!</h1>
+                <br/>
+                <v-row justify="center">
+                    <v-col cols="5" sm="5">
+                        <v-text-field v-model="name" :rules="rules.name" label="Wie heißen Sie?" single-line solo/>
+                        <p id="hinweis">Hinweis: Helfer werden sich bei dieser E-Mail melden.</p>
+                        <v-text-field
+                                :type="showPassword ? 'text' : 'password'"
+                                label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                @click:append="showPassword = !showPassword"
+                                v-model="password"
+                                :rules="rules.password"
+                                single-line
+                                solo
+                        />
+                        <v-text-field v-model="mail" :rules="rules.mail" label="Ihre E-Mail Adresse lautet?" single-line solo/>
+                        <v-text-field v-model="placeName" :rules="rules.placeName" label="Wie heißt Ihr Hof?" single-line solo/>
+                    </v-col>
+                </v-row>
+                <v-row justify="center">
+                    <div>
+                        <h3>Wo liegt Ihr Hof?</h3>
+                    </div>
+                </v-row>
 
-            <v-row justify="center">
-                <v-col cols="1" sm="4">
-                    <v-text-field v-model="placeStreet" label="Straße" single-line solo></v-text-field>
-                </v-col>
-                <v-col cols="5" sm="1">
-                    <v-text-field v-model="placeNumber" label="Nummer" single-line solo></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row justify="center" class="mt-n8">
-                <v-col cols="5" sm="2">
-                    <v-text-field v-model="placePostcode" label="PLZ" single-line solo></v-text-field>
-                </v-col>
-                <v-col cols="5" sm="3">
-                    <v-text-field v-model="placeCity" label="Stadt" single-line solo></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row justify="center">
-                <v-btn class="rounded-button-left" x-large outlined color="primary" dark @click="registerAgrarian()">
-                    Registrieren
-                </v-btn>
-            </v-row>
-        </v-container>
-
+                <v-row justify="center">
+                    <v-col cols="1" sm="4">
+                        <v-text-field v-model="placeStreet" :rules="rules.placeStreet" label="Straße" single-line solo/>
+                    </v-col>
+                    <v-col cols="5" sm="1">
+                        <v-text-field v-model="placeNumber" :rules="rules.placeNumber" label="Nr." single-line solo/>
+                    </v-col>
+                </v-row>
+                <v-row justify="center" class="mt-n8">
+                    <v-col cols="5" sm="2">
+                        <v-text-field v-model="placePostcode" :rules="rules.placePostcode" label="PLZ" single-line solo/>
+                    </v-col>
+                    <v-col cols="5" sm="3">
+                        <v-text-field v-model="placeCity" :rules="rules.placeCity" label="Stadt" single-line solo/>
+                    </v-col>
+                </v-row>
+                <v-row justify="center" v-if="!valid">
+                    <v-alert dense outlined  type="error">
+                        Das Formular ist nicht vollständig ausgefüllt
+                    </v-alert>
+                </v-row>
+                <v-row justify="center">
+                    <v-btn
+                        class="rounded-button-left"
+                        x-large
+                        outlined
+                        color="primary"
+                        @click="registerAgrarian()"
+                        :disabled="!valid"
+                    >
+                        Registrieren
+                    </v-btn>
+                </v-row>
+            </v-container>
+        </v-form>
     </v-card>
 </template>
 
@@ -64,6 +78,7 @@
     export default {
         name: 'registerAgrarian',
         data: () => ({
+            valid: true,
             name: "",
             mail: "",
             password: "",
@@ -72,10 +87,35 @@
             placeStreet: "",
             placeNumber: "",
             placePostcode: "",
-            placeCity: ""
+            placeCity: "",
+            rules: {
+                name: [value => !!value.trim() || 'Name wird benötigt.'],
+                password: [value => !!value || 'Passwort wird benötigt.'],
+                mail: [
+                    value => !!value.trim() || 'E-Mail-Adresse wird benötigt.',
+                    value => {
+                        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        return pattern.test(value) || 'Ungültige E-Mail-Adresse.';
+                    }
+                ],
+                placeName: [value => !!value.trim() || 'Name des Hofes wird benötigt.'],
+                placeStreet: [value => !!value.trim() || 'Straße wird benötigt.'],
+                placeNumber: [value => !!value.trim() || 'Nr. benötigt.'],
+                placePostcode: [
+                    value => !!value.trim() || 'PLZ benötigt.',
+                    value => {
+                        const pattern = /^[0-9]{4,5}$/;
+                        return pattern.test(value) || 'Ungültige PLZ.';
+                    }
+                ],
+                placeCity: [value => !!value.trim() || 'Stadt wird benötigt.'],
+            }
         }),
         methods: {
             registerAgrarian() {
+                if (!this.$refs.form.validate()) {
+                    return;
+                }
                 firebase.auth().createUserWithEmailAndPassword(this.mail, this.password)
                     .then(data => {
                         let agrarianData = {
