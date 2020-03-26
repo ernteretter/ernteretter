@@ -150,7 +150,6 @@ export default {
                         ...snapshot.data(),
                         id: snapshot.id
                     };
-                    console.log(this.offer);
                     return firebase
                         .firestore()
                         .doc("agrarians/" + snapshot.data().agrarianId)
@@ -191,9 +190,6 @@ export default {
                     this.isAccepted = true;
                 }
             })
-            .catch(err => {
-                console.log(err);
-            });
         firebase
             .firestore()
             .collection("acceptedOffers")
@@ -233,9 +229,8 @@ export default {
                     helperId: this.uid,
                     acceptDate: new Date()
                 })
-                .then(res => {
+                .then(() => {
                     this.isAccepted = true;
-                    console.log(res);
                     this.helperCount++;
                 });
         },
@@ -252,10 +247,9 @@ export default {
                             .firestore()
                             .doc("acceptedOffers/" + snapshot.docs[0].id)
                             .delete()
-                            .then(res => {
+                            .then(() => {
                                 this.isAccepted = false;
                                 this.helperCount--;
-                                console.log(res);
                             });
                     }
                 });

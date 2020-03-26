@@ -10,7 +10,9 @@
   "dependencies": {
     "@google/maps": "^1.1.0",
     "core-js": "^3.6.4",
+    "fibers": "^4.0.2",
     "firebase": "^7.12.0",
+    "node-sass": "^4.13.1",
     "vue": "^2.6.11",
     "vue-cookie-law": "^1.12.0",
     "vue-meta": "^2.3.3",
