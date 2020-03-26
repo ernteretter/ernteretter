@@ -66,7 +66,7 @@
                 </v-alert>
             </v-row>
 
-            <v-btn class="rounded-button-left" :disabled="formWarning" x-large outlined color="primary" @click="createOffer()">
+            <v-btn class="rounded-button-left" :disabled="formWarning" x-large outlined color="primary" @click="updateOffer()">
                 Anzeige Updaten
             </v-btn>
         </v-form>
