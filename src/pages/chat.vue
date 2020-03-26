@@ -24,34 +24,57 @@ export default {
         }
     },
     mounted() {
-            firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.firstUserID = user.uid;
-            }else {
+            } else {
                 this.$router.push("/login");
                 alert("Du bist nicht eingeloggt!");
                 return;
             }
         });
-
-
-
-
-            this.secondUserID = this.$route.params.agrarianId
-            this.chatID = this.firstUserID + "_" + this.secondUserID;
-            let firestore = firebase.firestore();
-            firestore.collection("chats").doc(this.chatID).collection(this.chatID).get()
-            .then((snapshot) => {
-               snapshot.forEach(doc => {
-                   this.messages.push(doc.data().message);
-               });
-            }).catch(error => {
-                console.log(error);
-            })
+        this.secondUserID = this.$route.params.agrarianId
+        this.chatID = this.firstUserID + "_" + this.secondUserID;
+        let firestore = firebase.firestore();
+        firestore.collection("chats").doc(this.chatID).get().then((snapshot) => {
+           if(!snapshot.exists) {
+               this.createRoom();
+           } 
+           else{
+               this.fetchMessages();
+           }
+        }).catch(error => {
+            console.log(error);
+        })
     },
     methods: {
+        createRoom() {
+            console.log("creating room");
+            let data = {
+                author1: this.firstUserID,
+                author2: this.secondUserID
+            };
+            let firestore = firebase.firestore();
+            firestore.collection("chats").doc(this.chatID).set({data}).catch(error =>
+            {
+                console.log(error);
+            });
+        },
+        fetchMessages() {
+            console.log("fetching messages");
+            let firestore = firebase.firestore();
+            firestore.collection("chats").doc(this.chatID).collection(this.chatID).get()
+                .then((snapshot) => {
+                    snapshot.forEach(doc => {
+                        this.messages.push(doc.data().message);
+                    });
+                }).catch(error => {
+                    alert("Konnte Nachrichten nicht lesen.");
+                    this.$router.push("/error");
+                    console.log(error);
+                })
+        },
         createMessage() {
-            this.chatID = this.firstUserID + "_" + this.secondUserID;
             if (this.currentMessage == null) {
                 return;
             }
@@ -67,7 +90,9 @@ export default {
                 console.log("Chat written!");
                 this.messages.push(message);
             }).catch(error => {
+                alert("Konnte nachricht nicht abschicken.");
                 console.log(error);
+                this.$router.push("/error");
             })
         }
     }
