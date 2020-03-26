@@ -6,7 +6,8 @@ service cloud.firestore {
   	// wenn du der angegebene helper im request bist.
     match /acceptedOffers/{document} {
     	allow read: if true;
-      allow create,update: if request.auth.uid == request.resource.data.helperId;
+      allow create: if request.auth.uid == request.resource.data.helperId;
+      allow update: if request.auth.uid == request.resource.data.helperId && request.auth.uid == resource.data.helperId;
       allow delete: if request.auth.uid == resource.data.helperId;
     }
     //erlaube allen Landwirte zu lesen, aber nur wenn du es selbst bist zu schreiben.
