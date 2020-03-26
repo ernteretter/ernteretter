@@ -1,63 +1,75 @@
 <template>
 <div class="editOffer">
     <v-card max-width="1000" class="mx-auto text-center">
-        <v-container id="header">
-            <v-card-title class="display-1 justify-center" id="headertitle">Erstellen sie Ihren Aufruf</v-card-title>
-        </v-container>
+        <v-form ref="form" v-model="valid" lazy-validation style="width: 100%">
+            <v-container id="header">
+                <v-card-title class="display-1 justify-center" id="headertitle">Updaten sie Ihre Anzeige</v-card-title>
+            </v-container>
 
-        <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
+            <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
 
-        <v-container>
-            <v-text-field :rules="helperRule" v-model="title" label="Titel" single-line solo></v-text-field>
-            <v-textarea :rules="helperRule" v-model="description" single-line solo label="Beschreibung"></v-textarea>
-        </v-container>
+            <v-container>
+                <v-text-field :rules="rules.title" v-model="title" label="Titel" single-line solo></v-text-field>
+                <v-textarea :rules="rules.description" v-model="description" single-line solo label="Beschreibung"></v-textarea>
+            </v-container>
 
-        <v-container>
-            <v-text-field :rules="helperRule" type="number" v-model="maxHelpers" single-line solo label="Wie viele Helfer brauchen Sie?"></v-text-field>
-        </v-container>
+            <v-container>
+                <v-text-field :rules="rules.maxHelpers" type="number" v-model="maxHelpers" single-line solo label="Wie viele Helfer brauchen Sie?"></v-text-field>
+            </v-container>
 
-        <v-card-title class="justify-center" single-line solo> Wo liegen die Felder auf denen Sie Hilfe benötigen? </v-card-title>
-        <v-container>
-            <v-text-field :rules="helperRule" v-model="street" label="Straße" single-line solo/>
-            <v-text-field :rules="helperRule" v-model="houseNumber" label="Hausnummer" single-line solo/>
-            <v-text-field :rules="helperRule" v-model="postCode" type="number" label="Postleitzahl" single-line solo/>
-            <v-text-field :rules="helperRule" v-model="city" label="Stadt" single-line solo/>
-        </v-container>
+            <v-card-title class="justify-center" single-line solo> Wo liegen die Felder auf denen Sie Hilfe benötigen? </v-card-title>
+            <v-container>
+                <v-text-field :rules="rules.street" v-model="street" label="Straße" single-line solo/>
+                <v-text-field :rules="rules.houseNumber" v-model="houseNumber" label="Hausnummer" single-line solo/>
+                <v-text-field :rules="rules.postCode" v-model="postCode" type="number" label="Postleitzahl" single-line solo/>
+                <v-text-field :rules="rules.city" v-model="city" label="Stadt" single-line solo/>
+            </v-container>
 
-        <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
-        <v-row justify="center">
-            <v-radio-group v-model="radioErnteSaat" row class="justify-center align-center">
-                <v-radio label="Ernte"> </v-radio>
-                <v-radio label="Aussaat"> </v-radio>
-            </v-radio-group>
-        </v-row>
+            <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
+            <v-row justify="center">
+                <v-radio-group v-model="radioErnteSaat" row class="justify-center align-center">
+                    <v-radio label="Ernte"> </v-radio>
+                    <v-radio label="Aussaat"> </v-radio>
+                    <v-radio label="Sonstiges"> </v-radio>
+                </v-radio-group>
+            </v-row>
 
-        <v-container>
-            <v-select single-line solo :rules="helperRule" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
-            </v-select>
-        </v-container>
+            <v-container>
+                <v-select single-line solo :rules="rules.harvestType" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
+                </v-select>
+            </v-container>
 
-        <v-card-title> In welchem Zeitraum benötigen Sie Hilfe?
-        </v-card-title>
+            <v-card-title> In welchem Zeitraum benötigen Sie Hilfe?
+            </v-card-title>
 
-        <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
-            <template v-slot:activator="{ on }">
-                <v-text-field single-line solo :rules="helperRule" v-model="datesText" label="Bitte wählen sie einen Zeitraum aus" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
-            </template>
-            <v-date-picker v-model="dates" @input="menu2 = false" range></v-date-picker>
-        </v-menu>
+            <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                <template v-slot:activator="{ on }">
+                    <v-text-field single-line solo :rules="rules.datesText" v-model="datesText" label="Bitte wählen sie einen Zeitraum aus" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+                </template>
+                <v-date-picker v-model="dates" @input="menu2 = false" range></v-date-picker>
+            </v-menu>
 
-        <v-container>
+            <v-container>
 
-            <v-text-field single-line solo type="number" :rules="helperRule" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
+            <v-card-subtitle> optionale Felder </v-card-subtitle>
 
-            <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
+                <v-text-field single-line solo type="number" :rules="rules.salary" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
 
-        </v-container>
+                <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
+                
+                <v-text-field :v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
 
-        <v-btn class="rounded-button-left" x-large outlined color="primary" @click="createOffer()">
-            Aufruf Abschicken
-        </v-btn>
+            </v-container>
+            <v-row justify="center" v-if="formWarning">
+                <v-alert dense outlined  type="error">
+                    Das Formular ist nicht vollständig ausgefüllt
+                </v-alert>
+            </v-row>
+
+            <v-btn class="rounded-button-left" :disabled="formWarning" x-large outlined color="primary" @click="createOffer()">
+                Anzeige Updaten
+            </v-btn>
+        </v-form>
     </v-card>
 </div>
 </template>
@@ -85,8 +97,9 @@ export default {
         salary: null,
         description: null,
         equipment: null,
+        driverslicence: null,
         dates: [],
-        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren']
+        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges']
     }),
     computed: {
         datesText() {
@@ -114,6 +127,7 @@ export default {
                 this.dates = [doc.data().startDate.toDate().toISOString(), doc.data().endDate.toDate().toISOString()];
                 this.salary = doc.data().salary;
                 this.equipment = doc.data().equipment;
+                this.driverslicence = doc.data().driverslicence;
                 this.description = doc.data().description;
             } else {
                 console.log("Error");
@@ -122,7 +136,7 @@ export default {
     },
     methods: {
         updateOffer() {
-            if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.equipment == null || this.dates == null) {
+            if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.dates == null) {
                 alert("Bitte füllen Sie alle Felder!");
                 return;
             }
@@ -147,6 +161,7 @@ export default {
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
+                driverslicence: this.driverslicence,
                 postCode: parseInt(this.place),
                 harvestType: this.harvestType,
                 helperCount: 0,
