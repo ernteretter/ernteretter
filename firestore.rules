@@ -6,7 +6,8 @@ service cloud.firestore {
   	// wenn du der angegebene helper im request bist.
     match /acceptedOffers/{document} {
     	allow read: if true;
-      allow write: if request.auth.uid == request.resource.data.helperId;
+      allow create,update: if request.auth.uid == request.resource.data.helperId;
+      allow delete: if request.auth.uid == resource.data.helperId;
     }
     //erlaube allen Landwirte zu lesen, aber nur wenn du es selbst bist zu schreiben.
     match /agrarians/{document} {
@@ -26,6 +27,7 @@ service cloud.firestore {
     }
     //erstelle chatroom wenn du selbst drinnen stehst
     match /chats/{chatid} {
+    	allow read: if true;
     	allow create: if (request.auth.uid == request.resource.data.author1 || request.auth.uid == request.resource.data.author2) &&
       									(chatid == request.resource.data.author1 + "_" + request.resource.data.author2 || chatid == request.resource.data.author2 + "_" + request.resource.data.author1);
     	//schreibe message wenn du selbst autor bist,
