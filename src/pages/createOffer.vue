@@ -53,6 +53,8 @@
 
             <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
 
+            <v-text-field :v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
+
         </v-container>
 
         <v-btn class="rounded-button-left" x-large outlined color="primary" @click="createOffer()">
@@ -85,8 +87,9 @@ export default {
         salary: null,
         description: null,
         equipment: null,
+        driverslicence: null,
         dates: [],
-        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren']
+        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges']
     }),
     computed: {
         datesText() {
@@ -123,7 +126,7 @@ export default {
     },
     methods: {
         createOffer() {
-            if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.equipment == null || this.dates == null) {
+            if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.dates == null) {
                 alert("Bitte füllen Sie alle Felder!");
                 return;
             }
@@ -148,6 +151,7 @@ export default {
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
+                driverslicence: this.driverslicence,
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
