@@ -6,7 +6,7 @@
                 <v-card-title class="display-1 justify-center" id="headertitle">Updaten sie Ihre Anzeige</v-card-title>
             </v-container>
 
-            <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
+            <v-card-title class="justify-center"> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
 
             <v-container>
                 <v-text-field :rules="rules.title" v-model="title" label="Titel" single-line solo></v-text-field>
