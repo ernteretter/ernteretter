@@ -91,6 +91,7 @@ export default {
         },
         async resetPassword() {
             this.overlay = true
+            firebase.auth().useDeviceLanguage();
             await firebase.auth().sendPasswordResetEmail(this.mail).then(() => {
                 this.displayAlert = true
                 this.alertText = "Zurücksetzen erfolgreich"
