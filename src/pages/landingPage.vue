@@ -3,7 +3,7 @@
     <v-card-title id="title" class="headline font-weight-bold "> Auch in dieser besondern Zeit wachsen unsere Pflanzen und versorgen uns alle mit Nahrung</v-card-title>
     <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto" @click="$router.push('/')" max-width="80%" style="{cursor: pointer}" />
     <v-row class="justify-center" no-gutters>
-        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize"  to="/registerFarmers">Ich brauche Hilfe</v-btn>
+        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize"  :to="needHelp" >Ich brauche Hilfe</v-btn>
         <v-btn color="primary" outlined class="rounded-button-left" :x-small="responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
     </v-row>
     <v-spacer></v-spacer>
@@ -40,10 +40,15 @@
 </template>
 
 <script>
+import * as firebase from "firebase";
+import "firebase/firestore";
+import "firebase/auth";
+
 export default {
     name: 'landingPage',
     data(){
         return{
+            needHelp: '/registerFarmers',
             responiveNeeded: false
         }
     },
@@ -55,6 +60,23 @@ export default {
                 this.responiveNeeded = false
             }
         }
+    },
+    mounted(){
+        firebase.auth().onAuthStateChanged((user) => {
+            if(user){
+                firebase.firestore().collection('agrarians').doc(user.uid).get().then(async (doc) => {
+                    if(doc.exists){
+                        console.log(true);
+                        
+                        this.needHelp = '/createOffer'
+                    } else {
+                        this.needHelp = '/offers'
+                    }
+                })
+            } else {
+                this.needHelp = '/registerFarmers'
+            }
+        })
     }
 }
 
