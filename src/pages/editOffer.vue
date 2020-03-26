@@ -27,10 +27,10 @@
 
             <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
             <v-row justify="center">
-                <v-radio-group v-model="radioErnteSaat" row class="justify-center align-center">
-                    <v-radio label="Ernte"> </v-radio>
-                    <v-radio label="Aussaat"> </v-radio>
-                    <v-radio label="Sonstiges"> </v-radio>
+                <v-radio-group :rules="rules.radioErnteSaat" v-model="radioErnteSaat" row class="justify-center align-center">
+                    <v-radio value="harvest" label="Ernte"> </v-radio>
+                    <v-radio value="seed" label="Aussaat"> </v-radio>
+                    <v-radio value="other" label="Sonstiges"> </v-radio>
                 </v-radio-group>
             </v-row>
 
@@ -60,13 +60,13 @@
                 <v-text-field :v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
 
             </v-container>
-            <v-row justify="center" v-if="formWarning">
+            <v-row justify="center" v-if="formWarning && !valid">
                 <v-alert dense outlined  type="error">
                     Das Formular ist nicht vollständig ausgefüllt
                 </v-alert>
             </v-row>
 
-            <v-btn class="rounded-button-left" :disabled="formWarning" x-large outlined color="primary" @click="updateOffer()">
+            <v-btn class="rounded-button-left" :disabled="formWarning && !valid" x-large outlined color="primary" @click="updateOffer()">
                 Anzeige Updaten
             </v-btn>
         </v-form>
@@ -81,23 +81,25 @@ import 'firebase/firestore';
 export default {
     name: 'createOffer',
     data: () => ({
+        valid: true,
+        formWarning: false,
         menu2: false,
         helperRule: [
             v => !!v || 'Feld wird benötigt'
         ],
-        street: null,
-        houseNumber: null,
-        postCode: null,
-        city: null,
-        radioErnteSaat: null,
-        title: null,
-        maxHelpers: null,
-        minDuration: null,
-        harvestType: null,
-        salary: null,
-        description: null,
-        equipment: null,
-        driverslicence: null,
+        street: "",
+        houseNumber: "",
+        postCode: "",
+        city: "",
+        radioErnteSaat: "",
+        title: "",
+        maxHelpers: "",
+        minDuration: "",
+        harvestType: "",
+        salary: "",
+        description: "",
+        equipment: "",
+        driverslicence: "",
         dates: [],
         items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges'],
         rules: {
@@ -114,6 +116,7 @@ export default {
                 }
             ],
             city: [value => !!value || 'Stadt wird benötigt.'],
+            radioErnteSaat: [value => !!value || 'Hilfe-Typ wird benötigt.'],
             harvestType: [value => !!value || 'Art der Ernte/Aussaat wird benötigt.'],
             datesText: [value => !!value || 'Zeitraum wird benötigt.']
         }
@@ -153,6 +156,7 @@ export default {
                 this.equipment = doc.data().equipment;
                 this.driverslicence = doc.data().driverslicence;
                 this.description = doc.data().description;
+                this.radioErnteSaat = doc.data().workType;
             } else {
                 console.log("Error");
             }
@@ -160,8 +164,8 @@ export default {
     },
     methods: {
         updateOffer() {
-            if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.dates == null) {
-                alert("Bitte füllen Sie alle Felder!");
+            this.formWarning = !this.$refs.form.validate();
+            if (this.formWarning) {
                 return;
             }
             let userID = firebase.auth().currentUser.uid;
@@ -193,7 +197,7 @@ export default {
                 salary: parseInt(this.salary),
                 startDate: firstDate,
                 endDate: lastDate,
-                workType: this.radioErnteSaat == "0" ? true : false
+                workType: this.radioErnteSaat
             }
 
             let offerId = this.$route.params.offerId;

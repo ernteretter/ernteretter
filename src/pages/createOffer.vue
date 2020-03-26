@@ -27,10 +27,10 @@
 
             <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
             <v-row justify="center">
-                <v-radio-group v-model="radioErnteSaat" row class="justify-center align-center">
-                    <v-radio label="Ernte"> </v-radio>
-                    <v-radio label="Aussaat"> </v-radio>
-                    <v-radio label="Sonstiges"> </v-radio>
+                <v-radio-group :rules="rules.radioErnteSaat" v-model="radioErnteSaat" row class="justify-center align-center">
+                    <v-radio value="harvest" label="Ernte"> </v-radio>
+                    <v-radio value="seed" label="Aussaat"> </v-radio>
+                    <v-radio value="other" label="Sonstiges"> </v-radio>
                 </v-radio-group>
             </v-row>
 
@@ -60,13 +60,13 @@
                 <v-text-field :v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
 
             </v-container>
-            <v-row justify="center" v-if="formWarning">
+            <v-row justify="center" v-if="formWarning && !valid">
                 <v-alert dense outlined  type="error">
                     Das Formular ist nicht vollständig ausgefüllt
                 </v-alert>
             </v-row>
 
-            <v-btn class="rounded-button-left" :disabled="formWarning" x-large outlined color="primary" @click="createOffer()">
+            <v-btn class="rounded-button-left" :disabled="formWarning && !valid" x-large outlined color="primary" @click="createOffer()">
                 Anzeige Abschicken
             </v-btn>
         </v-form>
@@ -113,6 +113,7 @@ export default {
                 }
             ],
             city: [value => !!value || 'Stadt wird benötigt.'],
+            radioErnteSaat: [value => !!value || 'Hilfe-Typ wird benötigt.'],
             harvestType: [value => !!value || 'Art der Ernte/Aussaat wird benötigt.'],
             datesText: [value => !!value || 'Zeitraum wird benötigt.']
         }
@@ -165,7 +166,7 @@ export default {
                 salary: parseInt(this.salary),
                 startDate: firstDate,
                 endDate: lastDate,
-                workType: this.radioErnteSaat == "0" ? true : false
+                workType: this.radioErnteSaat
             };
 
             let firestore = firebase.firestore();
