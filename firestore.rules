@@ -1,8 +1,42 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+  
+  	//erlaube alle Anzeigen zu lesen, aber nur zu schreiben,
+  	// wenn du der angegebene helper im request bist.
+    match /acceptedOffers/{document} {
+    	allow read: if true;
+      allow write: if request.auth.uid == request.resource.data.helperId;
+    }
+    //erlaube allen Landwirte zu lesen, aber nur wenn du es selbst bist zu schreiben.
+    match /agrarians/{document} {
+    	allow read: if true;
+      allow write: if request.auth.uid == request.resource.data.uid;
+    }
+    //erlaube allen, die eingeloggt sind, helfer zu sehen
+    // erlaube nur den helfern selbst sich zu aendern
+    match /helpers/{document} {
+    	allow read: if request.auth.uid != null;
+      allow write: if request.auth.uid == request.resource.data.userId;
+    }
+    //fuer alle sichtbar, nur schreibbar wenn du der angegebene Bauer bist
+    match /offers/{document} {
+    	allow read: if true;
+      allow write: if request.auth.uid == request.resource.data.agrarianId;
+    }
+    //erstelle chatroom wenn du selbst drinnen stehst
+    match /chats/{chatid} {
+    	allow create: if (request.auth.uid == request.resource.data.author1 || request.auth.uid == request.resource.data.author2) &&
+      									(chatid == request.resource.data.author1 + "_" + request.resource.data.author2 || chatid == request.resource.data.author2 + "_" + request.resource.data.author1);
+    	//schreibe message wenn du selbst autor bist,
+      // lese wenn du teil des chatrooms bist
+      match /messages/{messageid} {
+      	allow read: if get(/databases/$(database)/documents/chats/$(chatid)).data.author1 == request.auth.uid || 
+      								get(/databases/$(database)/documents/chats/$(chatid)).data.author2 == request.auth.uid;
+      	allow create: if request.resource.data.author == request.auth.uid &&
+        							(get(/databases/$(database)/documents/chats/$(chatid)).data.author1 == request.auth.uid || 
+      								get(/databases/$(database)/documents/chats/$(chatid)).data.author2 == request.auth.uid);
+      }
     }
   }
 }
