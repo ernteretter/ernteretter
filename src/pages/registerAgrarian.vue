@@ -1,5 +1,5 @@
 <template>
-    <div class="registerAgrarian">
+    <v-card class="registerAgrarian mx-auto" max-width="1000">
         <v-container fluid>
             <v-row justify="center">
                 <v-img :src="require('../assets/ernteretter.png')" max-width="400"></v-img>
@@ -12,6 +12,7 @@
                 <v-col cols="5" sm="5">
                     <v-text-field v-model="name" label="Wie heißen Sie?" single-line solo></v-text-field>
                     <v-text-field v-model="mail" label="Ihre E-Mail Adresse lautet?" single-line solo></v-text-field>
+                    <p id="hinweis">Hinweis: Helfer werden sich bei dieser E-Mail melden.</p>
                     <v-text-field
                             :type="showPassword ? 'text' : 'password'"
                             label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -52,7 +53,7 @@
             </v-row>
         </v-container>
 
-    </div>
+    </v-card>
 </template>
 
 <script>
@@ -79,6 +80,8 @@
                     .then(data => {
                         let agrarianData = {
                             uid: data.user.uid,
+                            publicEmail: data.user.email,
+                            photoURL: data.user.photoURL, 
                             place: {
                                 name: this.placeName,
                                 street: this.placeStreet,
@@ -116,3 +119,9 @@
         }
     }
 </script>
+<style>
+#hinweis {
+    font-size: small;
+    padding-bottom: 30px;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <v-card width="800" class="mx-auto pa-3">
+  <v-card width="1000px" class="mx-auto pa-3">
     <p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;">
       <span
         style="font-size: 20px; font-family: Arial; color: rgb(0, 0, 0); background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"
