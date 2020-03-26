@@ -7,8 +7,8 @@
         <v-btn color="primary" outlined class="rounded-button-left" :x-small="responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
     </v-row>
     <v-spacer></v-spacer>
-    <v-card-subtitle id="title" class="title font-weight-bol"> ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
-        Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.
+    <v-card-subtitle id="title" class="title font-weight-bol"> Ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
+        Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten. <br><br> <strong>Und das alles kostenlos und unkompliziert!</strong>
     </v-card-subtitle>
     <v-row>
         <router-link to="/information" class="mx-auto display-1">
