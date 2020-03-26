@@ -8,6 +8,7 @@
             </div>
             <div class="action-section">
                 <div class="accept-cancel">
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()"><v-icon>mdi-pencil-outline</v-icon></v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted" @click="removeMe">Abmelden</v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-accept" v-else @click="addMe">Anmelden</v-btn>
                 </div>
@@ -125,6 +126,7 @@ export default {
         offer: false,
         agrarian: false,
         isAccepted: false,
+        isOwner: false,
         uid: false,
         helperCount: 0
     }),
@@ -165,6 +167,10 @@ export default {
                         ...snapshot.data(),
                         id: snapshot.id
                     };
+                    if (this.uid == this.agrarian.uid) {
+                        console.log("changed Owner to true!");
+                        this.isOwner = true;
+                    }
                 } else {
                     alert("Ein Fehler ist aufgetreten: Landwirt nicht gefunden");
                     this.$router.push("/offers");
@@ -207,6 +213,9 @@ export default {
             .join(".")
     },
     methods: {
+        gotoEditOffer() {
+            this.$router.push("/editOffer/" + this.offer.id);
+        },
         addMe() {
             if (!this.uid) {
                 alert("Bitte melde Dich erst an");
@@ -337,6 +346,11 @@ section {
 .action-button#btn-cancel {
     background-color: white;
     border: 1px solid #ed9a00;
+}
+
+.action-button#btn-edit {
+    background-color: #4d4238;
+    color: white;
 }
 
 .status-chip b {
