@@ -41,7 +41,7 @@
                         <v-col justify="center" cols="auto">
                             <v-responsive :min-width="250" :max-width="500">
                             <v-text-field
-                                    :rules="rules.email"
+                                    :rules="rules.mail"
                                     v-model="mail"
                                     label="Deine E-Mail-Adresse lautet?"
                                     single-line
@@ -155,16 +155,23 @@
                             </v-responsive>
                         </v-col>
                     </v-row>
+                    <v-row justify="center" v-if="!valid">
+                        <v-alert dense outlined  type="error">
+                            Das Formular ist nicht vollständig ausgefüllt
+                        </v-alert>
+                    </v-row>
 
                     <v-row justify="center">
-                        <v-btn class="rounded-button-left" x-large outlined color="primary" @click="registerHelper()">
+                        <v-btn
+                            class="rounded-button-left"
+                            x-large
+                            outlined
+                            color="primary"
+                            @click="registerHelper()"
+                            :disabled="!valid"
+                        >
                             Registrieren
                         </v-btn>
-                    </v-row>
-                    <v-row justify="center" v-if="!valid">
-                        <v-alert class="mt-8" dense outlined  type="error">
-                            Das Formular wurde nicht vollständig ausgefüllt
-                        </v-alert>
                     </v-row>
                     <br/>
                 </v-container>
@@ -199,7 +206,7 @@
             rules: {
                 name: [value => !!value.trim() || 'Name wird benötigt.'],
                 password: [value => !!value || 'Passwort wird benötigt.'],
-                email: [
+                mail: [
                     value => !!value.trim() || 'E-Mail-Adresse wird benötigt.',
                     value => {
                         const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
