@@ -52,6 +52,7 @@
             <v-text-field single-line solo type="number" :rules="helperRule" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
 
             <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
+            <v-text-field :v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
 
         </v-container>
 
@@ -85,8 +86,9 @@ export default {
         salary: null,
         description: null,
         equipment: null,
+        driverslicence: null,
         dates: [],
-        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren']
+        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges']
     }),
     computed: {
         datesText() {
@@ -96,24 +98,6 @@ export default {
         }
     },
     mounted() {
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
-
-                docRef.get().then((doc) => {
-                    if (!doc.exists) {
-                        console.log(2);
-                        this.$router.push("/login");
-                        alert("Du bist kein Landwirt!");
-                        return;
-                    }
-                })
-            }else {
-                this.$router.push("/login");
-                alert("Du bist nicht eingeloggt!");
-                return;
-            }
-        });
         let offerId = this.$route.params.offerId;
         let firestore = firebase.firestore();
         let docRef = firestore.collection("offers").doc(offerId);
@@ -132,6 +116,7 @@ export default {
                 this.dates = [doc.data().startDate.toDate().toISOString(), doc.data().endDate.toDate().toISOString()];
                 this.salary = doc.data().salary;
                 this.equipment = doc.data().equipment;
+                this.driverslicence = doc.data().driverslicence;
                 this.description = doc.data().description;
             } else {
                 console.log("Error");
@@ -140,7 +125,7 @@ export default {
     },
     methods: {
         updateOffer() {
-            if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.equipment == null || this.dates == null) {
+            if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.dates == null) {
                 alert("Bitte füllen Sie alle Felder!");
                 return;
             }
@@ -165,6 +150,7 @@ export default {
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
+                driverslicence: this.driverslicence,
                 postCode: parseInt(this.place),
                 harvestType: this.harvestType,
                 helperCount: 0,

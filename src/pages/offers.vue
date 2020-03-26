@@ -95,7 +95,7 @@ export default {
 
   computed: {
     size() {
-      const size = {xs:'x-small',sm:'small',lg:'large',xl:'x-large'}[this.$vuetify.breakpoint.name];
+      const size = {sm:'small',lg:'large',xl:'x-large'}[this.$vuetify.breakpoint.name];
       return size ? { [size]: true } : {}
     }
   },

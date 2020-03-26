@@ -145,13 +145,18 @@
                                 <v-col cols="10" sm="12">
 
                                     <v-slider
+                                            label="Umkreis (km)"
                                             v-model="searchRange"
-                                            class="align-center"
+                                            class="align-center mt-7"
                                             :max="searchRangeMax"
                                             :min="searchRangeMin"
                                             hide-details
+                                            thumb-label="always"
+                                            thumb-size="24"
+                                            thumb-color="primary"
+
                                     >
-                                        <template v-slot:append>
+                                        <!--<template v-slot:append>
                                             <v-text-field
                                                     v-model="searchRange"
                                                     class="mt-0 pt-0"
@@ -163,7 +168,7 @@
                                             <v-chip class="ma-2" outlined>
                                                 km
                                             </v-chip>
-                                        </template>
+                                        </template>-->
                                     </v-slider>
                                 </v-col>
                             </v-card-text>
@@ -229,8 +234,8 @@ export default {
             experience: "",
             harvestTypesOptions: ["Obst", "Gemüse"],
             durationTypeOptions: [{value: "days", text: "Tage"}, {value: "weeks", text: "Wochen"}],
-            searchRangeMin: 1,
-            searchRangeMax: 500,
+            searchRangeMin: 0,
+            searchRangeMax: 50,
             place: {},
             isAgrarian: false,
             doc_id: "",

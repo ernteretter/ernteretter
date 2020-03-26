@@ -53,6 +53,8 @@
                 <v-text-field single-line solo type="number" :rules="rules.salary" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
 
                 <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
+                
+                <v-text-field :v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
 
             </v-container>
             <v-row justify="center" v-if="formWarning">
@@ -92,7 +94,7 @@ export default {
         description: "",
         equipment: "",
         dates: [],
-        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren'],
+        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges'],
         rules: {
             title: [value => !!value.trim() || 'Titel wird benötigt.'],
             description: [value => !!value || 'Beschreibung wird benötigt.'],
@@ -125,26 +127,6 @@ export default {
                 .join(" bis ");
         }
     },
-    mounted: function () {
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
-
-                docRef.get().then((doc) => {
-                    if (!doc.exists) {
-                        this.$router.push("/login");
-                        alert("Du bist kein Landwirt!");
-                        return;
-                    }
-                })
-            } else {
-                this.$router.push("/login");
-                alert("Du bist nicht eingeloggt!");
-                return;
-            }
-        });
-
-    },
     methods: {
         createOffer() {
             this.formWarning = !this.$refs.form.validate();
@@ -172,6 +154,7 @@ export default {
                 agrarianId: userID,
                 description: this.description,
                 equipment: this.equipment,
+                driverslicence: this.driverslicence,
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
