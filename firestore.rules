@@ -13,13 +13,17 @@ service cloud.firestore {
     //erlaube allen Landwirte zu lesen, aber nur wenn du es selbst bist zu schreiben.
     match /agrarians/{document} {
     	allow read: if true;
-      allow write: if request.auth.uid == request.resource.data.uid;
+      allow create: if request.auth.uid == request.resource.data.uid;
+      allow update: if request.auth.uid == request.resource.data.uid && request.auth.uid == resource.data.uid;
+      allow delete: if request.auth.uid == resource.data.uid;
     }
     //erlaube allen, die eingeloggt sind, helfer zu sehen
     // erlaube nur den helfern selbst sich zu aendern
     match /helpers/{document} {
     	allow read: if request.auth.uid != null;
-      allow write: if request.auth.uid == request.resource.data.userId;
+      allow create: if request.auth.uid == request.resource.data.userId;
+      allow update: if request.auth.uid == request.resource.data.userId && request.auth.uid == resource.data.userId;
+      allow delete: if request.auth.uid == resource.data.userId;
     }
     //fuer alle sichtbar, nur schreibbar wenn du der angegebene Bauer bist
     match /offers/{document} {
