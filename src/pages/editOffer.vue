@@ -99,13 +99,36 @@ export default {
         equipment: null,
         driverslicence: null,
         dates: [],
-        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges']
+        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges'],
+        rules: {
+            title: [value => !!value.trim() || 'Titel wird benötigt.'],
+            description: [value => !!value || 'Beschreibung wird benötigt.'],
+            maxHelpers: [value => !!value || 'Anzahl Helfer wird benötigt.'],
+            street: [value => !!value || 'Straße wird benötigt.'],
+            houseNumber: [value => !!value || 'Hausnummer wird benötigt.'],
+            postCode: [
+                value => !!value.trim() || 'PLZ wird benötigt.',
+                value => {
+                    const pattern = /^[0-9]{4,5}$/;
+                    return pattern.test(value) || 'Ungültige PLZ.';
+                }
+            ],
+            city: [value => !!value || 'Stadt wird benötigt.'],
+            harvestType: [value => !!value || 'Art der Ernte/Aussaat wird benötigt.'],
+            datesText: [value => !!value || 'Zeitraum wird benötigt.']
+        }
     }),
     computed: {
         datesText() {
-            let niceDates = this.dates.map(a => a.toDate().toLocaleDateString())
-            console.log(niceDates);
-            return niceDates.join(" bis ");
+            return this.dates
+                .map(d =>
+                    new Date(d)
+                    .toISOString()
+                    .substr(0, 10)
+                    .split("-")
+                    .reverse()
+                    .join("."))
+                .join(" bis ");
         }
     },
     mounted() {
@@ -113,6 +136,7 @@ export default {
         let firestore = firebase.firestore();
         let docRef = firestore.collection("offers").doc(offerId);
         docRef.get().then((doc) => {
+            console.log("getting offers");
             if (doc.exists) {
                 this.address = doc.data().address;
                 this.street = doc.data().address.street;
