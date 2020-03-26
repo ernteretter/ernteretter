@@ -12,7 +12,6 @@
                 <v-row justify="center">
                     <v-col cols="5" sm="5">
                         <v-text-field v-model="name" :rules="rules.name" label="Wie heißen Sie?" single-line solo/>
-                        <p id="hinweis">Hinweis: Helfer werden sich bei dieser E-Mail melden.</p>
                         <v-text-field
                                 :type="showPassword ? 'text' : 'password'"
                                 label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -23,6 +22,7 @@
                                 solo
                         />
                         <v-text-field v-model="mail" :rules="rules.mail" label="Ihre E-Mail Adresse lautet?" single-line solo/>
+                        <p id="hinweis">Hinweis: Helfer werden sich bei dieser E-Mail melden.</p>
                         <v-text-field v-model="placeName" :rules="rules.placeName" label="Wie heißt Ihr Hof?" single-line solo/>
                     </v-col>
                 </v-row>
