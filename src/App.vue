@@ -26,21 +26,22 @@
         <v-row align="center" justify="center">
             <v-col cols="4">
                 <v-row>
-                    <!--<v-icon color="secondary">mdi-barley</v-icon>-->
-                    <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0">mdi-menu</v-icon>
+                    <v-icon color="secondary" >mdi-barley</v-icon>
+                    <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0" class="symbol-header">mdi-menu</v-icon>
                     <div v-for="(item, index) in drawerItems" :key="index">
-                        <v-tooltip bottom v-if="!drawer && (item.condition ? true : user)">
+                        <v-tooltip bottom v-if="!drawer && (item.condition ? true : user) && ir" >
                             <template v-slot:activator="{ on }">
-                                <v-btn icon :to="item.route">
+                                <v-btn icon :to="item.route" class="symbol-header">
                         <v-avatar x-small color-text="white" v-on="on" >
                             <!--{{item.title}}-->
                             
-                            <v-icon color="primary" small> {{item.icon}} </v-icon>
+                            <v-icon color="primary" small > {{item.icon}} </v-icon>
                         </v-avatar>
                                 </v-btn>
                             </template>
                             <span>{{item.title}}</span>
                         </v-tooltip>
+                        <v-btn outlined v-if="fulltextr" color="primary" small class="mr-1 ml-0 mb-1 mt-0 mb-0" :to="item.route">{{item.title}} <v-icon color="primary" small> {{item.icon}} </v-icon></v-btn>
                     </div>
                 </v-row> 
             </v-col>
@@ -122,6 +123,7 @@ export default {
         CookieLaw
     },
     async mounted() {
+        console.log("Version 0.9");
         this.onResize()
         await firebase.auth().onAuthStateChanged(user => {
             if (user) {
@@ -133,6 +135,8 @@ export default {
     },
     data() {
         return {
+            fulltextr :false,
+            ir :false,
             prototype: true,
             drawer: false,
             displayDrawer: false,
@@ -173,9 +177,20 @@ export default {
             })
         },
         onResize() {
-            if (window.innerWidth < 1360) {
-                this.drawer = true
-            } else {
+            if (window.innerWidth <= 720) {
+                this.drawer = true;
+                this.ir = false;
+                this.fulltextr = false;
+            }
+            else if(window.innerWidth > 720 && window.innerWidth <= 1685) 
+            {
+                this.drawer = false;
+                this.ir = true;
+                this.fulltextr = false;
+            }
+            else {
+                this.fulltextr = true;
+                this.ir = false;
                 this.drawer = false
                 this.displayDrawer = false
             }
@@ -205,5 +220,13 @@ export default {
 
 .rounded-button-left {
     border-radius: 40px 0px 40px 0px !important;
+}
+
+.symbol-header 
+{
+    margin-left: 1px !important;
+    margin-right: 2px !important;
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
 }
 </style>
