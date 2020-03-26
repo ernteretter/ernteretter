@@ -104,26 +104,6 @@ export default {
                 .join(" bis ");
         }
     },
-    mounted: function () {
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                let docRef = firebase.firestore().collection("agrarians").doc(user.uid);
-
-                docRef.get().then((doc) => {
-                    if (!doc.exists) {
-                        this.$router.push("/login");
-                        alert("Du bist kein Landwirt!");
-                        return;
-                    }
-                })
-            } else {
-                this.$router.push("/login");
-                alert("Du bist nicht eingeloggt!");
-                return;
-            }
-        });
-
-    },
     methods: {
         createOffer() {
             if (this.street == null || this.houseNumber == null || this.postCode == null || this.city == null || this.title == null || this.maxHelpers == null || this.harvestType == null || this.salary == null || this.description == null || this.dates == null) {

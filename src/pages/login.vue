@@ -1,42 +1,43 @@
 <template>
 <v-app>
     <v-alert v-if="displayAlert" dismissible :type="alertType" width="400px" class="mx-auto mt-5">{{alertText}}</v-alert>
+
     <v-col cols="12">
-        <v-card class="mx-auto mt-5 col-sm-12 col-md-5" transition="slide-x-transition" v-if="!displayPasswordForgotten">
-            <v-card-title class="secondary--text">
-                <h1 class="mx-auto">Login</h1>
-            </v-card-title>
-            <v-form class="mx-auto col-sm-12 col-md-12">
-                <v-text-field v-model="mail" label="E-Mail" />
-                <v-text-field :type="showPassword ? 'text' : 'password'" label="Password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" v-model="password" />
-                <v-overlay :absolute="true" :value="overlay">
-                    <v-progress-circular indeterminate>
-                    </v-progress-circular>
-                </v-overlay>
-            </v-form>
-            <v-card-actions>
-                <v-btn color="secondary" @click="displayPasswordForgotten  = !displayPasswordForgotten" outlined>Passwort vergessen?</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn color="primary" class="rounded-button-left px-5" outlined @click="onLogin()">login</v-btn>
-            </v-card-actions>
-        </v-card>
-        <v-card class="mx-auto mt-5 col-sm-12 col-md-5 " v-if="displayPasswordForgotten">
-            <v-card-title>
-                <h1>Login</h1>
-            </v-card-title>
-            <v-form class="mx-auto col-sm-12 col-md-12">
-                <v-text-field v-model="mail" label="E-Mail" />
-                <v-overlay :absolute="true" :value="overlay">
-                    <v-progress-circular indeterminate>
-                    </v-progress-circular>
-                </v-overlay>
-            </v-form>
-            <v-card-actions>
-                <v-btn color="secondary" @click="displayPasswordForgotten  = !displayPasswordForgotten" outlined> abbruch</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn color="primary" @click="resetPassword()" outlined>Passwort zurücksetzen</v-btn>
-            </v-card-actions>
-        </v-card>
+            <v-card class="mx-auto mt-5 col-sm-12 col-md-5" transition="slide-x-transition" v-if="!displayPasswordForgotten">
+                <v-card-title class="secondary--text">
+                    <h1 class="mx-auto">Login</h1>
+                </v-card-title>
+                <form class="mx-auto col-sm-12 col-md-12" v-on:submit.prevent="onLogin()">
+                    <v-text-field v-model="mail" label="E-Mail" />
+                    <v-text-field :type="showPassword ? 'text' : 'password'" label="Password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" v-model="password" />
+                    <v-overlay :absolute="true" :value="overlay">
+                        <v-progress-circular indeterminate>
+                        </v-progress-circular>
+                    </v-overlay>
+                <v-card-actions>
+                    <v-btn color="secondary" @click="displayPasswordForgotten  = !displayPasswordForgotten" outlined>Passwort vergessen?</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" class="rounded-button-left px-5" type="submit" outlined @click="onLogin()">login</v-btn>
+                </v-card-actions>
+                 </form>
+            </v-card>
+            <v-card class="mx-auto mt-5 col-sm-12 col-md-5" v-if="displayPasswordForgotten">
+                <v-card-title>
+                    <h1>Login</h1>
+                </v-card-title>
+                <v-form class="mx-auto col-sm-12 col-md-12">
+                    <v-text-field v-model="mail" label="E-Mail" />
+                    <v-overlay :absolute="true" :value="overlay">
+                        <v-progress-circular indeterminate>
+                        </v-progress-circular>
+                    </v-overlay>
+                </v-form>
+                <v-card-actions>
+                    <v-btn color="secondary" @click="displayPasswordForgotten  = !displayPasswordForgotten" outlined> abbruch</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" @click="resetPassword()" outlined>Passwort zurücksetzen</v-btn>
+                </v-card-actions>
+            </v-card>
     </v-col>
 </v-app>
 </template>
@@ -94,7 +95,7 @@ export default {
                 this.displayAlert = true
                 this.alertText = "Zurücksetzen erfolgreich"
                 this.alertType = "success"
-            }).catch( () => {
+            }).catch(() => {
                 this.displayAlert = true
                 this.alertText = "Etwas ist schief gegangen"
                 this.alertType = "error"
