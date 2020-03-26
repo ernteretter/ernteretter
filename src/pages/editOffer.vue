@@ -229,8 +229,9 @@ export default {
             if (!date) {
                 return "";
             }
+            let day = date.getDate();
             let month = date.getMonth()+1;
-            return date.getFullYear() + "-" + (month < 10 ? "0" + month : month) + "-" + date.getDate();
+            return date.getFullYear() + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
         },
         formatDate(date) {
             if (!date) {

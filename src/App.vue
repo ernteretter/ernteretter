@@ -27,15 +27,15 @@
             <v-col cols="4">
                 <v-row>
                     <v-icon color="secondary" >mdi-barley</v-icon>
-                    <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0">mdi-menu</v-icon>
+                    <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0" class="symbol-header">mdi-menu</v-icon>
                     <div v-for="(item, index) in drawerItems" :key="index">
                         <v-tooltip bottom v-if="!drawer && (item.condition ? true : user) && ir" >
                             <template v-slot:activator="{ on }">
-                                <v-btn icon :to="item.route">
+                                <v-btn icon :to="item.route" class="symbol-header">
                         <v-avatar x-small color-text="white" v-on="on" >
                             <!--{{item.title}}-->
                             
-                            <v-icon color="primary" small> {{item.icon}} </v-icon>
+                            <v-icon color="primary" small > {{item.icon}} </v-icon>
                         </v-avatar>
                                 </v-btn>
                             </template>
@@ -177,12 +177,12 @@ export default {
             })
         },
         onResize() {
-            if (window.innerWidth < 977) {
+            if (window.innerWidth <= 720) {
                 this.drawer = true;
                 this.ir = false;
                 this.fulltextr = false;
             }
-            else if(window.innerWidth > 977 && window.innerWidth <= 1685) 
+            else if(window.innerWidth > 720 && window.innerWidth <= 1685) 
             {
                 this.drawer = false;
                 this.ir = true;
@@ -222,9 +222,11 @@ export default {
     border-radius: 40px 0px 40px 0px !important;
 }
 
-.symbol_header 
+.symbol-header 
 {
-    margin-left: 1px;
-    margin-right: 2px;
+    margin-left: 1px !important;
+    margin-right: 2px !important;
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
 }
 </style>
