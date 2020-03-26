@@ -67,6 +67,7 @@
                         <v-date-picker
                             v-model="startDate"
                             :min="dateNow"
+                            :max="endDate"
                             locale="de-DE"
                         >
                             <v-spacer></v-spacer>
