@@ -9,7 +9,7 @@
         <p></p>
         Wir schaffen das, daran haben wir keinen Zweifel!
         <p></p>
-        <strong>Gerne können Sie</strong> sich auf unserer Plattform registrieren. Wir arbeiten weiter an dieser Plattform, können zur Zeit jedoch nicht abschätzen wo die Reise hin geht und warten auf die Rückmeldung der Jury (voraussichtlich am 29. März 2020).
+        <strong>Gerne können Sie</strong> sich auf unserer Plattform kostenlos registrieren. Wir arbeiten weiter an dieser Plattform, können zur Zeit jedoch nicht abschätzen wo die Reise hin geht und warten auf die Rückmeldung der Jury (voraussichtlich am 29. März 2020).
     </v-card-text>
     <v-card-title class="display-1">
         Unsere Idee

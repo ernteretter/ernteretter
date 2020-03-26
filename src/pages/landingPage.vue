@@ -1,10 +1,10 @@
 <template>
 <v-card class="mx-auto" max-width="1000px">
-    <v-card-title id="title" class="headline font-weight-bold "> Auch in dieser besondern Zeit wachsen unsere Pflanzen und versorgen uns alle mit Nahrung</v-card-title>
+    <v-card-title id="title" class="headline font-weight-bold "> Auch in dieser besonderen Zeit wachsen unsere Pflanzen und versorgen uns alle mit Nahrung.</v-card-title>
     <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto" @click="$router.push('/')" max-width="80%" style="{cursor: pointer}" />
     <v-row class="justify-center" no-gutters>
-        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize"  :to="needHelp" >Ich brauche Hilfe</v-btn>
-        <v-btn color="primary" outlined class="rounded-button-left" :x-small="responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
+        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize" large :to="needHelp" >Ich brauche Hilfe</v-btn>
+        <v-btn color="primary" outlined class="rounded-button-left" :x-small="responiveNeeded" large to="/offers">Ich möchte helfen</v-btn>
     </v-row>
     <v-spacer></v-spacer>
     <v-card-subtitle id="title" class="title font-weight-bol"> Ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
