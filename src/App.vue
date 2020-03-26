@@ -42,7 +42,7 @@
                             <span>{{item.title}}</span>
                         </v-tooltip>
                     </div>
-                </v-row>
+                </v-row> 
             </v-col>
             <v-col cols="4">
             <v-img :src="require('../Ernteretter-Logo_03.png')" contain max-width="256" height="50" @click="$router.push('/')" id="bild" class="mx-auto" />
