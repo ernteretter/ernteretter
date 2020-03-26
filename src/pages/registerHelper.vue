@@ -239,7 +239,6 @@
                             let firestore = firebase.firestore();
                             let newHelper = firestore.collection('helpers').doc();
                             newHelper.set(helperData).then(function () {
-                                console.log("Helper registered successfully!");
                                 router.push('/registerHelperSuccess');
                             }).catch(function (error) {
                                 console.error("Error registering Helper: ", error);
@@ -255,7 +254,6 @@
                         } else {
                             alert(errorMessage);
                         }
-                        console.log(error);
                     });
             }
         }

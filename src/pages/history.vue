@@ -44,8 +44,6 @@ export default {
     },
     watch: {
         search(val) {
-            console.log(val);
-            console.log(this.user.uid);
             this.mixedOffers = [];
             firebase.firestore().collection('acceptedOffers').where('helperId', '==', this.user.uid).where('title', "==", val).get().then(async (querySnapshot) => {
                 querySnapshot.forEach(async (doc) => {
@@ -113,7 +111,6 @@ export default {
             var usID = await firebase.auth()
             this.user = usID.currentUser
             usID = usID.currentUser.uid
-            console.log("user: " + usID);
             firebase.firestore().collection('acceptedOffers').where('helperId', '==', usID).get().then(async (querySnapshot) => {
                 querySnapshot.forEach(async (doc) => {
                     var data = doc.data()
@@ -138,19 +135,14 @@ export default {
                     })
                 })
             })
-            console.log("hello1");
             for (let i in this.mixedOffers) {
-                console.log("hello3");
                 await firebase.firestore().collection("acceptedOffers").where("offerId", "==", this.mixedOffers[i]).get().then(snapshot => {
-                    console.log(snapshot.size);
                     this.mixedOffers[i].helpCount = this.mixedOffers[i].maxHelpers - snapshot.size;
                     this.mixedOffers[i].startDate = this.mixedOffers[i].startDate.toDate().toLocaleDateString()
                 })
                 
                 
             }
-            console.log("hello2");
-
             /*
             this.mixedOffers = this.mixedOffers.sort((a, b) => {
                 a > b ? 1 : (b > a ? -1 : 0)
@@ -165,18 +157,13 @@ export default {
 
         },
         deleteItem(item) {
-            console.log("versuche");
             try {
-                console.log("mache");
-                console.log(item.id);
-
                 firebase.firestore().collection('offers').doc(item.id).delete().then(() => {
                     setTimeout(() => (this.deleteSnackSuccess = true), 3000);
                     this.deleteSnackSuccess = false
                     this.mixedOffers = this.mixedOffers.filter((a) => {
                         return a.id != item.id
                     })
-                    console.log(this.mixedOffers);
 
                 })
             } catch {

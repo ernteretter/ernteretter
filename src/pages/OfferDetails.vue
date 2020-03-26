@@ -1,5 +1,6 @@
 <template>
 <div class="offer-details" v-if="offer && agrarian">
+    <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn> <v-btn @click="showAlert = false;" outlined>Nein</v-btn> </v-alert>
     <div class="inner">
         <div class="details-header">
             <div class="title-section">
@@ -8,6 +9,8 @@
             </div>
             <div class="action-section">
                 <div class="accept-cancel">
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true"><v-icon>mdi-delete</v-icon></v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()"><v-icon>mdi-pencil-outline</v-icon></v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted" @click="removeMe">Abmelden</v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-accept" v-else @click="addMe">Anmelden</v-btn>
                 </div>
@@ -122,9 +125,11 @@ import "firebase/auth";
 export default {
     name: "OfferDetails",
     data: () => ({
+        showAlert: false,
         offer: false,
         agrarian: false,
         isAccepted: false,
+        isOwner: false,
         uid: false,
         helperCount: 0
     }),
@@ -148,7 +153,6 @@ export default {
                         ...snapshot.data(),
                         id: snapshot.id
                     };
-                    console.log(this.offer);
                     return firebase
                         .firestore()
                         .doc("agrarians/" + snapshot.data().agrarianId)
@@ -165,6 +169,10 @@ export default {
                         ...snapshot.data(),
                         id: snapshot.id
                     };
+                    if (this.uid == this.agrarian.uid) {
+                        console.log("changed Owner to true!");
+                        this.isOwner = true;
+                    }
                 } else {
                     alert("Ein Fehler ist aufgetreten: Landwirt nicht gefunden");
                     this.$router.push("/offers");
@@ -185,9 +193,6 @@ export default {
                     this.isAccepted = true;
                 }
             })
-            .catch(err => {
-                console.log(err);
-            });
         firebase
             .firestore()
             .collection("acceptedOffers")
@@ -207,6 +212,14 @@ export default {
             .join(".")
     },
     methods: {
+        gotoEditOffer() {
+            this.$router.push("/editOffer/" + this.offer.id);
+        },
+        deleteOffer() {
+            this.showAlert = false;
+            firebase.firestore().collection("offers").doc(this.offer.id).delete();
+            this.$router.push("/offers");
+        },
         addMe() {
             if (!this.uid) {
                 alert("Bitte melde Dich erst an");
@@ -224,9 +237,8 @@ export default {
                     helperId: this.uid,
                     acceptDate: new Date()
                 })
-                .then(res => {
+                .then(() => {
                     this.isAccepted = true;
-                    console.log(res);
                     this.helperCount++;
                 });
         },
@@ -243,10 +255,9 @@ export default {
                             .firestore()
                             .doc("acceptedOffers/" + snapshot.docs[0].id)
                             .delete()
-                            .then(res => {
+                            .then(() => {
                                 this.isAccepted = false;
                                 this.helperCount--;
-                                console.log(res);
                             });
                     }
                 });
@@ -337,6 +348,11 @@ section {
 .action-button#btn-cancel {
     background-color: white;
     border: 1px solid #ed9a00;
+}
+
+.action-button#btn-edit {
+    background-color: #4d4238;
+    color: white;
 }
 
 .status-chip b {

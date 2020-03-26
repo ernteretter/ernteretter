@@ -118,28 +118,21 @@ export default {
         "%2C" +
         //radius kann gewaehlt werden vom user
         radius_meter;
-      console.log(theUrl);
       const response = await fetch(theUrl);
       const myJson = await response.json(); //extract JSON from the http response
-      //console.log(myJson.records);
       var records = myJson.records;
-      //console.log(myJson);
       for (var i = 0; i < records.length; i++) {
         this.farm_plz_arr.push(records[i].fields.plz);
       }
-      console.log("Farm_Array" + this.farm_plz_arr);
     },
     //gets geodata to postCode
     async getGeoData(worker_plz) {
-      console.log("start");
       var url =
         "https://public.opendatasoft.com/api/records/1.0/search//?dataset=postleitzahlen-deutschland&q=" +
         worker_plz;
       const response = await fetch(url);
-      console.log("fetched");
       const myJson = await response.json();
       //var records = myJson.records;
-      console.log("Records" + myJson.records[0].fields.geo_point_2d);
       return myJson.records[0].fields.geo_point_2d;
     },
     async list_offers() {
@@ -147,7 +140,6 @@ export default {
       this.farm_plz_arr = [];
       //????????
       if (this.zipsearch.length != 0) {
-        console.log("Bin bei if");
         var g_Data = await this.getGeoData(this.zipsearch);
 
         //call createplzarr
@@ -155,7 +147,6 @@ export default {
         let firestore = firebase.firestore();
         for (let i = 0; i <= (this.farm_plz_arr.length - 1) / 10; i++) {
           let plzArr = this.farm_plz_arr.slice(i * 10, i * 10 + 10);
-          console.log(plzArr);
           firestore
             .collection("offers")
             //postcodes muessen in farm_plz_arr sein um angezeigt zu werden
@@ -179,7 +170,7 @@ export default {
             });
         }
       } else if (this.zipsearch.length == 0) {
-        console.log("Bin bei else");
+
         let firestore = firebase.firestore();
         firestore
           .collection("offers")
