@@ -184,7 +184,6 @@ export default {
                 description: this.description,
                 equipment: this.equipment,
                 driverslicence: this.driverslicence,
-                postCode: parseInt(this.place),
                 harvestType: this.harvestType,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
