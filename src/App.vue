@@ -29,10 +29,10 @@
                     <v-icon color="secondary" >mdi-barley</v-icon>
                     <v-icon color="primary" @click="displayDrawer = !displayDrawer" v-if="drawer" elevation="0">mdi-menu</v-icon>
                     <div v-for="(item, index) in drawerItems" :key="index">
-                        <v-tooltip bottom v-if="!drawer && (item.condition ? true : user) && ir">
+                        <v-tooltip bottom v-if="!drawer && (item.condition ? true : user) && ir" >
                             <template v-slot:activator="{ on }">
                                 <v-btn icon :to="item.route">
-                        <v-avatar x-small color-text="white" v-on="on" class="mr-1 ml-0 mb-1 mt-0 mb-0">
+                        <v-avatar x-small color-text="white" v-on="on" >
                             <!--{{item.title}}-->
                             
                             <v-icon color="primary" small> {{item.icon}} </v-icon>
@@ -41,7 +41,7 @@
                             </template>
                             <span>{{item.title}}</span>
                         </v-tooltip>
-                        <v-btn outlined v-if="fulltextr" color="primary" small class="mr-1 ml-0 mb-1 mt-0 mb-0">{{item.title}} <v-icon color="primary" small> {{item.icon}} </v-icon></v-btn>
+                        <v-btn outlined v-if="fulltextr" color="primary" small class="mr-1 ml-0 mb-1 mt-0 mb-0" :to="item.route">{{item.title}} <v-icon color="primary" small> {{item.icon}} </v-icon></v-btn>
                     </div>
                 </v-row> 
             </v-col>
@@ -177,12 +177,12 @@ export default {
             })
         },
         onResize() {
-            if (window.innerWidth < 1360) {
+            if (window.innerWidth < 977) {
                 this.drawer = true;
                 this.ir = false;
                 this.fulltextr = false;
             }
-            else if(window.innerWidth > 1360 && window.innerWidth <= 1685) 
+            else if(window.innerWidth > 977 && window.innerWidth <= 1685) 
             {
                 this.drawer = false;
                 this.ir = true;
@@ -220,5 +220,11 @@ export default {
 
 .rounded-button-left {
     border-radius: 40px 0px 40px 0px !important;
+}
+
+.symbol_header 
+{
+    margin-left: 1px;
+    margin-right: 2px;
 }
 </style>
