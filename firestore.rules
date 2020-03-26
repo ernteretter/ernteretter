@@ -24,7 +24,9 @@ service cloud.firestore {
     //fuer alle sichtbar, nur schreibbar wenn du der angegebene Bauer bist
     match /offers/{document} {
     	allow read: if true;
-      allow write: if request.auth.uid == request.resource.data.agrarianId;
+      allow create: if request.auth.uid == request.resource.data.agrarianId;
+      allow update: if request.auth.uid == request.resource.data.agrarianId && request.auth.uid == resource.data.agrarianId;
+      allow delete: if request.auth.uid == resource.data.agrarianId;
     }
     //erstelle chatroom wenn du selbst drinnen stehst
     match /chats/{chatid} {
