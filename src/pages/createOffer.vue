@@ -2,10 +2,10 @@
 <div class="editOffer">
     <v-card max-width="1000" class="mx-auto text-center">
         <v-container id="header">
-            <v-card-title class="display-1 justify-center" id="headertitle">Erstellen sie Ihren Aufruf</v-card-title>
+            <v-card-title class="display-1 justify-center" id="headertitle">Erstellen sie Ihre Anzeige</v-card-title>
         </v-container>
 
-        <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
+        <v-card-title class="justify-center"> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
 
         <v-container>
             <v-text-field :rules="helperRule" v-model="title" label="Titel" single-line solo></v-text-field>
@@ -29,6 +29,7 @@
             <v-radio-group v-model="radioErnteSaat" row class="justify-center align-center">
                 <v-radio label="Ernte"> </v-radio>
                 <v-radio label="Aussaat"> </v-radio>
+                <v-radio label="Sonstiges"> </v-radio>
             </v-radio-group>
         </v-row>
 
@@ -37,7 +38,7 @@
             </v-select>
         </v-container>
 
-        <v-card-title> In welchem Zeitraum benötigen Sie Hilfe?
+        <v-card-title class="justify-center"> In welchem Zeitraum benötigen Sie Hilfe?
         </v-card-title>
 
         <v-menu v-model="menu2" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
@@ -48,7 +49,7 @@
         </v-menu>
 
         <v-container>
-
+            <v-card-subtitle> optionale Felder </v-card-subtitle>
             <v-text-field single-line solo type="number" :rules="helperRule" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
 
             <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
@@ -58,7 +59,7 @@
         </v-container>
 
         <v-btn class="rounded-button-left" x-large outlined color="primary" @click="createOffer()">
-            Aufruf Abschicken
+            Anzeige Abschicken
         </v-btn>
     </v-card>
 </div>
