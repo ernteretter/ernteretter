@@ -3,7 +3,7 @@
     <v-card max-width="1000" class="mx-auto text-center">
         <v-form ref="form" v-model="valid" lazy-validation style="width: 100%">
             <v-container id="header">
-                <v-card-title class="display-1 justify-center" id="headertitle">Erstellen sie Ihren Aufruf</v-card-title>
+                <v-card-title class="display-1 justify-center" id="headertitle">Erstellen sie Ihre Anzeige</v-card-title>
             </v-container>
 
             <v-card-title> Bitte beschreiben Sie kurz die Tätigkeit.</v-card-title>
@@ -27,9 +27,10 @@
 
             <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
             <v-row justify="center">
-                <v-radio-group :rules="rules.radioErnteSaat" v-model="radioErnteSaat" row class="justify-center align-center">
+                <v-radio-group v-model="radioErnteSaat" row class="justify-center align-center">
                     <v-radio label="Ernte"> </v-radio>
                     <v-radio label="Aussaat"> </v-radio>
+                    <v-radio label="Sonstiges"> </v-radio>
                 </v-radio-group>
             </v-row>
 
@@ -50,6 +51,8 @@
 
             <v-container>
 
+            <v-card-subtitle> optionale Felder </v-card-subtitle>
+
                 <v-text-field single-line solo type="number" :rules="rules.salary" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
 
                 <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
@@ -64,7 +67,7 @@
             </v-row>
 
             <v-btn class="rounded-button-left" :disabled="formWarning" x-large outlined color="primary" @click="createOffer()">
-                Aufruf Abschicken
+                Anzeige Abschicken
             </v-btn>
         </v-form>
     </v-card>
@@ -109,7 +112,6 @@ export default {
                 }
             ],
             city: [value => !!value || 'Stadt wird benötigt.'],
-            radioErnteSaat: [value => !!value || 'Auswahl Ernte/Aussaat wird benötigt.'],
             harvestType: [value => !!value || 'Art der Ernte/Aussaat wird benötigt.'],
             datesText: [value => !!value || 'Zeitraum wird benötigt.']
         }
