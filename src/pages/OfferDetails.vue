@@ -1,5 +1,6 @@
 <template>
 <div class="offer-details" v-if="offer && agrarian">
+    <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn> <v-btn @click="showAlert = false;" outlined>Nein</v-btn> </v-alert>
     <div class="inner">
         <div class="details-header">
             <div class="title-section">
@@ -8,6 +9,7 @@
             </div>
             <div class="action-section">
                 <div class="accept-cancel">
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true"><v-icon>mdi-delete</v-icon></v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()"><v-icon>mdi-pencil-outline</v-icon></v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted" @click="removeMe">Abmelden</v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-accept" v-else @click="addMe">Anmelden</v-btn>
@@ -123,6 +125,7 @@ import "firebase/auth";
 export default {
     name: "OfferDetails",
     data: () => ({
+        showAlert: false,
         offer: false,
         agrarian: false,
         isAccepted: false,
@@ -211,6 +214,11 @@ export default {
     methods: {
         gotoEditOffer() {
             this.$router.push("/editOffer/" + this.offer.id);
+        },
+        deleteOffer() {
+            this.showAlert = false;
+            firebase.firestore().collection("offers").doc(this.offer.id).delete();
+            this.$router.push("/offers");
         },
         addMe() {
             if (!this.uid) {
