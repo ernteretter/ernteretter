@@ -27,9 +27,9 @@
             <v-tab-item>
                 <v-card flat>
                     <v-card-text>
-                        <v-form ref="form" v-model="valid">
-                            <v-text-field v-model="user.displayName" label="Name"></v-text-field>
-                            <v-text-field v-model="user.email" label="Mail"></v-text-field>
+                        <v-form ref="formAccount" v-model="validAccount">
+                            <v-text-field v-model="user.displayName" :rules="rules.name" label="Name"></v-text-field>
+                            <v-text-field v-model="user.email" :rules="rules.mail" label="Mail"></v-text-field>
                             <v-row>
                                 <v-col sm="6">
                                     <v-card-text>du bist ein:</v-card-text>
@@ -40,12 +40,18 @@
                                     <v-card-text v-if="!isAgrarian">Helfer</v-card-text>
                                 </v-col>
                             </v-row>
+                            <v-row justify="center" >
+                                <v-alert dense outlined  type="error" v-if="!validAccount">
+                                    Das Formular ist nicht vollständig ausgefüllt
+                                </v-alert>
+                            </v-row>
                         </v-form>
                         <v-container>
                             <v-row>
                                 <v-btn color="red" @click="deleteAccount()">Account löschen</v-btn>
-                                <v-spacer></v-spacer>
-                                <v-btn color="success" @click="updateAccount">Fertig</v-btn>
+                                <v-spacer>
+                                </v-spacer>
+                                <v-btn color="success" :disabled="!validAccount" @click="updateAccount">Fertig</v-btn>
                             </v-row>
                         </v-container>
                     </v-card-text>
@@ -233,7 +239,17 @@ export default {
             place: {},
             isAgrarian: false,
             doc_id: "",
-            valid: true,
+            validAccount: true,
+            rules: {
+                name: [value => !!value.trim() || 'Name wird benötigt.'],
+                mail: [
+                    value => !!value.trim() || 'E-Mail-Adresse wird benötigt.',
+                    value => {
+                        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        return pattern.test(value) || 'Ungültige E-Mail-Adresse.';
+                    }
+                ]
+            }
         }
     },
     methods: {
@@ -275,6 +291,9 @@ export default {
             });
         },
         async updateAccount() {
+            if (!this.$refs.formAccount.validate()) {
+                return;
+            }
             try {
                 this.user.updateEmail(this.user.email).then((doc) => console.log(doc)).catch((err) => console.log(err));
                 this.user.updateProfile({
