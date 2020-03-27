@@ -35,8 +35,9 @@
             </v-row>
 
             <v-container>
+                <v-card-subtitle>Bitte legen Sie für jedes Erntegut eine serperate Anzeige an</v-card-subtitle>
                 <v-select single-line solo :rules="rules.harvestType" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
-                <v-text-field v-model="harvestTypeSpecial" v-if="harvestType == 'Sonstiges'" label="Gebe bitte nur eine Sache an" single-line solo/>
+                <v-text-field v-model="harvestTypeSpecial" v-if="harvestType == 'Sonstiges'" label="Gebe Sie bitte nur eine Sache an" single-line solo/>
             </v-container>
 
             <v-card-title class="justify-center"> In welchem Zeitraum benötigen Sie Hilfe? </v-card-title>
