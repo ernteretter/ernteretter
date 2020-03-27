@@ -1,15 +1,11 @@
 <template>
     <div class="registerHelper">
-        <v-card class="mx-auto" max-width="1000">
+        <v-card class="mx-auto" max-width="1000px">
             <v-form ref="form" v-model="valid" lazy-validation style="width: 100%">
-                <v-container fluid class="col-8">
-                    <v-row justify="center">
-                        <v-img :src="require('../assets/ernteretter.png')" max-width="400"/>
+                        <v-img :src="require('../assets/ernteretter.png')" class="mx-auto" max-width="80%"/>
+                    <v-row>
+                    <h1 align="center" class="mx-auto">Erstelle dein Profil!</h1>
                     </v-row>
-                    <br/><br/>
-
-                    <h1 align="center">Erstelle dein Profil!</h1>
-                    <br/>
                     <v-row justify="center">
                         <v-col justify="center" cols="auto">
                             <v-responsive :min-width="250" :max-width="500">
@@ -54,7 +50,7 @@
 
                     <v-row justify="center">
                         <div>
-                            <h3> Für welche Arten der Ernte interessierst du dich? </h3>
+                            <h3 align="center" class="mx-auto"> Für welche Arten der Ernte interessierst du dich? </h3>
                             <v-col cols="5" sm="5">
                                 <v-checkbox
                                         class="mt-1"
@@ -72,17 +68,21 @@
 
                     <v-row justify="center">
                         <div>
-                            <h3> In welchem Umkreis möchtest du Hilfemöglichkeiten vorgeschlagen bekommen? </h3>
+                            <h3 align="center" class="mx-auto"> In welchem Umkreis möchtest du Hilfemöglichkeiten vorgeschlagen bekommen? </h3>
                             <v-col cols="10" sm="12">
 
                                 <v-slider
+                                        label="Radius (km)"
+                                        thumb-label="always"
+                                        thumb-size="24"
+                                        thumb-color="primary"
                                         v-model="searchRange"
-                                        class="align-center"
+                                        class="align-center pt-7"
                                         :max="searchRangeMax"
                                         :min="searchRangeMin"
                                         hide-details
                                 >
-                                    <template v-slot:append>
+                                    <!--<template v-slot:append>
                                         <v-text-field
                                                 v-model="searchRange"
                                                 class="mt-0 pt-0"
@@ -94,7 +94,7 @@
                                         <v-chip class="ma-2" outlined>
                                             km
                                         </v-chip>
-                                    </template>
+                                    </template>-->
                                 </v-slider>
                             </v-col>
                         </div>
@@ -174,7 +174,6 @@
                         </v-btn>
                     </v-row>
                     <br/>
-                </v-container>
             </v-form>
         </v-card>
     </div>
