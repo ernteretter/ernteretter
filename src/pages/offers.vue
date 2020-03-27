@@ -205,6 +205,11 @@ export default {
                             })
                         }
                     })
+                    this.offers = this.offers.filter(offer => {
+                        return offer.title
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase());
+                    });
                 })
         },
     },
@@ -222,7 +227,7 @@ export default {
                 } else {
                     firebase.firestore().collection('agrarians').doc(user.uid).get().then((doc) => {
                         console.log(user.uid);
-                        
+
                         console.log(doc.data());
                         if (doc.data().searchRange > 0) {
                             this.zipsearch = doc.data().searchRange
