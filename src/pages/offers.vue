@@ -53,7 +53,7 @@
                 <v-row>
                     <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-3 mr-6 ma-xs-0 ">
                         <v-responsive :max-width="600" :min-height="60">
-                            <v-slider class="pt-7 mr-5 ml-3" v-model="searchradius" label="Radius (km)" :min_="1" :max="50" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
+                            <v-slider class="pt-7 mr-5 ml-3" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
                         </v-responsive>
                     </v-col>
                 </v-row>
