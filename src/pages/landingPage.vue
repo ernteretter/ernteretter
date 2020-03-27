@@ -35,6 +35,9 @@
         <a class="px-1" href="https://www.instagram.com/ernteretter/">
             <v-icon large>mdi-instagram</v-icon>
         </a>
+        <a class="px-1" href="https://github.com/iBims1JFK/ernteretter">
+            <v-icon large>mdi-github</v-icon>
+        </a>
     </v-row>
 </v-card>
 </template>
