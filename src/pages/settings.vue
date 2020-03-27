@@ -211,7 +211,7 @@
                   outlined
                   type="error"
                   v-if="!validAccount"
-                >Das Formular ist nicht vollständig ausgefüllt</v-alert>
+                >Die Felder sind nicht vollständig ausgefüllt</v-alert>
               </v-row>
             </v-form>
             <v-container>
@@ -226,6 +226,7 @@
     </v-tabs>
     <v-snackbar v-model="snackbar" color="blue">Daten wurden gespeichert.</v-snackbar>
     <v-snackbar v-model="snackbarAlert" color="red">Ein Fehler ist aufgetreten.</v-snackbar>
+    <v-snackbar v-model="snackbarPasswordAlert" color="red">Das alte Passwort ist falsch oder das neue Passwort ist zu kurz.</v-snackbar>
   </v-card>
 </template>
 
@@ -250,6 +251,7 @@ export default {
       showPasswordNew: false,
       snackbar: false,
       snackbarAlert: false,
+      snackbarPasswordAlert: false,
       erfahrung: ["keine", "wenig", "viel", "kann lehren"],
       activeButton: true,
       tabs: null,
@@ -288,7 +290,8 @@ export default {
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return pattern.test(value) || "Ungültige E-Mail-Adresse.";
           }
-        ]
+        ],
+        password: [value => !!value || 'Passwort wird benötigt.'],
       }
     };
   },
@@ -363,24 +366,20 @@ export default {
       }
     },
     async updatePassword() {
-      console.log("Bin Hier");
       const credential = firebase.auth.EmailAuthProvider.credential(
         this.user.email,
         this.oldpassword
       );
-      try {
         this.user.reauthenticateWithCredential(credential).then(userS => {
           if (userS) {
             this.user.updatePassword(this.newpassword);
             setTimeout(() => (this.snackbar = true), 3000);
             this.snackbar = false;
           }
-        });
-      } catch {
-        this.alertText = "Passwort falsch";
-        this.alertType = "error";
-        this.displayAlert = true;
-      }
+        }).catch(() => {
+        setTimeout(() => (this.snackbarPasswordAlert = true), 3000);
+        this.snackbarPasswordAlert = false;
+      })
     },
     async updatePreferences() {
       try {
