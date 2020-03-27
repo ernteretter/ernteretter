@@ -21,8 +21,12 @@
                 Konto
             </v-tab>
             <v-tab>
-                <v-icon left>mdi-lock</v-icon>
+                <v-icon left>mdi-home</v-icon>
                 Präferenzen
+            </v-tab>
+            <v-tab>
+                <v-icon left>mdi-lock</v-icon>
+                Passwort ändern
             </v-tab>
             <v-tab-item>
                 <v-card flat>
@@ -32,7 +36,7 @@
                             <v-text-field v-model="user.email" :rules="rules.mail" label="Mail"></v-text-field>
                             <v-row>
                                 <v-col cols="7" class="px-0 mx-0">
-                                    <v-card-text class="px-0 mx-0">du bist ein:</v-card-text>
+                                    <v-card-text class="px-0 mx-0">Account: </v-card-text>
                                 </v-col>
                                 <v-spacer></v-spacer>
                                 <v-col class="px-0 mx-0">
@@ -188,6 +192,42 @@
                     </v-card-text>
                 </v-card>
             </v-tab-item>
+            <v-tab-item>
+                <v-card flat>
+                    <v-card-text>
+                        <v-form ref="formAccount" v-model="validAccount" class="col-md-6 col-sm-12 col-sx-12">
+                            <v-text-field 
+                                v-model="oldpassword"
+                                :rules="rules.password" 
+                                :type="showPasswordOld ? 'text' : 'password'" 
+                                label="Altes Passwort"
+                                :append-icon="showPasswordOld ? 'mdi-eye' : 'mdi-eye-off'"
+                                 @click:append="showPasswordOld = !showPasswordOld">
+                            </v-text-field>
+                            <v-text-field 
+                                v-model="newpassword"
+                                :rules="rules.password" 
+                                :type="showPasswordNew ? 'text' : 'password'" 
+                                label="Neues Passwort"
+                                :append-icon="showPasswordNew ? 'mdi-eye' : 'mdi-eye-off'"
+                                 @click:append="showPasswordNew = !showPasswordNew">
+                            </v-text-field>
+                            <v-row justify="center" >
+                                <v-alert dense outlined  type="error" v-if="!validAccount">
+                                    Das Formular ist nicht vollständig ausgefüllt
+                                </v-alert>
+                            </v-row>
+                        </v-form>
+                        <v-container>
+                            <v-row>
+                                <v-spacer>
+                                </v-spacer>
+                                <v-btn color="success" :disabled="!validAccount" @click="updatePassword">Fertig</v-btn>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                </v-card>
+            </v-tab-item>
         </v-tabs>
         <v-snackbar v-model="snackbar" color="blue">
             Daten wurden gespeichert.
@@ -213,6 +253,10 @@ export default {
     },
     data() {
         return {
+            oldpassword:'',
+            newpassword: '',
+            showPasswordOld: false,
+            showPasswordNew: false,
             snackbar: false,
             snackbarAlert: false,
             erfahrung: [
@@ -306,6 +350,21 @@ export default {
                 setTimeout(() => (this.snackbarAlert = true), 3000);
                 this.snackbarAlert = false
             }
+        },
+        async updatePassword(){
+            console.log("Bin Hier")
+            const credential = firebase.auth.EmailAuthProvider.credential(this.user.email, this.oldpassword);
+            await this.user.reauthenticateWithCredential(credential).then(userS => {
+                if (userS) {
+                    this.user.updatePassword(this.newpassword)
+                    setTimeout(() => (this.snackbar = true), 3000);
+                    this.snackbar = false
+                }
+            }).catch(() => {
+                this.alertText = "Passwort falsch"
+                this.alertType = "error"
+                this.displayAlert = true
+            })
         },
         async updatePreferences() {
             try {
