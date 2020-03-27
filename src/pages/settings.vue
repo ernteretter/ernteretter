@@ -226,7 +226,7 @@
     </v-tabs>
     <v-snackbar v-model="snackbar" color="blue">Daten wurden gespeichert.</v-snackbar>
     <v-snackbar v-model="snackbarAlert" color="red">Ein Fehler ist aufgetreten.</v-snackbar>
-    <v-snackbar v-model="snackbarPasswordAlert" color="red">Das alte Passwort ist falsch oder das neue Passwort ist zu kurz.</v-snackbar>
+    <v-snackbar v-model="snackbarPasswordAlert" color="red">Das alte Passwort ist falsch.</v-snackbar>
   </v-card>
 </template>
 
@@ -291,7 +291,7 @@ export default {
             return pattern.test(value) || "Ungültige E-Mail-Adresse.";
           }
         ],
-        password: [value => !!value || 'Passwort wird benötigt.'],
+        password: [value => !!value || "Passwort wird benötigt."]
       }
     };
   },
@@ -357,29 +357,32 @@ export default {
             displayName: this.user.displayName
           })
           .then(() => {
-            setTimeout(() => (this.snackbar = true), 3000);
-            this.snackbar = false;
+            this.snackbar = true;
+            setTimeout(function(){this.snackbar = false}, 3000);
           });
       } catch {
-        setTimeout(() => (this.snackbarAlert = true), 3000);
-        this.snackbarAlert = false;
+        this.snackbarAlert = true;
+        setTimeout(function(){this.snackbarAlert = false}, 3000);
       }
     },
     async updatePassword() {
-      const credential = firebase.auth.EmailAuthProvider.credential(
-        this.user.email,
-        this.oldpassword
+        const credential = firebase.auth.EmailAuthProvider.credential(
+            this.user.email,
+            this.oldpassword
       );
-        this.user.reauthenticateWithCredential(credential).then(userS => {
+      this.user
+        .reauthenticateWithCredential(credential)
+        .then(userS => {
           if (userS) {
             this.user.updatePassword(this.newpassword);
-            setTimeout(() => (this.snackbar = true), 3000);
-            this.snackbar = false;
+            this.snackbar = true;
+            setTimeout(function(){this.snackbar = false}, 3000);
           }
-        }).catch(() => {
-        setTimeout(() => (this.snackbarPasswordAlert = true), 3000);
-        this.snackbarPasswordAlert = false;
-      })
+        })
+        .catch(() => {
+          this.snackbarPasswordAlert = true;
+          setTimeout(function(){this.snackbarPasswordAlert = false}, 3000);
+        });
     },
     async updatePreferences() {
       try {
@@ -410,13 +413,14 @@ export default {
               experience: this.experience
             })
             .then(() => {
-              setTimeout(() => (this.snackbar = true), 3000);
-              this.snackbar = false;
+            this.snackbar = true;
+              setTimeout(() => (this.snackbar = false), 3000);
+              
             });
         }
       } catch {
-        setTimeout(() => (this.snackbarAlert = true), 3000);
-        this.snackbarAlert = false;
+        this.snackbarAlert = true;  
+        setTimeout(() => (this.snackbarAlert = false), 3000);
       }
     },
     async finalDeletion() {
