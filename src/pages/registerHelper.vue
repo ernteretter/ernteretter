@@ -2,7 +2,7 @@
     <div class="registerHelper">
         <v-card class="mx-auto" max-width="1000">
             <v-form ref="form" v-model="valid" lazy-validation style="width: 100%">
-                <v-container fluid>
+                <v-container fluid class="col-8">
                     <v-row justify="center">
                         <v-img :src="require('../assets/ernteretter.png')" max-width="400"/>
                     </v-row>
@@ -239,7 +239,7 @@
                             let firestore = firebase.firestore();
                             let newHelper = firestore.collection('helpers').doc();
                             newHelper.set(helperData).then(function () {
-                                router.push('/offer');
+                                router.push('/registerHelperSuccess');
                             }).catch(function (error) {
                                 console.error("Error registering Helper: ", error);
                             });

@@ -27,17 +27,17 @@
             <v-tab-item>
                 <v-card flat>
                     <v-card-text>
-                        <v-form ref="formAccount" v-model="validAccount">
+                        <v-form ref="formAccount" v-model="validAccount" class="col-md-6 col-sm-12 col-sx-12">
                             <v-text-field v-model="user.displayName" :rules="rules.name" label="Name"></v-text-field>
                             <v-text-field v-model="user.email" :rules="rules.mail" label="Mail"></v-text-field>
                             <v-row>
-                                <v-col sm="6">
-                                    <v-card-text>du bist ein:</v-card-text>
+                                <v-col cols="7" class="px-0 mx-0">
+                                    <v-card-text class="px-0 mx-0">du bist ein:</v-card-text>
                                 </v-col>
                                 <v-spacer></v-spacer>
-                                <v-col>
-                                    <v-card-text v-if="isAgrarian">Landwirt</v-card-text>
-                                    <v-card-text v-if="!isAgrarian">Helfer</v-card-text>
+                                <v-col class="px-0 mx-0">
+                                    <v-card-text v-if="isAgrarian" class="px-0 mx-0">Landwirt</v-card-text>
+                                    <v-card-text v-if="!isAgrarian" class="px-0 mx-0">Helfer</v-card-text>
                                 </v-col>
                             </v-row>
                             <v-row justify="center" >
@@ -62,10 +62,10 @@
                     <v-card-text v-if="isAgrarian">
                         Wo liegt Ihr Hof?
                         <v-row justify="center">
-                            <v-col cols="1" sm="6">
+                            <v-col cols="7" sm="6">
                                 <v-text-field v-model="place.street" label="Straße" single-line solo></v-text-field>
                             </v-col>
-                            <v-col cols="5" sm="3">
+                            <v-col cols="3" sm="3">
                                 <v-text-field v-model="place.number" label="Nummer" single-line solo></v-text-field>
                             </v-col>
                         </v-row>
