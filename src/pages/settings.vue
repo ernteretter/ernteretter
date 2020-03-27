@@ -153,19 +153,6 @@
                     thumb-size="24"
                     thumb-color="primary"
                   >
-                    <!--<template v-slot:append>
-                                            <v-text-field
-                                                    v-model="searchRange"
-                                                    class="mt-0 pt-0"
-                                                    hide-details
-                                                    single-line
-                                                    type="number"
-                                                    style="width: 60px"
-                                            ></v-text-field>
-                                            <v-chip class="ma-2" outlined>
-                                                km
-                                            </v-chip>
-                    </template>-->
                   </v-slider>
                 </v-col>
               </v-card-text>
