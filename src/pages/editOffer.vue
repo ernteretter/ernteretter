@@ -35,8 +35,8 @@
             </v-row>
 
             <v-container>
-                <v-select single-line solo :rules="rules.harvestType" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
-                </v-select>
+                <v-select single-line solo :rules="rules.harvestType" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
+                <v-text-field v-model="harvestTypeSpecial" v-if="harvestType == 'Sonstiges'" label="Gebe bitte nur eine Sache an" single-line solo/>
             </v-container>
 
             <v-card-title class="justify-center"> In welchem Zeitraum benötigen Sie Hilfe? </v-card-title>
@@ -167,6 +167,7 @@ export default {
         description: "",
         equipment: "",
         driverslicence: "",
+        harvestTypeSpecial: "",
         items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges'],
         rules: {
             title: [value => !!value.trim() || 'Titel wird benötigt.'],
@@ -204,6 +205,7 @@ export default {
                 this.maxHelpers = doc.data().maxHelpers;
                 this.place = doc.data().postCode;
                 this.harvestType = doc.data().harvestType;
+                this.harvestTypeSpecial = doc.data().harvestTypeSpecial;
                 this.startDate = this.formatDateObject(doc.data().startDate.toDate());
                 this.endDate = this.formatDateObject(doc.data().endDate.toDate());
                 this.salary = doc.data().salary;
@@ -265,6 +267,7 @@ export default {
                 equipment: this.equipment,
                 driverslicence: this.driverslicence,
                 harvestType: this.harvestType,
+                harvestTypeSpecial: this.harvestTypeSpecial,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
                 minDuration: duration,
