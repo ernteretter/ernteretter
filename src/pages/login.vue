@@ -73,6 +73,8 @@ export default {
         },
         async onLogin() {
             this.overlay = true
+
+            this.mail = this.mail.replace(/ /g, '')
             await firebase.auth().signInWithEmailAndPassword(this.mail, this.password).then(user => {
                 if (user) {
                     this.$router.push('/')
