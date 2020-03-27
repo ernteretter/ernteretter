@@ -224,7 +224,10 @@ export default {
             accountData: [],
             overlay: false,
             rightName: false,
-            user: [],
+            user: {
+                displayName: "",
+                email: ""
+            },
             harvestTypes: [],
             durationMin: 0,
             durationMinType: "days",
