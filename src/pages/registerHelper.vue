@@ -222,7 +222,7 @@
                 firebase.auth().createUserWithEmailAndPassword(this.mail, this.password)
                     .then(data => {
                         let helperData = {
-                            email: this.mail,
+                            publicEmail: this.mail,
                             uid: data.user.uid,
                             harvestTypes: this.harvestTypes,
                             searchRange: this.searchRange,
