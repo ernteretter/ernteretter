@@ -1,19 +1,20 @@
 <template>
-<div>
+<div v-resize="onResize">
     <v-row>
-        <v-col cols="8">
-            <v-card style="height: 80vh;">
+        <v-col class="col-12 col-md-8" v-show="!mobil || displayMap">
+            <v-card style="height: 85vh;">
                 <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center">
                     <l-tile-layer :url="url"></l-tile-layer>
+                    <l-control position="topright">
+                        <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
+                            <v-icon>mdi-arrow-right</v-icon>
+                        </v-btn>
+                    </l-control>
                     <l-marker v-for="(offer, index) in offers" :key="index" :lat-lng=offer.geoPointNew>
                         <l-popup>
                             <v-row :key="index*10">
                                 <v-col :key="index" cols="7" class="px-0">
                                     <v-list-item :key="index*11 + 1">
-                                        <!-- <v-list-item-avatar>
-                                        <v-img src=offer.photoURL></v-img>
-                                    </v-list-item-avatar>
-                                    -->
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
                                             <v-list-item-subtitle>{{offer.description}}</v-list-item-subtitle>
@@ -36,22 +37,21 @@
                 </l-map>
             </v-card>
         </v-col>
-        <v-col cols="4">
-            <v-card height="80vh">
+        <v-col class="col-12 col-md-4">
+            <v-card height="80vh" v-show="!displayMap">
                 <v-row>
                     <v-col>
-                        <v-responsive :min-width="230" :height="64">
-                            <v-text-field v-bind="size" class="mb-3 mr-3 ml-3" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
-                        </v-responsive>
-                    </v-col>
-                    <v-col>
-                        <v-responsive :min-width="230" :height="64">
-                            <v-text-field class="mb-3 mr-3 ml-3" outlined type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="Suche nach PLZ" />
-                        </v-responsive>
+                        <v-row class="justify-center ">
+                            <v-text-field v-bind="size" class="mb-3 mr-3 ml-3 col-10 cols-xs-4 col-sm-6" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
+                            <v-text-field class="mb-3 mr-3 ml-3 col-9 col-xs-4 col-sm-4 " outlined type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="Suche nach PLZ" />
+                            <span class="col-1 md-col-0 pa-0 ma-0">
+                                <v-icon class="px-0 ma-auto" color="primary" v-show="mobil" @click="displayMap = !displayMap">mdi-map</v-icon>
+                            </span>
+                        </v-row>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-3 mr-6">
+                    <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-3 mr-6 ma-xs-0 ">
                         <v-responsive :max-width="600" :min-height="60">
                             <v-slider class="pt-7 mr-5 ml-3" v-model="searchradius" label="Radius (km)" :min_="1" :max="50" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
                         </v-responsive>
@@ -70,10 +70,6 @@
                             <v-row :key="index*10">
                                 <v-col :key="index" cols="10">
                                     <v-list-item :key="index*11 + 1">
-                                        <!-- <v-list-item-avatar>
-                                        <v-img src=offer.photoURL></v-img>
-                                    </v-list-item-avatar>
-                                    -->
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
                                             <v-list-item-subtitle>{{offer.description}}</v-list-item-subtitle>
@@ -113,6 +109,7 @@ import {
     LTileLayer,
     LMarker,
     LPopup,
+    LControl,
 } from 'vue2-leaflet';
 //marker fix
 import {
@@ -141,13 +138,16 @@ export default {
         number_of_plz_nearby: 100,
         searchradius: 5, //war ""
         farm_plz_arr: [],
-        offercount: 0
+        offercount: 0,
+        mobil: false,
+        displayMap: false,
     }),
     components: {
         LMap,
         LTileLayer,
         LMarker,
         LPopup,
+        LControl,
     },
     computed: {
         size() {
@@ -172,6 +172,13 @@ export default {
                     offerId: id
                 }
             });
+        },
+        onResize() {
+            if (window.innerWidth < 960) {
+                this.mobil = true
+            } else {
+                this.mobil = false
+            }
         },
         async searchOffersNew() {
             var URL = "https://nominatim.openstreetmap.org/search/de"
