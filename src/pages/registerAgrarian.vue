@@ -138,7 +138,7 @@
                             let firestore = firebase.firestore();
                             let newAgrarian = firestore.collection('agrarians').doc(agrarianData.uid);
                             newAgrarian.set(agrarianData).then(function () {
-                                router.push('/registerFarmerSuccess');
+                                router.push('/createOffer');
                             }).catch(function (error) {
                                 console.error("Error registering agrarian: ", error);
                             });

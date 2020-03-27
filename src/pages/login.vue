@@ -73,7 +73,7 @@ export default {
             this.overlay = true
             await firebase.auth().signInWithEmailAndPassword(this.mail, this.password).then(user => {
                 if (user) {
-                    this.$router.push('/')
+                    this.$router.push('/offers')
                 }
             }).catch(() => {
                 this.overlay = false

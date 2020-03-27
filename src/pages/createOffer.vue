@@ -35,8 +35,9 @@
             </v-row>
 
             <v-container>
-                <v-select single-line solo :rules="rules.harvestType" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?">
-                </v-select>
+                <v-card-subtitle>Bitte legen Sie für jedes Erntegut eine serperate Anzeige an</v-card-subtitle>
+                <v-select single-line solo :rules="rules.harvestType" v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
+                <v-text-field v-model="harvestTypeSpecial" v-if="harvestType == 'Sonstiges'" label="Gebe Sie bitte nur eine Sache an" single-line solo/>
             </v-container>
 
             <v-card-title class="justify-center"> In welchem Zeitraum benötigen Sie Hilfe? </v-card-title>
@@ -119,10 +120,8 @@
 
                 <v-text-field single-line solo type="number" :rules="rules.salary" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
 
-                <v-text-field :v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
-                
-                <v-text-field :v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
-
+                <v-text-field v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
+                <v-text-field v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
             </v-container>
             <v-row justify="center" v-if="formWarning && !valid">
                 <v-alert dense outlined  type="error">
@@ -168,6 +167,7 @@ export default {
         equipment: "",
         driverslicence: "",
         dates: [],
+        harvestTypeSpecial: "",
         items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges'],
         rules: {
             title: [value => !!value.trim() || 'Titel wird benötigt.'],
@@ -232,6 +232,7 @@ export default {
                 equipment: this.equipment,
                 driverslicence: this.driverslicence,
                 harvestType: this.harvestType,
+                harvestTypeSpecial: this.harvestTypeSpecial,
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
                 minDuration: duration,
