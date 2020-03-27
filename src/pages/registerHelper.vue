@@ -8,7 +8,7 @@
                     </v-row>
                     <v-row justify="center">
                         <v-col justify="center" cols="auto">
-                            <v-responsive :min-width="250" :max-width="600">
+                            <v-responsive :min-width="250" :max-width="500">
                             <v-text-field :rules="rules.name" v-model="name" label="Wie heißt du?" single-line solo/>
                             </v-responsive>
                         </v-col>
