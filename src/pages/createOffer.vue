@@ -216,7 +216,7 @@ export default {
             let userID = firebase.auth().currentUser.uid;
             let startDate = new Date(this.startDate);
             let endDate = new Date(this.endDate);
-            let difference = startDate.getTime() - endDate.getTime();
+            let difference = endDate.getTime() - startDate.getTime();
             let duration = difference / 1000 / 60 / 60 / 24;
             let address = {
                 street: this.street,
