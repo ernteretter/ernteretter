@@ -341,9 +341,12 @@ export default {
         },
         async finalDeletion() {
             this.overlay = false
-            this.user.delete().then(() => {
-                this.$router.push("/")
-            })
+            let user = this.user;
+            firebase.auth().signOut().then(function() {
+                user.delete().then(() => {
+                    this.$router.push("/");
+                });
+            });
         }
     },
 }
