@@ -239,7 +239,7 @@
                             let firestore = firebase.firestore();
                             let newHelper = firestore.collection('helpers').doc();
                             newHelper.set(helperData).then(function () {
-                                router.push('/registerHelperSuccess');
+                                router.push('/offer');
                             }).catch(function (error) {
                                 console.error("Error registering Helper: ", error);
                             });
