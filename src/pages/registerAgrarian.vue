@@ -84,7 +84,7 @@ export default {
             placePostcode: [
                 value => !!value.trim() || 'PLZ benötigt.',
                 value => {
-                    const pattern = /^[0-9]{4,5}$/;
+                    const pattern = /^[0-9]{5,5}$/;
                     return pattern.test(value) || 'Ungültige PLZ.';
                 }
             ],
