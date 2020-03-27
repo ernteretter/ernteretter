@@ -16,14 +16,29 @@
             <v-container>
                 <v-text-field :rules="rules.maxHelpers" type="number" v-model="maxHelpers" single-line solo label="Wie viele Helfer brauchen Sie?"></v-text-field>
             </v-container>
-
-            <v-card-title class="justify-center" single-line solo> Wo liegen die Felder auf denen Sie Hilfe benötigen? </v-card-title>
+            <v-row class="justify-center">
+                <v-card-title  single-line solo> Wo sollen die Helfer hinkommen? </v-card-title>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-icon v-on="on" color="primary">mdi-help-circle-outline</v-icon>
+                    </template>
+                    <span>Sie können sowohl die Eingabefelder benutzen, als auch die Stecknadel <br> auf der Landwirte verschieben, um ihre Position festzulegen</span>
+                </v-tooltip>
+            </v-row>
             <v-container>
-                <v-text-field :rules="rules.street" v-model="street" label="Straße" single-line solo/>
-                <v-text-field :rules="rules.houseNumber" v-model="houseNumber" label="Hausnummer" single-line solo/>
-                <v-text-field :rules="rules.postCode" v-model="postCode" type="number" label="Postleitzahl" single-line solo/>
-                <v-text-field :rules="rules.city" v-model="city" label="Stadt" single-line solo/>
+                <v-alert v-model="alertAddress" color="error" class="white--text">Adress kann nicht gefunden werden</v-alert>
+                <v-text-field :rules="rules.street" v-model="street" label="Straße" single-line solo @change="addressFilled" />
+                <v-text-field :rules="rules.houseNumber" v-model="houseNumber" label="Hausnummer" single-line solo @change="addressFilled" />
+                <v-text-field :rules="rules.postCode" v-model="postCode" type="number" label="Postleitzahl" single-line solo @change="addressFilled" />
+                <v-text-field :rules="rules.city" v-model="city" label="Stadt" single-line solo @change="addressFilled" />
             </v-container>
+
+            <div style="height: 30vh;">
+                <l-map style="height: 100%; width: 100%" :zoom="zoom" :center.sync="center" :zoomAnimation="true">
+                    <l-tile-layer :url="url"></l-tile-layer>
+                    <l-marker :lat-lng="markerLatLng" :visible="displayMarker" :draggable="true" @moveend="onChangeMarkerLatLng"></l-marker>
+                </l-map>
+            </div>
 
             <v-card-title class="justify-center"> Wobei benötigen Sie Hilfe? </v-card-title>
             <v-row justify="center">
@@ -140,10 +155,36 @@
 <script>
 import * as firebase from "firebase";
 import 'firebase/firestore';
-
+import {
+    LMap,
+    LTileLayer,
+    LMarker
+} from 'vue2-leaflet';
+//marker fix
+import {
+    Icon
+} from 'leaflet';
+delete Icon.Default.prototype._getIconUrl;
+Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 export default {
     name: 'createOffer',
     data: () => ({
+        displayMarker: true,
+        markerLatLng: {
+            lat: 49.877629,
+            lng: 8.654673
+        },
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        zoom: 7,
+        center: {
+            lat: 49.877629,
+            lng: 8.654673
+        },
+        alertAddress: false,    
         valid: true,
         formWarning: false,
         dateNow: new Date().toISOString().substr(0, 10),
@@ -189,6 +230,11 @@ export default {
             endDateText: [value => !!value || 'Enddatum wird benötigt.']
         }
     }),
+    components: {
+        LMap,
+        LTileLayer,
+        LMarker
+    },
     watch: {
         startDate(val) {
             this.startDateText = this.formatDate(val);
@@ -200,6 +246,24 @@ export default {
             this.endDateText = this.formatDate(val);
         }
     },
+    mounted() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                firebase.firestore().collection('agrarians').doc(user.uid).get().then((doc) => {
+                    if (doc.exists) {
+                        var data = doc.data()
+                        if (data.place) {
+                            this.street = data.place.street
+                            this.city = data.place.city
+                            this.postCode = data.place.postcode
+                            this.houseNumber = data.place.number
+                            this.convertAddressToGeoPoint()
+                        }
+                    }
+                })
+            }
+        })
+    },
     methods: {
         formatDate(date) {
             if (!date) {
@@ -207,6 +271,75 @@ export default {
             }
             const [year, month, day] = date.split('-');
             return `${day}.${month}.${year}`;
+        },
+        addressFilled() {
+            if (this.city && this.postCode && this.street) {
+                this.convertAddressToGeoPoint()
+            }
+        },
+        async convertAddressToGeoPoint() {
+            var URL = "https://nominatim.openstreetmap.org/search/de"
+            URL = URL + "/" + this.city.replace(" ", "%20") + "/" + this.street.replace(" ", "%20") + "/" + this.houseNumber.replace(" ", "%20") + "?format=json&addressdetails=1&limit=1"
+            var response = await fetch(URL)
+            var responseJSON = await response.json()
+            try {
+                this.alertAddress = false
+                var lat = parseFloat(responseJSON[0].lat)
+                var lon = parseFloat(responseJSON[0].lon)
+                this.geoPoint = new firebase.firestore.GeoPoint(lat, lon)
+                console.log(this.geoPoint);
+                this.center = {
+                    lat: lat,
+                    lng: lon
+                }
+                this.markerLatLng = {
+                    lat: lat,
+                    lng: lon
+                }
+                this.markerLatLng = {
+                    lat: lat,
+                    lng: lon
+                }
+                this.displayMarker = true
+                this.convertGeoPointToAdress(lat, lon)
+                setTimeout(() => {
+                    this.zoom = 14
+                }, 500);
+            } catch {
+                this.alertAddress = true
+            }
+        },
+        onChangeMarkerLatLng(val) {
+            this.convertGeoPointToAdress(val.target._latlng.lat, val.target._latlng.lng)
+        },
+        async convertGeoPointToAdress(newLat, newLng) {
+            var URL = "https://nominatim.openstreetmap.org/reverse?format=json&lat="
+            URL = URL + newLat + "&lon=" + newLng
+            var response = await fetch(URL)
+            var responseJSON = await response.json()
+            this.geoPoint = new firebase.firestore.GeoPoint(newLat, newLng)
+            if (responseJSON.address.road) {
+                this.street = responseJSON.address.road
+            } else if (responseJSON.address.pedestrian) {
+                this.street = responseJSON.address.pedestrian
+            } else {
+                this.street = ""
+            }
+            if (responseJSON.address.city) {
+                this.city = responseJSON.address.city
+            } else if (responseJSON.address.town) {
+                this.city = responseJSON.address.town
+            } else if (responseJSON.address.village) {
+                this.city = responseJSON.address.village
+            } else {
+                this.city = ""
+            }
+            this.postCode = responseJSON.address.postcode
+            if (responseJSON.address.house_number) {
+                this.houseNumber = responseJSON.address.house_number
+            } else {
+                this.houseNumber = "nicht vorhanden"
+            }
         },
         createOffer() {
             this.formWarning = !this.$refs.form.validate();
@@ -239,7 +372,8 @@ export default {
                 salary: parseInt(this.salary),
                 startDate: startDate,
                 endDate: endDate,
-                workType: this.radioErnteSaat
+                workType: this.radioErnteSaat,
+                geoPoint: this.geoPoint,
             };
 
             let firestore = firebase.firestore();

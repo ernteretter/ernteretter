@@ -222,6 +222,7 @@
                 firebase.auth().createUserWithEmailAndPassword(this.mail, this.password)
                     .then(data => {
                         let helperData = {
+                            publicEmail: this.mail,
                             uid: data.user.uid,
                             harvestTypes: this.harvestTypes,
                             searchRange: this.searchRange,
@@ -236,10 +237,9 @@
                             displayName: this.name
                         }).then(() => {
                             let firestore = firebase.firestore();
-                            let newHelper = firestore.collection('helpers').doc();
-                            newHelper.set(helperData).then(function () {
+                            firestore.collection('helpers').doc(data.user.uid).set(helperData).then(() => {
                                 router.push('/registerHelperSuccess');
-                            }).catch(function (error) {
+                            }).catch((error) => {
                                 console.error("Error registering Helper: ", error);
                             });
                         });

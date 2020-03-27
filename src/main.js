@@ -27,7 +27,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify'
 import meta from 'vue-meta'
-
+import 'leaflet/dist/leaflet.css';
 
 //enable plugins
 Vue.use(VueRouter)
