@@ -93,8 +93,7 @@ export default {
         createRoom() {
             console.log("creating room");
             let data = {
-                author1: this.firstUserID,
-                author2: this.secondUserID
+                authors: [this.firstUserID, this.secondUserID],
             };
             let firestore = firebase.firestore();
             firestore

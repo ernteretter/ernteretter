@@ -23,14 +23,15 @@ export default {
                 return;
             } else {
                 this.currentUser = user.uid;
+                console.log("currentUser: " + this.currentUser);
                 firebase
                     .firestore()
                     .collection("chats")
                     .where("author1", "==", this.currentUser)
-                    .where("author2", "==", this.currentUser)
                     .get().then(snapshot => {
-                        console.log("found new chatroom");
+                        console.log("found new chatrooms: " + snapshot.size);
                         snapshot.forEach(c => this.chatrooms.push(c.data()));
+                        console.log("chatrooms contains: " + this.chatrooms);
                     })
             }
         });
