@@ -20,6 +20,7 @@ import impressum from './pages/impressum';
 import chat from './pages/chat';
 import information from './pages/information';
 import error from './pages/error';
+import inbox from './pages/inbox';
 
 //plugins
 import firebase from 'firebase/app'
@@ -54,6 +55,7 @@ const routes = [
   {name: "information", path: "/information", component: information},
   {name: "error", path:'*', component: error},
   {name: "chat", path: "/chat/:agrarianId", component: chat, meta: {requiresAuth: true}},
+  {name: "inbox", path: "/inbox", component: inbox, meta: {requiresAuth: true}},
 ]
 
 const router = new VueRouter({
