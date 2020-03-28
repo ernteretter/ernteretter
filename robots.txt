@@ -1,0 +1,11 @@
+# robots.txt to https://ernte-retter.de
+
+User-agent: *
+Allow: /
+Disallow: /createOffer
+Disallow: /editOffer
+Disallow: /error
+Disallow: /history
+Disallow: /registerAgrarianSuccess
+Disallow: /registerHelperSuccess
+Disallow: /settings
