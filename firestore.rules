@@ -1,8 +1,51 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+  
+  	//erlaube alle Anzeigen zu lesen, aber nur zu schreiben,
+  	// wenn du der angegebene helper im request bist.
+    match /acceptedOffers/{document} {
+    	allow read: if true;
+      allow create: if request.auth.uid == request.resource.data.helperId;
+      allow update: if request.auth.uid == request.resource.data.helperId && request.auth.uid == resource.data.helperId;
+      allow delete: if request.auth.uid == resource.data.helperId;
+    }
+    //erlaube allen Landwirte zu lesen, aber nur wenn du es selbst bist zu schreiben.
+    match /agrarians/{document} {
+    	allow read: if true;
+      allow create: if request.auth.uid == request.resource.data.uid;
+      allow update: if request.auth.uid == request.resource.data.uid && request.auth.uid == resource.data.uid;
+      allow delete: if request.auth.uid == resource.data.uid;
+    }
+    //erlaube allen, die eingeloggt sind, helfer zu sehen
+    // erlaube nur den helfern selbst sich zu aendern
+    match /helpers/{document} {
+    	allow read: if request.auth.uid != null;
+      allow create: if request.auth.uid == request.resource.data.uid;
+      allow update: if request.auth.uid == request.resource.data.uid && request.auth.uid == resource.data.uid;
+      allow delete: if request.auth.uid == resource.data.uid;
+    }
+    //fuer alle sichtbar, nur schreibbar wenn du der angegebene Bauer bist
+    match /offers/{document} {
+    	allow read: if true;
+      allow create: if request.auth.uid == request.resource.data.agrarianId;
+      allow update: if request.auth.uid == request.resource.data.agrarianId && request.auth.uid == resource.data.agrarianId;
+      allow delete: if request.auth.uid == resource.data.agrarianId;
+    }
+    //erstelle chatroom wenn du selbst drinnen stehst
+    match /chats/{chatid} {
+    	allow read: if true;
+    	allow create: if (request.auth.uid == request.resource.data.authors[0] || request.auth.uid == request.resource.data.authors[1]) &&
+      									(chatid == request.resource.data.authors[0] + "_" + request.resource.data.authors[1] || chatid == request.resource.data.authors[1] + "_" + request.resource.data.authors[0]);
+    	//schreibe message wenn du selbst autor bist,
+      // lese wenn du teil des chatrooms bist
+      match /messages/{messageid} {
+      	allow read: if get(/databases/$(database)/documents/chats/$(chatid)).data.authors[0] == request.auth.uid || 
+      								get(/databases/$(database)/documents/chats/$(chatid)).data.authors[1] == request.auth.uid;
+      	allow create: if request.resource.data.author == request.auth.uid &&
+        							(get(/databases/$(database)/documents/chats/$(chatid)).data.authors[0] == request.auth.uid || 
+      								get(/databases/$(database)/documents/chats/$(chatid)).data.authors[1] == request.auth.uid);
+      }
     }
   }
 }

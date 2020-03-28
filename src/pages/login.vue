@@ -1,26 +1,46 @@
 <template>
 <v-app>
-    <v-alert v-if="error" dismissible type="error" width="400px" class="mx-auto mt-5">Passwort und/oder Nutzname falsch</v-alert>
-    <v-card width="400px" class="mx-auto mt-5">
-        <v-card-title>
-            <h1>Login</h1>
-        </v-card-title>
-        <v-card-text>
-            <v-form>
-                <v-text-field v-model="mail" label="Username" />
-                <v-text-field :type="showPassword ? 'text' : 'password'" label="Password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" v-model="password" />
+    <v-alert v-if="displayAlert" dismissible :type="alertType" width="400px" class="mx-auto mt-5">{{alertText}}</v-alert>
+
+    <v-col cols="12">
+        <v-card class="mx-auto mt-5 col-sm-12 col-md-5" transition="slide-x-transition" v-if="!displayPasswordForgotten">
+            <v-card-title class="secondary--text">
+                <h1 class="mx-auto">Login</h1>
+            </v-card-title>
+            <form class="mx-auto col-sm-12 col-md-12" v-on:submit.prevent="onLogin()">
+                <v-text-field class="col-12 col-md-8 mx-auto" v-model="mail" label="E-Mail" />
+                <v-text-field class="col-12 col-md-8 mx-auto" :type="showPassword ? 'text' : 'password'" label="Password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" v-model="password" />
+                <v-overlay :absolute="true" :value="overlay">
+                    <v-progress-circular indeterminate>
+                    </v-progress-circular>
+                </v-overlay>
+                <v-card-actions>
+                    <v-row>
+                        <v-btn class="col-12 col-sm-6" color="secondary" @click="displayPasswordForgotten  = !displayPasswordForgotten" outlined>Passwort vergessen?</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" class="rounded-button-left mx-auto" type="submit" outlined @click="onLogin()">login</v-btn>
+                    </v-row>
+                </v-card-actions>
+            </form>
+        </v-card>
+        <v-card class="mx-auto mt-5 col-sm-12 col-md-5" v-if="displayPasswordForgotten">
+            <v-card-title>
+                <h1>Login</h1>
+            </v-card-title>
+            <v-form class="mx-auto col-sm-12 col-md-12">
+                <v-text-field v-model="mail" label="E-Mail" />
                 <v-overlay :absolute="true" :value="overlay">
                     <v-progress-circular indeterminate>
                     </v-progress-circular>
                 </v-overlay>
             </v-form>
-        </v-card-text>
-        <v-card-actions>
-            <v-btn color="success" @click="onLogin()">login</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" class="rounded-button-left" outlined @click="onRegisterHelper()">als Helfer Registrieren</v-btn>
-        </v-card-actions>
-    </v-card>
+            <v-card-actions>
+                <v-btn color="secondary" @click="displayPasswordForgotten  = !displayPasswordForgotten" outlined> abbruch</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="resetPassword()" outlined>Passwort zurücksetzen</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-col>
 </v-app>
 </template>
 
@@ -31,11 +51,23 @@ export default {
     mounted() {
         this.alreadyLoggedIn(this.$router);
     },
+    metaInfo() {
+        return {
+            title: 'Login - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Logge dich hier für ernteretter ein'
+            }]
+        }
+    },
     data() {
         return {
+            alertText: "Warum kann ich mich nicht einloggen? Alle Accounts, erstellt vor dem 28.03.2020, wurden aus datenstrukturellen Gründen gelöscht.",
+            alertType: "info",
+            displayPasswordForgotten: false,
             mail: '',
             password: '',
-            error: false,
+            displayAlert: true,
             documents: [],
             showPassword: false,
             overlay: false,
@@ -49,20 +81,18 @@ export default {
             this.$router.push('/reset')
         },
         async onLogin() {
-            try {
-                this.overlay = true
-                await firebase.auth().signInWithEmailAndPassword(this.mail, this.password).then(user => {
-                    if (user) {
-                        this.$router.push('/')
-                    }
-                })
-            } catch (err) {
+            this.overlay = true
+            this.mail = this.mail.replace(/ /g, '')
+            await firebase.auth().signInWithEmailAndPassword(this.mail, this.password).then(user => {
+                if (user) {
+                    this.$router.push('/')
+                }
+            }).catch(() => {
                 this.overlay = false
-                this.error = true;
-            }
-        },
-        async onRegisterHelper() {
-            this.$router.push('/registerHelper');
+                this.alertText = "Passwort und/oder Nutzname falsch"
+                this.alertType = "error"
+                this.displayAlert = true
+            })
         },
         async alreadyLoggedIn(router) {
             await firebase.auth().onAuthStateChanged(function (user) {
@@ -70,6 +100,21 @@ export default {
                     router.push('/')
                 }
             });
+        },
+        async resetPassword() {
+            this.overlay = true
+            firebase.auth().useDeviceLanguage();
+            await firebase.auth().sendPasswordResetEmail(this.mail).then(() => {
+                this.displayAlert = true
+                this.alertText = "Zurücksetzen erfolgreich"
+                this.alertType = "success"
+            }).catch(() => {
+                this.displayAlert = true
+                this.alertText = "Etwas ist schief gegangen"
+                this.alertType = "error"
+            });
+            this.overlay = false
+
         }
 
     },

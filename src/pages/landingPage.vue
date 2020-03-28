@@ -1,17 +1,28 @@
 <template>
 <v-card class="mx-auto" max-width="1000px">
-    <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto " @click="$router.push('/')" max-width="80%" style="{cursor: pointer}" />
+    <div style="padding-top: 30%; padding-bottom: 10%;" >
+        <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto " @click="$router.push('/')" max-width="100%" style="{cursor: pointer};" />
+    </div>
     <v-spacer></v-spacer>
-    <v-card-subtitle id="title" class="title py-10"><strong class="display-1 font-weight-bold">Auch in dieser besondern Zeit</strong> wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
-        Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.
-    </v-card-subtitle>
-    <v-row class="justify-center" no-gutters>
-        <v-btn color="primary" outlined class="rounded-button-right mx-10" :small="responiveNeeded" :large="!responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
-        <v-btn color="primary" outlined class="rounded-button-left mx-10" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
+    <div class="pb-10">
+        <h1 class="text" style="font-weight: 700;">Auch in dieser besondern Zeit  </h1>
+    <h3 class="text mx-auto">wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
+        Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.</h3>
+    </div>
+    <v-row class="py-10 px-0" no-gutters>
+        <v-hover v-slot:default="{ hover }">
+            <v-btn color="primary" :outlined="!hover" style="stroke-width: 50px" width="48%" height="6vh" class="rounded-button-right mx-0 pa-0 font-weight-bold display-1" :small="responiveNeeded" :large="!responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
+        </v-hover>
+        <v-spacer></v-spacer>
+        <v-hover v-slot:default="{ hover }">
+        <v-btn color="primary" :outlined="!hover" width="48%" height="6vh" class="rounded-button-left mx-0 pa-0 font-weight-bold display-1" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
+        </v-hover>
     </v-row>
     <v-row>
-        <router-link to="/information" class="mx-auto display-1">
-            <v-btn color="primary" dense outlined class="py-0 my-0">Weitere Informationen</v-btn>
+        <router-link to="/information" style="padding-top: 10vh; padding-bottom: 3vh; text-decoration: none" class="mx-auto display-1">
+            <v-btn color="primary" large dense outlined class="py-2 my-0">
+                <v-icon>mdi-arrow-down-bold</v-icon>
+                Weitere Informationen</v-btn>
         </router-link>
     </v-row>
     <v-row>
@@ -34,34 +45,71 @@
         <a class="px-1" href="https://www.instagram.com/ernteretter/">
             <v-icon large>mdi-instagram</v-icon>
         </a>
+        <a class="px-1" href="https://github.com/iBims1JFK/ernteretter">
+            <v-icon large>mdi-github</v-icon>
+        </a>
     </v-row>
 </v-card>
 </template>
 
 <script>
+import * as firebase from "firebase";
+import "firebase/firestore";
+import "firebase/auth";
+
 export default {
     name: 'landingPage',
-    data(){
-        return{
-            responiveNeeded: 'false'
+    data() {
+        return {
+            needHelp: '/registerFarmers',
+            responiveNeeded: false
         }
     },
-    methods:{
-        onResize(){
-            if(window.innerWidth < 452){
+    metaInfo() {
+        return {
+            title: 'Startseite - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Eine Plattform zum Vermitteln von Helfern und Landwirten'
+            }]
+        }
+    },
+    methods: {
+        onResize() {
+            if (window.innerWidth < 452) {
                 this.responiveNeeded = true
             } else {
                 this.responiveNeeded = false
             }
         }
+    },
+    mounted() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                firebase.firestore().collection('agrarians').doc(user.uid).get().then(async (doc) => {
+                    if (doc.exists) {
+
+                        this.needHelp = '/createOffer'
+                    } else {
+                        this.needHelp = '/offers'
+                    }
+                })
+            } else {
+                this.needHelp = '/registerFarmers'
+            }
+        })
     }
 }
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style>
+.text  {
+    font-family: 'Open Sans', sans-serif;
+    color: black;
+    display: inline;
+}
 #title {
     word-break: keep-all;
 }

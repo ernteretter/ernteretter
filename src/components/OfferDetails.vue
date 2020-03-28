@@ -1,9 +1,10 @@
 <template>
-<div class="offer-details" v-if="offer && agrarian">
+<div class="offer-details mx-auto">
     <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn> <v-btn @click="showAlert = false;" outlined>Nein</v-btn> </v-alert>
     <div class="inner">
         <div class="details-header">
             <div class="title-section">
+                <v-icon @click="close()">mdi-arrow-left</v-icon>
                 <div class="page-heading">{{ offer.title }}</div>
                 <div class="page-sub-heading">{{ agrarian.name }}</div>
             </div>
@@ -12,10 +13,10 @@
                     <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true"><v-icon>mdi-delete</v-icon></v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()"><v-icon>mdi-pencil-outline</v-icon></v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted && !isOwner" @click="removeMe">Abmelden</v-btn>
-                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isAccepted && !isOwner"  @click="addMe">Anmelden</v-btn>
+                    <v-btn class="action-button rounded-button-left" :disabled="!(offer.maxHelpers > offer.helperCount) && !alreadyAccepted" id="btn-accept" v-if="!isAccepted && !isOwner"  @click="addMe">Anmelden</v-btn>
                 </div>
                 <div class="status-chip" v-if="offer.maxHelpers">
-                    <b>{{ offer.maxHelpers - helperCount }}</b>
+                    <b>{{offer.maxHelpers - offer.helperCount}}</b>
                     Helfer fehlen noch
                 </div>
             </div>
@@ -106,11 +107,6 @@
                     <br />
                     {{ offer.address.postCode + " " + offer.address.city }}
                 </div>
-                <div class="email">
-                    <a :href="'mailto:' + agrarian.publicEmail">
-                        {{ agrarian.publicEmail }}
-                    </a>
-                </div>
             </div>
         </section>
     </div>
@@ -124,84 +120,17 @@ import "firebase/auth";
 
 export default {
     name: "OfferDetails",
+    props: {
+      offer:Object,
+      user: Object
+    },
     data: () => ({
         showAlert: false,
-        offer: false,
         agrarian: false,
         isAccepted: false,
         isOwner: false,
-        uid: false,
-        helperCount: 0
+        alreadyAccepted: false,
     }),
-    async created() {
-        let offerId = this.$route.params.offerId;
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                this.uid = user.uid;
-            } else {
-                this.uid = false;
-                this.isAccepted = false;
-            }
-        });
-        firebase
-            .firestore()
-            .doc("offers/" + offerId)
-            .get()
-            .then(snapshot => {
-                if (snapshot.exists) {
-                    this.offer = {
-                        ...snapshot.data(),
-                        id: snapshot.id
-                    };
-                    return firebase
-                        .firestore()
-                        .doc("agrarians/" + snapshot.data().agrarianId)
-                        .get();
-                } else {
-                    alert("Anzeige nicht gefunden");
-                    this.$router.push("/offers");
-                    throw "offer not found";
-                }
-            })
-            .then(snapshot => {
-                if (snapshot.exists) {
-                    this.agrarian = {
-                        ...snapshot.data(),
-                        id: snapshot.id
-                    };
-                    if (this.uid == this.agrarian.uid) {
-                        console.log("changed Owner to true!");
-                        this.isOwner = true;
-                    }
-                } else {
-                    alert("Ein Fehler ist aufgetreten: Landwirt nicht gefunden");
-                    this.$router.push("/offers");
-                }
-                if (this.uid) {
-                    return firebase
-                        .firestore()
-                        .collection("acceptedOffers")
-                        .where("helperId", "==", this.uid)
-                        .where("offerId", "==", this.offer.id)
-                        .get();
-                } else {
-                    throw "user not logged in";
-                }
-            })
-            .then(snapshot => {
-                if (!snapshot.empty) {
-                    this.isAccepted = true;
-                }
-            })
-        firebase
-            .firestore()
-            .collection("acceptedOffers")
-            .where("offerId", "==", offerId)
-            .get()
-            .then(snapshot => {
-                this.helperCount = snapshot.size;
-            });
-    },
     filters: {
         formatDate: d =>
             d
@@ -211,7 +140,30 @@ export default {
             .reverse()
             .join(".")
     },
+    watch:{
+      offer(){
+        console.log("hello");
+        firebase.firestore().collection('agrarians').doc(this.offer.agrarianId).get().then((doc) => {
+          this.agrarian = doc.data()
+          if(this.offer.agrarianId == this.user.uid){
+            this.isOwner = true
+          } else {
+            this.isOwner = false
+          }
+        })
+        firebase.firestore().collection('acceptedOffers').where('helperId', '==', this.user.uid).get().then((doc) => {
+          if(doc.exists){
+            this.alreadyAccepted = true
+          } else {
+            this.alreadyAccepted = false
+          }
+        })
+      }
+    },
     methods: {
+        close(){
+          this.$emit('close')
+        },
         gotoEditOffer() {
             this.$router.push("/editOffer/" + this.offer.id);
         },
@@ -221,32 +173,24 @@ export default {
             this.$router.push("/offers");
         },
         addMe() {
-            if (!this.uid) {
-                alert("Bitte melde Dich erst an");
-                this.$router.push("/login?redirect=/offers/" + this.offer.id);
-                return;
-            }
-            if (this.isAccepted) {
-                return;
-            }
             firebase
                 .firestore()
                 .collection("acceptedOffers")
                 .add({
                     offerId: this.offer.id,
-                    helperId: this.uid,
+                    helperId: this.user.uid,
                     acceptDate: new Date()
                 })
                 .then(() => {
                     this.isAccepted = true;
-                    this.helperCount++;
                 });
+                this.offer.helperCount += 1
         },
         removeMe() {
             firebase
                 .firestore()
                 .collection("acceptedOffers")
-                .where("helperId", "==", this.uid)
+                .where("helperId", "==", this.user.uid)
                 .where("offerId", "==", this.offer.id)
                 .get()
                 .then(snapshot => {
@@ -257,7 +201,7 @@ export default {
                             .delete()
                             .then(() => {
                                 this.isAccepted = false;
-                                this.helperCount--;
+                                this.offer.helperCount -= 1
                             });
                     }
                 });
