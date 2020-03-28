@@ -2,8 +2,8 @@
 <div v-resize="onResize">
     <v-row>
         <v-col class="col-12 col-md-8" v-show="(!mobil || displayMap) && !displayDetails">
-            <v-card style="height: 85vh;">
-                <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center">
+            <v-card style="height: 85vh">
+                <l-map style="width: 100%" :zoom="zoom" :center="center">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
                         <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
@@ -56,7 +56,7 @@
                     </v-col>
                 </v-row>
                 <v-row class="justify-center">
-                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="displayMap = !displayMap">
+                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="displayMap = !displayMap" v-show="mobil">
                         <v-icon class="ma-0 pa-0" v-show="mobil">mdi-map</v-icon>
                         Karte
                     </v-btn>
@@ -189,10 +189,13 @@ export default {
             this.displayDetails = true
         },
         onResize() {
+            
             if (window.innerWidth < 960) {
                 this.mobil = true
+                this.displayMap = false
             } else {
                 this.mobil = false
+                this.displayMap = false
             }
         },
         async searchOffersNew() {
