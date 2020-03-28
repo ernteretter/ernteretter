@@ -195,7 +195,7 @@
             harvestTypesOptions: ["Obst", "Gemüse"],
             searchRange: 130,
             searchRangeMin: 1,
-            searchRangeMax: 500,
+            searchRangeMax: 100,
             durationMin: 3,
             durationMinType: "days",
             durationMax: 4,
@@ -222,7 +222,7 @@
                 firebase.auth().createUserWithEmailAndPassword(this.mail, this.password)
                     .then(data => {
                         let helperData = {
-                            email: this.mail,
+                            publicEmail: this.mail,
                             uid: data.user.uid,
                             harvestTypes: this.harvestTypes,
                             searchRange: this.searchRange,
@@ -238,6 +238,7 @@
                         }).then(() => {
                             let firestore = firebase.firestore();
                             firestore.collection('helpers').doc(data.user.uid).set(helperData).then(() => {
+                                console.log('routing to registerHelper');
                                 router.push('/registerHelperSuccess');
                             }).catch((error) => {
                                 console.error("Error registering Helper: ", error);
