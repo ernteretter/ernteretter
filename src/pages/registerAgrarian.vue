@@ -99,6 +99,7 @@ export default {
             firebase.auth().createUserWithEmailAndPassword(this.mail, this.password)
                 .then(data => {
                     let agrarianData = {
+                        name: this.name,
                         uid: data.user.uid,
                         publicEmail: data.user.email,
                         photoURL: data.user.photoURL,
