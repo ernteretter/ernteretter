@@ -3,6 +3,9 @@ import Vuetify from 'vuetify/lib';
 
 const vuetify = new Vuetify({
     theme: {
+        options: {
+            customProperties: true,
+        },
         themes: {
             light: {
                 primary: "#ed9a00",

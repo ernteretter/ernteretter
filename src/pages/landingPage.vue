@@ -3,7 +3,7 @@
     <v-card-title id="title" class="headline font-weight-bold "> Auch in dieser besonderen Zeit wachsen unsere Pflanzen und versorgen uns alle mit Nahrung.</v-card-title>
     <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto" @click="$router.push('/')" max-width="80%" style="{cursor: pointer}" />
     <v-row class="justify-center" no-gutters>
-        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize" large :to="needHelp" >Ich brauche Hilfe</v-btn>
+        <v-btn color="primary" outlined class="rounded-button-right" :x-small="responiveNeeded" v-resize="onResize" large :to="needHelp">Ich brauche Hilfe</v-btn>
         <v-btn color="primary" outlined class="rounded-button-left" :x-small="responiveNeeded" large to="/offers">Ich möchte helfen</v-btn>
     </v-row>
     <v-spacer></v-spacer>
@@ -49,37 +49,36 @@ import "firebase/auth";
 
 export default {
     name: 'landingPage',
-    data(){
-        return{
+    data() {
+        return {
             needHelp: '/registerFarmers',
             responiveNeeded: false
         }
     },
     metaInfo() {
         return {
-            title: 'ernteretter',
-            meta : [ {
+            title: 'Startseite - ernteretter',
+            meta: [{
                 name: 'description',
-                content: 'Super-Duper tolle Beschreibung'
-            }
-            ]
+                content: 'Eine Plattform zum Vermitteln von Helfern und Landwirten'
+            }]
         }
     },
-    methods:{
-        onResize(){
-            if(window.innerWidth < 452){
+    methods: {
+        onResize() {
+            if (window.innerWidth < 452) {
                 this.responiveNeeded = true
             } else {
                 this.responiveNeeded = false
             }
         }
     },
-    mounted(){
+    mounted() {
         firebase.auth().onAuthStateChanged((user) => {
-            if(user){
+            if (user) {
                 firebase.firestore().collection('agrarians').doc(user.uid).get().then(async (doc) => {
-                    if(doc.exists){
-                        
+                    if (doc.exists) {
+
                         this.needHelp = '/createOffer'
                     } else {
                         this.needHelp = '/offers'
@@ -91,7 +90,6 @@ export default {
         })
     }
 }
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

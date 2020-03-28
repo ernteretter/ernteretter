@@ -45,7 +45,15 @@
 
 <script>
 export default {
-
+    metaInfo() {
+        return {
+            title: 'Information - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Alle Informationen zu ernteretter, ihren Helfern und Landwirten'
+            }]
+        }
+    },
 }
 </script>
 
