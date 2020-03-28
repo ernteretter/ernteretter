@@ -44,10 +44,7 @@
                         <v-card-title>Suche nach Anzeigen</v-card-title>
                         <v-row class="justify-center">
                             <v-text-field v-bind="size" class="mb-3 mr-3 ml-3 col-10 cols-xs-4 col-sm-6" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
-                            <v-text-field class="mb-md-3 mr-3 ml-3 col-9 col-xs-4 col-sm-4 " outlined type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="Suche nach PLZ" />
-                            <span class="col-1 md-col-0 pa-0 ma-0">
-                                <v-icon class="px-0 ma-auto" color="primary" v-show="mobil" @click="displayMap = !displayMap">mdi-map</v-icon>
-                            </span>
+                            <v-text-field class="mb-md-3 mr-3 ml-3 col-10 col-xs-4 col-sm-4 " outlined type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="Suche nach PLZ" />
                         </v-row>
                     </v-col>
                 </v-row>
@@ -59,6 +56,10 @@
                     </v-col>
                 </v-row>
                 <v-row class="justify-center">
+                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%">
+                        <v-icon class="ma-0 pa-0" v-show="mobil" @click="displayMap = !displayMap">mdi-map</v-icon>
+                        Karte
+                    </v-btn>
                     <v-btn v-bind="size" color="primary" id="searchbutton" @click="searchOffersNew();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
                     <v-btn v-bind="size" color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
                 </v-row>
@@ -78,7 +79,7 @@
                                         </v-list-item-content>
                                     </v-list-item>
                                 </v-col>
-                                <v-col :key="index * 10 + 2" class="col-3 col-xs-3 col-sm-1 col-md-3 pr-1 mr-2" align="end">
+                                <v-col :key="index * 10 + 2" class="col-3 col-xs-3 col-sm-1 col-md-3 pr-1 mr-2 my-5" align="end">
                                     <v-list-item-content class="pa-0">
                                         <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
                                         <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
@@ -94,7 +95,7 @@
         </v-col>
     </v-row>
     <v-row>
-        <OfferDetails :offer="offerData" :user="user" v-show="displayDetails" @close="closeDetails"/>
+        <OfferDetails :offer="offerData" :user="user" v-show="displayDetails" @close="closeDetails" />
     </v-row>
 </div>
 </template>
@@ -168,7 +169,7 @@ export default {
         }
     },
     methods: {
-        closeDetails(){
+        closeDetails() {
             this.displayDetails = false
         },
         createOffer() {
