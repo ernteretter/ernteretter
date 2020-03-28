@@ -56,8 +56,8 @@
                     </v-col>
                 </v-row>
                 <v-row class="justify-center">
-                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%">
-                        <v-icon class="ma-0 pa-0" v-show="mobil" @click="displayMap = !displayMap">mdi-map</v-icon>
+                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="displayMap = !displayMap">
+                        <v-icon class="ma-0 pa-0" v-show="mobil">mdi-map</v-icon>
                         Karte
                     </v-btn>
                     <v-btn v-bind="size" color="primary" id="searchbutton" @click="searchOffersNew();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
