@@ -1,6 +1,9 @@
 <template>
-<v-card>
+<v-card max-width="1000" class="mx-auto">
     <v-card-title>Nachrichten</v-card-title>
+    <v-card v-for="(chat, index) in chatrooms" :key="index">
+        {{chat.author}}
+    </v-card>
 </v-card>
 </template>
 
@@ -25,7 +28,10 @@ export default {
                     .collection("chats")
                     .where("author1", "==", this.currentUser)
                     .where("author2", "==", this.currentUser)
-                    .get()
+                    .get().then(snapshot => {
+                        console.log("found new chatroom");
+                        snapshot.forEach(c => this.chatrooms.push(c.data()));
+                    })
             }
         });
     }
