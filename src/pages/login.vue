@@ -84,11 +84,9 @@
 import * as firebase from "firebase/app";
 import "firebase/auth";
 export default {
-  mounted() {
-    this.alreadyLoggedIn(this.$router);
-  },
   data() {
     return {
+      google_provider: "",
       alertText: "",
       alertType: "error",
       displayPasswordForgotten: false,
@@ -102,18 +100,22 @@ export default {
   },
   methods: {
     goLogin() {
+        console.log("pushinng login");
+        
       this.$router.push("/login");
     },
     reset() {
       this.$router.push("/reset");
     },
     async onLogin() {
+        console.log("normal login");
       this.overlay = true;
       await firebase
         .auth()
         .signInWithEmailAndPassword(this.mail, this.password)
         .then(user => {
           if (user) {
+              console.log("normal login success");
             this.$router.push("/");
           }
         })
@@ -125,28 +127,58 @@ export default {
         });
     },
     async onGoogleLogin() {
-      //google_provider = new firebase.auth.GoogleAuthProvider();
-      await firebase
+      console.log("googlelog");
+      //this.$router.push("/register")
+      //this.google_provider = new firebase.auth.GoogleAuthProvider();
+      console.log("googlelog2");
+       var user = await firebase
         .auth()
         .signInWithRedirect(new firebase.auth.GoogleAuthProvider())
-        .then(user => {
+        console.log("REdirect is working");
+        
           if (user) {
-            this.$router.push("/");
+            this.mail = user.mail;
+            console.log("Email" + this.mail);
           }
-        })
-        .catch(() => {
-          this.overlay = false;
-          this.alertText = "Mission failed. We'll get 'em next time!";
-          this.alertType = "error";
-          this.displayAlert = true;
-        });
-    },
-    async alreadyLoggedIn(router) {
-      await firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          router.push("/");
-        }
-      });
+          else{
+              console.log("sigin faild somehow");
+              
+          }
+        
+        console.log("Successfully signed in");
+        
+            //userid
+            let firestore = firebase.firestore();
+            await firestore.collection("agrarians").where("email", "==", this.mail).get().then(snapshot =>{
+                if(snapshot.empty)
+                {
+                    this.$router.push("/register");
+                }
+                else
+                {
+                    this.$router.push("/");
+                }
+            });
+            await firestore.collection("helpers").where("email", "==", this.mail).get().then(snapshot =>{
+                if(snapshot.empty)
+                {
+                    this.$router.push("/register");
+                }
+                else
+                {
+                    this.$router.push("/");
+                }
+            })
+          
+          console.log("Email" + this.mail)
+        // })
+        // .catch(() => {
+        //   this.overlay = false;
+        //   this.alertText = "Mission failed. We'll get 'em next time!";
+        //   this.alertType = "error";
+        //   this.displayAlert = true;
+        // });
+        // console.log("Email" + this.mail);
     },
     async resetPassword() {
       this.overlay = true;
