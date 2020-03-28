@@ -1,9 +1,10 @@
 <template>
-<div class="offer-details" v-if="offer && agrarian">
+<div class="offer-details mx-auto">
     <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn> <v-btn @click="showAlert = false;" outlined>Nein</v-btn> </v-alert>
     <div class="inner">
         <div class="details-header">
             <div class="title-section">
+                <v-icon class="pa-0 ma-0" @click="$router.go(-1)">mdi-arrow-left</v-icon>
                 <div class="page-heading">{{ offer.title }}</div>
                 <div class="page-sub-heading">{{ agrarian.name }}</div>
             </div>
@@ -20,15 +21,6 @@
                 </div>
             </div>
         </div>
-
-        <section class="description">
-            <div class="description-header section-header">
-                <div class="section-headline">Beschreibung</div>
-            </div>
-            <div class="description-body section-body">
-                {{ offer.description }}
-            </div>
-        </section>
 
         <section class="harvesttype" v-if="offer.harvestType">
             <div class="equipment-header section-header">
@@ -92,6 +84,15 @@
                         {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
                     </span>
                 </p>
+            </div>
+        </section>
+        
+        <section class="description">
+            <div class="description-header section-header">
+                <div class="section-headline">Beschreibung</div>
+            </div>
+            <div class="description-body section-body">
+                {{ offer.description }}
             </div>
         </section>
         <section>
@@ -290,7 +291,6 @@ section {
     flex-flow: row wrap;
     align-items: center;
 }
-
 .section-header {
     min-width: 300px;
 }

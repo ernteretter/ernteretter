@@ -1,9 +1,9 @@
 <template>
 <div v-resize="onResize">
     <v-row>
-        <v-col class="col-12 col-md-8" v-show="(!mobil || displayMap) && !displayDetails">
-            <v-card style="height: 85vh;">
-                <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center">
+        <v-col class="col-12 col-md-8" v-show="!mobil || displayMap">
+            <v-card style="height: 85vh">
+                <l-map style="width: 100%" :zoom="zoom" :center="center">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
                         <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
@@ -28,7 +28,7 @@
                                         <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-card-actions :key="index * 10 + 3">
-                                        <v-btn @click="details(offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
+                                        <v-btn @click="$router.push('offer/' + offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
                                     </v-card-actions>
                                 </v-col>
                             </v-row>
@@ -38,7 +38,7 @@
             </v-card>
         </v-col>
         <v-col class="col-12 col-md-4">
-            <v-card height="null" v-show="!displayMap && !displayDetails">
+            <v-card height="null" v-show="!displayMap">
                 <v-row>
                     <v-col>
                         <v-card-title>Suche nach Anzeigen</v-card-title>
@@ -59,7 +59,7 @@
                     </v-col>
                 </v-row>
                 <v-row class="justify-center">
-                    <v-btn v-bind="size" color="primary" id="searchbutton" @click="searchOffersNew();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
+                    <v-btn v-bind="size" color="primary" id="searchbutton" @click="atSearch();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
                     <v-btn v-bind="size" color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
                 </v-row>
                 <v-divider></v-divider>
@@ -83,7 +83,7 @@
                                         <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
                                         <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
                                     </v-list-item-content>
-                                    <v-btn @click="details(offer)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
+                                    <v-btn @click="$router.push('offer/' + offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
                                 </v-col>
                             </v-row>
                             <v-divider :key="index * 10 + 4" color="orange"></v-divider>
@@ -93,9 +93,6 @@
             </v-card>
         </v-col>
     </v-row>
-    <v-row>
-        <OfferDetails :offer="offerData" :user="user" v-show="displayDetails" @close="closeDetails"/>
-    </v-row>
 </div>
 </template>
 
@@ -103,7 +100,6 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
 import "firebase/auth";
-import OfferDetails from "./../components/OfferDetails.vue"
 import {
     GeoCoordinate
 } from 'geocoordinate';
@@ -144,7 +140,6 @@ export default {
         offercount: 0,
         mobil: false,
         displayMap: false,
-        displayDetails: false,
         offerData: null,
     }),
     components: {
@@ -153,7 +148,6 @@ export default {
         LMarker,
         LPopup,
         LControl,
-        OfferDetails,
     },
     computed: {
         size() {
@@ -168,15 +162,11 @@ export default {
         }
     },
     methods: {
-        closeDetails(){
-            this.displayDetails = false
-        },
         createOffer() {
             this.$router.push("/createOffer");
         },
         details(data) {
             this.offerData = data
-            this.displayDetails = true
         },
         onResize() {
             if (window.innerWidth < 960) {
@@ -184,6 +174,14 @@ export default {
             } else {
                 this.mobil = false
             }
+        },
+        atSearch(){
+            this.$router.replace({path: 'offers', query: {
+                title: this.search,
+                radius: this.searchradius,
+                postcode: this.zipsearch,
+            }})
+            this.searchOffersNew()
         },
         async searchOffersNew() {
             var URL = "https://nominatim.openstreetmap.org/search/de"
@@ -226,33 +224,48 @@ export default {
         },
     },
     mounted() {
-        firebase.auth().onAuthStateChanged((user) => {
-            this.user = user
-            firebase.firestore().collection('helpers').doc(user.uid).get().then((doc) => {
-                if (doc.exists) {
-                    if (doc.data().searchRange > 0) {
-                        this.searchradius = doc.data().searchRange
-                    }
-                    if (doc.data().place.postcode) {
-                        this.zipsearch = doc.data().place.postcode
-                        this.searchOffersNew()
-                    }
-                } else {
-                    firebase.firestore().collection('agrarians').doc(user.uid).get().then((doc) => {
-                        console.log(user.uid);
+        if (this.$route.query.postcode) {
+            this.zipsearch = this.$route.query.postcode
 
-                        console.log(doc.data());
+            if(this.$route.query.title){
+                this.search = this.$route.query.title
+            }
+
+            if(this.$route.query.radius){
+                this.searchradius = this.$route.query.radius
+            }
+
+            this.zipsearch = this.$route.query.postcode
+            this.searchOffersNew()
+        } else {
+            firebase.auth().onAuthStateChanged((user) => {
+                this.user = user
+                firebase.firestore().collection('helpers').doc(user.uid).get().then((doc) => {
+                    if (doc.exists) {
                         if (doc.data().searchRange > 0) {
-                            this.zipsearch = doc.data().searchRange
+                            this.searchradius = doc.data().searchRange
                         }
                         if (doc.data().place.postcode) {
                             this.zipsearch = doc.data().place.postcode
                             this.searchOffersNew()
                         }
-                    })
-                }
+                    } else {
+                        firebase.firestore().collection('agrarians').doc(user.uid).get().then((doc) => {
+                            console.log(user.uid);
+
+                            console.log(doc.data());
+                            if (doc.data().searchRange > 0) {
+                                this.zipsearch = doc.data().searchRange
+                            }
+                            if (doc.data().place.postcode) {
+                                this.zipsearch = doc.data().place.postcode
+                                this.searchOffersNew()
+                            }
+                        })
+                    }
+                })
             })
-        })
+        }
     }
 }
 </script>

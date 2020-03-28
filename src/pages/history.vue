@@ -150,7 +150,7 @@ export default {
 
         },
         showItem(item) {
-            this.$router.push("offers/" + item.id)
+            this.$router.push("offer/" + item.id)
         },
         editItem(item) {
             this.$router.push("editOffer/" + item.id)
