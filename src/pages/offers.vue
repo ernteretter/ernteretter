@@ -28,7 +28,7 @@
                                         <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-card-actions :key="index * 10 + 3">
-                                        <v-btn @click="details(offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
+                                        <v-btn @click="details(offer)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
                                     </v-card-actions>
                                 </v-col>
                             </v-row>
@@ -148,6 +148,15 @@ export default {
         displayDetails: false,
         offerData: null,
     }),
+    metaInfo() {
+        return {
+            title: 'Anzeigen - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
+            }]
+        }
+    },
     components: {
         LMap,
         LTileLayer,

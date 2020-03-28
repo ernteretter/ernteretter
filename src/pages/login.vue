@@ -51,6 +51,15 @@ export default {
     mounted() {
         this.alreadyLoggedIn(this.$router);
     },
+    metaInfo() {
+        return {
+            title: 'Login - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Logge dich hier für ernteretter ein'
+            }]
+        }
+    },
     data() {
         return {
             alertText: "",
