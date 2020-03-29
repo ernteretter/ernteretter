@@ -156,13 +156,27 @@ export default {
         displayMap: false,
         offerData: null,
     }),
+
     metaInfo() {
         return {
             title: 'Anzeigen - ernteretter',
             meta: [{
-                name: 'description',
-                content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
-            }]
+                    name: 'og:title',
+                    content: 'Ernteretter'
+                },
+                {
+                    name: 'og:description',
+                    content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
+                },
+                {
+                    name: 'og:image',
+                    content: require('../assets/ernteretter.png')
+                }, 
+                {
+                    name: 'description',
+                    content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
+                }
+            ]
         }
     },
     components: {
@@ -210,7 +224,7 @@ export default {
                     postcode: this.zipsearch,
                 }
             })
-            if(this.zipsearch){
+            if (this.zipsearch) {
                 this.searchOffersPostcode()
             } else {
                 this.searchOffersOnlyTitle()

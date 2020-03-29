@@ -2,7 +2,9 @@
 <div class="offer-details mx-auto">
     <v-snackbar v-model="showRegisterMessage" color="success" top>erfolgreich angemeldet</v-snackbar>
     <v-snackbar v-model="showDisregisterMessage" color="error" top>erfolgreich abgemeldet</v-snackbar>
-    <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn> <v-btn @click="showAlert = false;" outlined>Nein</v-btn> </v-alert>
+    <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn>
+        <v-btn @click="showAlert = false;" outlined>Nein</v-btn>
+    </v-alert>
     <div class="inner">
         <div class="details-header">
             <div class="title-section">
@@ -12,10 +14,14 @@
             </div>
             <div class="action-section">
                 <div class="accept-cancel">
-                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true"><v-icon>mdi-delete</v-icon></v-btn>
-                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()"><v-icon>mdi-pencil-outline</v-icon></v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true">
+                        <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()">
+                        <v-icon>mdi-pencil-outline</v-icon>
+                    </v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted && !isOwner" @click="removeMe">Abmelden</v-btn>
-                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isAccepted && !isOwner"  @click="addMe">Anmelden</v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isAccepted && !isOwner" @click="addMe">Anmelden</v-btn>
                 </div>
                 <div class="status-chip" v-if="offer.maxHelpers">
                     <b>{{ offer.maxHelpers - helperCount }}</b>
@@ -90,7 +96,7 @@
                 </p>
             </div>
         </section>
-        
+
         <section class="description">
             <div class="description-header section-header">
                 <div class="section-headline">Beschreibung</div>
@@ -118,6 +124,11 @@
                 </div>
             </div>
         </section>
+        <l-map style="z-index:0;" :zoom="zoom" :center="center">
+            <l-tile-layer :url="url"></l-tile-layer>
+            <l-marker :lat-lng="offer.geoPointNew">
+            </l-marker>
+        </l-map>
     </div>
 </div>
 </template>
@@ -126,10 +137,28 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
 import "firebase/auth";
+import {
+    LMap,
+    LTileLayer,
+    LMarker,
+} from 'vue2-leaflet';
+//marker fix
+import {
+    Icon
+} from 'leaflet';
+delete Icon.Default.prototype._getIconUrl;
+Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 export default {
     name: "OfferDetails",
     data: () => ({
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        zoom: 7,
+        center: [49.877629, 8.654673],
         showAlert: false,
         offer: false,
         agrarian: false,
@@ -140,6 +169,33 @@ export default {
         showRegisterMessage: false,
         showDisregisterMessage: false,
     }),
+    components: {
+        LMap,
+        LTileLayer,
+        LMarker,
+    },
+    metaInfo() {
+        return {
+            title: this.offer.title,
+            meta: [{
+                    name: 'description',
+                    content: this.offer.title
+                },
+                {
+                    name: 'og:title',
+                    content: 'Ernteretter'
+                },
+                {
+                    name: 'og:description',
+                    content: this.offer.title
+                },
+                {
+                    name: 'og:image',
+                    content: require('../assets/ernteretter.png')
+                },
+            ]
+        }
+    },
     async created() {
         let offerId = this.$route.params.offerId;
         firebase.auth().onAuthStateChanged(user => {
@@ -158,7 +214,8 @@ export default {
                 if (snapshot.exists) {
                     this.offer = {
                         ...snapshot.data(),
-                        id: snapshot.id
+                        id: snapshot.id,
+                        geoPointNew: [snapshot.data().geoPoint.latitude, snapshot.data().geoPoint.longitude],
                     };
                     return firebase
                         .firestore()
@@ -301,6 +358,7 @@ section {
     flex-flow: row wrap;
     align-items: center;
 }
+
 .section-header {
     min-width: 300px;
 }
