@@ -20,6 +20,7 @@
                     <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()">
                         <v-icon>mdi-pencil-outline</v-icon>
                     </v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isOwner"  @click="gotoChat()">Chat</v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted && !isOwner" @click="removeMe">Abmelden</v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isAccepted && !isOwner" @click="addMe">Anmelden</v-btn>
                 </div>
@@ -122,7 +123,6 @@
                         {{ agrarian.publicEmail }}
                     </a>
                 </div>
-                <v-btn @click="gotoChat()">Chat</v-btn>
             </div>
         </section>
         <v-col class="my-5 map" style="height:30vh;">
