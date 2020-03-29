@@ -35,7 +35,7 @@
             </v-container>
 
             <div style="height: 30vh;">
-                <l-map style="height: 100%; width: 100%" :zoom="zoom" :center.sync="center" :zoomAnimation="true">
+                <l-map style="height: 100%; width: 100%; z-index: 0;" :zoom="zoom" :center.sync="center" :zoomAnimation="true" @click="addMarker">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-marker :lat-lng="markerLatLng" :visible="displayMarker" :draggable="true" @moveend="onChangeMarkerLatLng"></l-marker>
                 </l-map>
@@ -134,7 +134,7 @@
 
             <v-card-subtitle> optionale Felder </v-card-subtitle>
 
-                <v-text-field single-line solo type="number" :rules="rules.salary" v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
+                <v-text-field single-line solo v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
 
                 <v-text-field v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
                 
@@ -260,9 +260,10 @@ export default {
                 this.salary = data.salary;
                 this.equipment = data.equipment;
                 this.driverslicence = data.driverslicence;
-                this.description = data.description;
+                this.description = data.description.replace(/<br>\\*/g, "\n")
                 this.radioErnteSaat = data.workType;
-                this.convertAddressToGeoPoint()
+                this.markerLatLng = [data.geoPoint.latitude, data.geoPoint.longitude]
+                this.geoPoint = new firebase.firestore.GeoPoint(this.markerLatLng[0], this.markerLatLng[1])
             }
         })
     },
@@ -347,6 +348,10 @@ export default {
                 this.houseNumber = "nicht vorhanden"
             }
         },
+        addMarker(val){
+            this.markerLatLng = val.latlng  
+            this.convertGeoPointToAdress(val.latlng.lat, val.latlng.lng)
+        },
         formatDateObject(date) {
             if (!date) {
                 return "";
@@ -367,6 +372,7 @@ export default {
             if (this.formWarning) {
                 return;
             }
+            this.description = this.description.replace(/(?:\r\n|\r|\n)/g, '<br>');
             let userID = firebase.auth().currentUser.uid;
             let startDate = new Date(this.startDate);
             let endDate = new Date(this.endDate);

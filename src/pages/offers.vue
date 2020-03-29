@@ -6,7 +6,7 @@
                 <v-overlay absolute :opacity=0.8 v-if="((offers.length == 0) || !searched && $route.query.postcode)">
                     <v-card-text class="display-1" >Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
                 </v-overlay>
-                <l-map style="width: 100%; z-index:0;" :zoom="zoom" :center="center" >
+                <l-map style="z-index:0;" :zoom="zoom" :center="center" >
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
                         <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
@@ -70,7 +70,7 @@
                 <v-card-subtitle> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
                 <v-card-text class="text-center title" v-if="user && (offers.length == 0)">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
                 <v-container v-if="!user && (offers.length == 0) && searched">
-                    <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich jedoch, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
+                    <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich trotzdem, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
                     <v-row class="justify-center py-0">
                         <v-btn color="primary" outlined @click="$router.push('/register')">registrieren</v-btn>
                         <v-btn color="primary" outlined @click="$router.push('/information')">mehr Erfahren</v-btn>
@@ -230,6 +230,7 @@ export default {
             West = West._coordinate
             var upperPoint = new firebase.firestore.GeoPoint(North[0], East[1])
             var lowerPoint = new firebase.firestore.GeoPoint(South[0], West[1])
+            this.center = [lat, lon]
             firebase.firestore().collection('offers').where('geoPoint', '<=', upperPoint).where('geoPoint', '>=', lowerPoint)
                 .get().then((snapshot) => {
                     this.offers = []

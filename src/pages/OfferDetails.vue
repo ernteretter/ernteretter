@@ -69,13 +69,15 @@
         </section>
 
         <section>
-            <div class="section-header">
+            <!-- 
+                <div class="section-header">
                 <div class="section-headline">Zeitraum</div>
                 <p v-if="offer.minDuration">
                     <b>Hinweis:</b> Mindestdauer
                     <b>{{ offer.minDuration }} Tage</b>
                 </p>
             </div>
+            -->
             <div class="section-body">
                 <p v-if="offer.startDate">
                     <v-icon>mdi-calendar</v-icon>{{ new Date(offer.startDate.seconds * 1000) | formatDate }}
@@ -92,7 +94,7 @@
                 <div class="section-headline">Beschreibung</div>
             </div>
             <div class="description-body section-body">
-                {{ offer.description }}
+                <span v-html="offer.description"></span>
             </div>
         </section>
         <section>
