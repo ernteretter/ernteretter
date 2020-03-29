@@ -64,6 +64,14 @@
                 </v-row>
                 <v-divider></v-divider>
                 <v-card-subtitle> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
+                <v-card-text class="text-center title" v-if="user && (offers.length == 0)">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
+                <v-container v-if="!user && (offers.length == 0) && searched">
+                    <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich jedoch, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
+                    <v-row class="justify-center py-0">
+                        <v-btn color="primary" outlined @click="$router.push('/register')">registrieren</v-btn>
+                        <v-btn color="primary" outlined @click="$router.push('/information')">mehr Erfahren</v-btn>
+                    </v-row>
+                </v-container>
 
                 <v-container style="max-height: 50%" class="overflow-y-auto">
                     <v-list three-line tile outlined :color="colorEintrag">
@@ -123,7 +131,7 @@ Icon.Default.mergeOptions({
 export default {
     name: "OfferList",
     data: () => ({
-        user: null,
+        user: false,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         zoom: 7,
         center: [49.877629, 8.654673],
@@ -133,6 +141,7 @@ export default {
         item_color: 'primary',
         offers: [],
         search: "",
+        searched: false,
         zipsearch: "",
         number_of_plz_nearby: 100,
         searchradius: 5, //war ""
@@ -175,12 +184,15 @@ export default {
                 this.mobil = false
             }
         },
-        atSearch(){
-            this.$router.replace({path: 'offers', query: {
-                title: this.search,
-                radius: this.searchradius,
-                postcode: this.zipsearch,
-            }})
+        async atSearch() {
+            this.$router.replace({
+                path: 'offers',
+                query: {
+                    title: this.search,
+                    radius: this.searchradius,
+                    postcode: this.zipsearch,
+                }
+            })
             this.searchOffersNew()
         },
         async searchOffersNew() {
@@ -205,6 +217,7 @@ export default {
             firebase.firestore().collection('offers').where('geoPoint', '<=', upperPoint).where('geoPoint', '>=', lowerPoint)
                 .get().then((snapshot) => {
                     this.offers = []
+                    this.searched = true
                     snapshot.forEach((doc) => {
                         var data = doc.data()
                         if (upperPoint.longitude > data.geoPoint.longitude && data.geoPoint.longitude > lowerPoint.longitude) {
@@ -224,14 +237,15 @@ export default {
         },
     },
     mounted() {
+        this.searched = false
         if (this.$route.query.postcode) {
             this.zipsearch = this.$route.query.postcode
 
-            if(this.$route.query.title){
+            if (this.$route.query.title) {
                 this.search = this.$route.query.title
             }
 
-            if(this.$route.query.radius){
+            if (this.$route.query.radius) {
                 this.searchradius = this.$route.query.radius
             }
 
