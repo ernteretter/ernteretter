@@ -1,7 +1,7 @@
 <template>
   <v-card>
       <v-card-text>
-          Es ist ein Fehler aufgetreten.
+          Es ist ein Fehler aufgetreten.  LOL
       </v-card-text>
   </v-card>
 </template>
