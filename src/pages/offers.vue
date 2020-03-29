@@ -3,7 +3,10 @@
     <v-row>
         <v-col class="col-12 col-md-8" v-show="!mobil || displayMap">
             <v-card style="height: 85vh">
-                <l-map style="width: 100%" :zoom="zoom" :center="center">
+                <v-overlay absolute :opacity=0.8 v-if="((offers.length == 0) || !searched && $route.query.postcode)">
+                    <v-card-text class="display-1" >Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
+                </v-overlay>
+                <l-map style="width: 100%; z-index:0;" :zoom="zoom" :center="center" >
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
                         <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
@@ -266,7 +269,8 @@ export default {
             this.searchOffersNew()
         } else {
             firebase.auth().onAuthStateChanged((user) => {
-                this.user = user
+                if(user){
+                    this.user = user
                 firebase.firestore().collection('helpers').doc(user.uid).get().then((doc) => {
                     if (doc.exists) {
                         if (doc.data().searchRange > 0) {
@@ -291,6 +295,7 @@ export default {
                         })
                     }
                 })
+                }
             })
         }
     }
