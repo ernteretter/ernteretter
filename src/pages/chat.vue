@@ -1,15 +1,12 @@
 <template>
-<v-card class="mx-auto" @keyup.enter="createMessage()" max-width="1000">
-    <v-card-title>Sie schreiben mit: {{othersName}}</v-card-title>
-    <v-container id="container" style="max-height: 400px" class="overflow-y-auto">
-        <ul>
-            <v-card :class="(message.author == firstUserID) ? 'message1' : 'message2'" v-for="(message, index) in messages" :key="index">
-                <p>{{message.text}}</p>
-            </v-card>
-        </ul>
+<v-card class="mx-auto" @keyup.enter="createMessage()" max-width="1000" max-height="100vh">
+    <v-card-title>{{othersName}}</v-card-title>
+    <v-container id="container" style="max-height: 65vh" class="overflow-y-auto">
+        <v-card :class="(message.author == firstUserID) ? 'pa-0 col-8 col-md-5 ml-auto my-2' : 'pa-0 col-8 col-md-5 mr-auto my-2'" v-for="(message, index) in messages" :key="index">
+            <v-card-text :class="(message.author == firstUserID) ? 'message2 white--text pa-2 text-end' : 'message1 white--text pa-2'">{{message.text}}</v-card-text>
+        </v-card>
     </v-container>
-    <v-text-field v-model="currentMessage" label="Nachricht eingeben"></v-text-field>
-    <v-btn color="primary" class="rounded-button-left" @click="createMessage()">Nachricht abschicken</v-btn>
+    <v-text-field class="px-2" color="primary" v-model="currentMessage" label="Nachricht eingeben" append-outer-icon="mdi-send" @click:append-outer="createMessage()"></v-text-field>
 </v-card>
 </template>
 
@@ -33,7 +30,7 @@ export default {
     },
     watch: {
         messages: {
-        handler: function () {
+            handler: function () {
                 var container = this.$el.querySelector("#container");
                 container.scrollTop = container.scrollHeight;
             },
