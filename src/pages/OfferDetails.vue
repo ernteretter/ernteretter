@@ -124,11 +124,12 @@
                 </div>
             </div>
         </section>
-        <l-map style="z-index:0;" :zoom="zoom" :center="center">
-            <l-tile-layer :url="url"></l-tile-layer>
-            <l-marker :lat-lng="offer.geoPointNew">
-            </l-marker>
-        </l-map>
+        <v-col class="my-5 map" style="height:30vh;">
+            <l-map style="z-index:0;" :zoom="zoom" :center="offer.geoPointNew">
+                <l-tile-layer :url="url"></l-tile-layer>
+                <l-marker :lat-lng="markerLatLng"></l-marker>
+            </l-map>
+        </v-col>
     </div>
 </div>
 </template>
@@ -140,7 +141,7 @@ import "firebase/auth";
 import {
     LMap,
     LTileLayer,
-    LMarker,
+    LMarker
 } from 'vue2-leaflet';
 //marker fix
 import {
@@ -155,24 +156,26 @@ Icon.Default.mergeOptions({
 
 export default {
     name: "OfferDetails",
-    data: () => ({
-        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        zoom: 7,
-        center: [49.877629, 8.654673],
-        showAlert: false,
-        offer: false,
-        agrarian: false,
-        isAccepted: false,
-        isOwner: false,
-        uid: false,
-        helperCount: 0,
-        showRegisterMessage: false,
-        showDisregisterMessage: false,
-    }),
+    data() {
+        return {
+            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            markerLatLng: [47.313220, -1.319482],
+            zoom: 14,
+            showAlert: false,
+            offer: false,
+            agrarian: false,
+            isAccepted: false,
+            isOwner: false,
+            uid: false,
+            helperCount: 0,
+            showRegisterMessage: false,
+            showDisregisterMessage: false,
+        }
+    },
     components: {
         LMap,
         LTileLayer,
-        LMarker,
+        LMarker
     },
     metaInfo() {
         return {
@@ -217,6 +220,7 @@ export default {
                         id: snapshot.id,
                         geoPointNew: [snapshot.data().geoPoint.latitude, snapshot.data().geoPoint.longitude],
                     };
+                    this.markerLatLng = this.offer.geoPointNew
                     return firebase
                         .firestore()
                         .doc("agrarians/" + snapshot.data().agrarianId)
@@ -350,6 +354,10 @@ a {
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+.map {
+    width: 100vw;
 }
 
 section {

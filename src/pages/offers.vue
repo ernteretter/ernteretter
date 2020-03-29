@@ -1,7 +1,7 @@
 <template>
 <div v-resize="onResize">
     <v-row>
-        <v-col class="col-12 col-md-8" v-show="!mobil || displayMap">
+        <v-col v-if="!mobil || displayMap">
             <v-card style="height: 85vh">
                 <v-overlay style="z-index: 1" absolute :opacity=0.8 v-show="((offers.length == 0) || !searched && $route.query.postcode)">
                     <v-card-text class="display-1">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
@@ -13,6 +13,7 @@
                             <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
                     </l-control>
+                    <l-circle :lat-lng="center" :radius="searchradius * 1000" color="#4d4238" fillColor="#ed9a00" />
                     <l-marker v-for="(offer, index) in offers" :key="index" :lat-lng=offer.geoPointNew>
                         <l-popup>
                             <v-row :key="index*10">
@@ -122,6 +123,7 @@ import {
     LMarker,
     LPopup,
     LControl,
+    LCircle,
 } from 'vue2-leaflet';
 //marker fix
 import {
@@ -138,7 +140,7 @@ export default {
     data: () => ({
         user: false,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        zoom: 7,
+        zoom: 9,
         center: [49.877629, 8.654673],
         center_layout: 'center',
         colorEintrag: '#fffff',
@@ -171,7 +173,7 @@ export default {
                 {
                     name: 'og:image',
                     content: require('../assets/ernteretter.png')
-                }, 
+                },
                 {
                     name: 'description',
                     content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
@@ -185,6 +187,7 @@ export default {
         LMarker,
         LPopup,
         LControl,
+        LCircle,
     },
     computed: {
         size() {
@@ -249,7 +252,9 @@ export default {
             West = West._coordinate
             var upperPoint = new firebase.firestore.GeoPoint(North[0], East[1])
             var lowerPoint = new firebase.firestore.GeoPoint(South[0], West[1])
+            console.log(this.$refs.map.mapObject);
             this.center = [lat, lon]
+            this.zoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
             firebase.firestore().collection('offers').where('geoPoint', '<=', upperPoint).where('geoPoint', '>=', lowerPoint)
                 .get().then((snapshot) => {
                     this.offers = []
@@ -297,6 +302,7 @@ export default {
 
             if (this.$route.query.radius) {
                 this.searchradius = this.$route.query.radius
+                this.zoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
             }
 
             this.zipsearch = this.$route.query.postcode
@@ -335,3 +341,9 @@ export default {
     }
 }
 </script>
+
+<style>
+.map {
+    width: 100vw;
+}
+</style>
