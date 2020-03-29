@@ -6,7 +6,7 @@
         <v-card-title>{{chatroomsSorted[index].name}}</v-card-title>
         <v-divider />
         <v-row>
-                <v-card-text :class="chatroomsSorted[index].iSentLast ? 'secondary--text' : 'primary--text'">{{chatroomsSorted[index].lastMessage}}</v-card-text>
+            <v-card-text :class="chatroomsSorted[index].iSentLast ? 'secondary--text' : 'primary--text'">{{chatroomsSorted[index].lastMessage}}</v-card-text>
         </v-row>
     </v-card>
 </v-card>
@@ -19,8 +19,10 @@ import "firebase/firestore";
 export default {
     data: () => ({
         currentUser: null,
+        lastLogin: null,
         chatrooms: [],
         chatroomsSorted: [],
+        chatroomsNew: [],
     }),
     methods: {
         gotoChat(index) {
@@ -30,15 +32,14 @@ export default {
     },
     watch: {
         chatrooms: {
-            handler: function() {
+            handler: function () {
                 this.chatroomsSorted = this.chatrooms.slice();
-                console.log(this.chatroomsSorted.map(a => a.time));
-                this.chatroomsSorted.sort((a,b) => {
-                    console.log("sorting: " + a.time + " and " + b.time);
-                    console.log("returning: " + (a.time > b.time ? 1 : (b.time > a.time ? -1 : 0)));
+                this.chatroomsSorted.sort((a, b) => {
                     return (a.time > b.time ? -1 : (b.time > a.time ? 1 : 0));
                 });
-                console.log(this.chatroomsSorted.map(a => a.time));
+                this.chatroomsNew = this.chatrooms.slice().filter(m => m.seen.includes(this.currentUser));
+                console.log(this.chatroomsNew);
+                
             },
             deep: true,
         }
@@ -58,7 +59,7 @@ export default {
                         snapshot.forEach(async c => {
                             let data = c.data();
                             let otherAuthor = data.authors.filter(a => a != this.currentUser)[0];
-                            let messageSnapshot = await firestore.collection("chats").doc(c.id).collection("messages").get();
+                            let messageSnapshot = await firestore.collection("chats").doc(c.id).collection("messages").get().catch(e => {console.error(e)});
                             let currentMessages = [];
                             messageSnapshot.forEach(d => currentMessages.push({
                                 data: d.data(),
@@ -68,7 +69,19 @@ export default {
 
                             firestore.collection("helpers").doc(otherAuthor).get().then((doc) => {
                                 if (doc.exists) {
-                                    this.chatrooms.push(doc.data().name);
+                                    let lastMessage = currentMessages[currentMessages.length - 1];
+                                    let iSentLast = false;
+                                    if (lastMessage.data.author == this.currentUser) {
+                                        iSentLast = true;
+                                    }
+                                    this.chatrooms.push({
+                                        name: doc.data().name,
+                                        seen: c.data().seen,
+                                        userID: doc.id,
+                                        lastMessage: lastMessage.data.text,
+                                        iSentLast: iSentLast,
+                                        time: lastMessage.id
+                                    });
                                 } else {
                                     firestore.collection("agrarians").doc(otherAuthor).get().then((doc) => {
                                         if (doc.exists) {
@@ -79,16 +92,26 @@ export default {
                                             }
                                             this.chatrooms.push({
                                                 name: doc.data().name,
+                                                seen: c.data().seen,
                                                 userID: doc.id,
                                                 lastMessage: lastMessage.data.text,
                                                 iSentLast: iSentLast,
                                                 time: lastMessage.id
                                             });
                                         }
+                                    }).catch(e => {
+                                        console.log(e);
+                                        
                                     })
                                 }
+                            }).catch(e => {
+                                console.error(e);
+                                
                             })
                         });
+                    }).catch(e => {
+                        console.error(e);
+                        
                     })
             }
         });
