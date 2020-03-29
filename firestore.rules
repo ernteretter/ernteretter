@@ -35,7 +35,7 @@ service cloud.firestore {
     //erstelle chatroom wenn du selbst drinnen stehst
     match /chats/{chatid} {
     	allow read: if true;
-    	allow create: if (request.auth.uid == request.resource.data.authors[0] || request.auth.uid == request.resource.data.authors[1]) &&
+    	allow create, update: if (request.auth.uid == request.resource.data.authors[0] || request.auth.uid == request.resource.data.authors[1]) &&
       									(chatid == request.resource.data.authors[0] + "_" + request.resource.data.authors[1] || chatid == request.resource.data.authors[1] + "_" + request.resource.data.authors[0]);
     	//schreibe message wenn du selbst autor bist,
       // lese wenn du teil des chatrooms bist
