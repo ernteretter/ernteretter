@@ -211,7 +211,7 @@ export default {
         equipment: "",
         driverslicence: "",
         harvestTypeSpecial: "",
-        items: ['Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben', 'Sonstiges'],
+        items: ['Sonstiges', 'Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben'],
         rules: {
             title: [value => !!value.trim() || 'Titel wird benötigt.'],
             description: [value => !!value || 'Beschreibung wird benötigt.'],

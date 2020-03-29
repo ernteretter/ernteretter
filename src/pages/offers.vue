@@ -20,7 +20,7 @@
                                     <v-list-item :key="index*11 + 1">
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
-                                            <v-list-item-subtitle>{{offer.description.replace(/<br>\\*/g, "\n")}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle v-html="offer.description"></v-list-item-subtitle>
                                             <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}} mit einer Mindestdauer: {{offer.minDuration}} Tagen</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
@@ -86,7 +86,7 @@
                                     <v-list-item :key="index*11 + 1">
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
-                                            <v-list-item-subtitle>{{offer.description}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle v-html="offer.description"></v-list-item-subtitle>
                                             <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}} mit einer Mindestdauer: {{offer.minDuration}} Tagen</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
@@ -246,7 +246,7 @@ export default {
                             this.offers.push({
                                 ...doc.data(),
                                 id: doc.id,
-                                geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude]
+                                geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude],
                             })
                         }
                     })
