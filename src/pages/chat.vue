@@ -1,10 +1,13 @@
 <template>
-<v-card max-width="1000" class="mx-auto">
+<v-card class="mx-auto" @keyup.enter="createMessage()" max-width="1000">
     <v-card-title>Sie schreiben mit: {{othersName}}</v-card-title>
-    <v-card v-for="(message, index) in messages" :key="index">
-        <p v-if="messages[index].author == firstUserID" class="message1">{{messages[index].text}}</p>
-        <p v-if="messages[index].author == secondUserID" class="message2">{{messages[index].text}}</p>
-    </v-card>
+    <v-container id="container" style="max-height: 400px" class="overflow-y-auto">
+        <ul>
+            <v-card :class="(message.author == firstUserID) ? 'message1' : 'message2'" v-for="(message, index) in messages" :key="index">
+                <p>{{message.text}}</p>
+            </v-card>
+        </ul>
+    </v-container>
     <v-text-field v-model="currentMessage" label="Nachricht eingeben"></v-text-field>
     <v-btn color="primary" class="rounded-button-left" @click="createMessage()">Nachricht abschicken</v-btn>
 </v-card>
@@ -18,15 +21,32 @@ export default {
     data() {
         return {
             chatID: null,
+            built: null,
             currentMessage: null,
             message: {},
             messages: [],
             firstUserID: null,
             secondUserID: null,
-            othersName: ""
+            othersName: "",
+            unsubscribe: () => {},
         };
     },
+    watch: {
+        messages: {
+        handler: function () {
+                var container = this.$el.querySelector("#container");
+                container.scrollTop = container.scrollHeight;
+            },
+            deep: true,
+        },
+    },
+
+    beforeDestroy() {
+        this.unsubscribe();
+
+    },
     mounted() {
+
         firebase.auth().onAuthStateChanged(user => {
             if (!user) {
                 this.$router.push("/login");
@@ -112,27 +132,27 @@ export default {
         async fetchMessages() {
             console.log("fetching messages");
             let firestore = firebase.firestore();
-            let seenBefore = [];
             let ref = await firestore.collection("chats").doc(this.chatID).get();
-            if (ref.data().seen != null && ref.data().seen <= 2) {
-                seenBefore= ref.data().seen;
-            }
-            seenBefore.push(this.firstUserID);
-            firestore.collection("chats").doc(this.chatID).update({
-                seen: seenBefore,
-            })
 
-            firestore
+            this.unsubscribe = firestore
                 .collection("chats")
                 .doc(this.chatID)
-                .collection("messages")
-                .get()
-                .then(snapshot => {
-                    snapshot.forEach(doc => {
-                        console.log("found message: " + doc.data());
-                        this.messages.push(doc.data());
-                    });
-                });
+                .collection("messages").onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(doc => {
+                        console.log("found message: " + doc.doc.data());
+                        this.messages.push(doc.doc.data());
+
+                        let seenBefore = [];
+                        if (ref.data().seen != null && ref.data().seen <= 2) {
+                            seenBefore = ref.data().seen;
+                        }
+                        seenBefore.push(this.firstUserID);
+                        firestore.collection("chats").doc(this.chatID).update({
+                            seen: seenBefore,
+                        })
+                    })
+
+                })
         },
         createMessage() {
             console.log("creating message");
@@ -158,7 +178,6 @@ export default {
                 .set(message)
                 .then(() => {
                     console.log("Chat written!");
-                    this.messages.push(message);
                     this.currentMessage = "";
                 })
                 .catch(error => {

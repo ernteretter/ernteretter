@@ -1,16 +1,16 @@
 <template>
 <v-card max-width="1000" min-height="600" class="mx-auto">
-    <v-card-title id="header">Neue Nachrichten</v-card-title>
+    <v-card-title v-if="chatroomsNew.length > 0" id="header">Neue Nachrichten</v-card-title>
     <v-divider />
     <v-card class="ma-10" @click="gotoChat(chatroomsNew[index1])" v-for="(chat, index1) in chatroomsNew" :key="index1">
         <v-card-title>{{chatroomsNew[index1].name}}</v-card-title>
-        <v-card-text class="caption">{{formatDate(chatroomsNew[index1].time)}}</v-card-text>
+    <v-card-text class="caption">{{formatDate(chatroomsNew[index1].time)}}</v-card-text>
         <v-divider />
         <v-row>
             <v-card-text class="body-1" :class="chatroomsNew[index1].iSentLast ? 'secondary--text' : 'primary--text'">{{chatroomsNew[index1].lastMessage}}</v-card-text>
         </v-row>
     </v-card>
-    <v-card-title id="header">Alte Nachrichten</v-card-title>
+    <v-card-title v-if="chatroomsOld.length > 0" id="header">Alte Nachrichten</v-card-title>
     <v-divider />
     <v-card class="ma-10" @click="gotoChat(chatroomsOld[index])" v-for="(chat, index) in chatroomsOld" :key="index">
         <v-card-title>{{chatroomsOld[index].name}}</v-card-title>
@@ -66,6 +66,8 @@ export default {
         }
     },
     async mounted() {
+
+
         let firestore = firebase.firestore();
         firebase.auth().onAuthStateChanged(user => {
             if (!user) {
