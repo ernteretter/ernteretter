@@ -1,18 +1,20 @@
 <template>
 <div v-resize="onResize">
     <v-row>
-        <v-col class="col-12 col-md-8" v-show="!mobil || displayMap">
+        <v-col v-if="!mobil || displayMap">
             <v-card style="height: 85vh">
-                <v-overlay absolute :opacity=0.8 v-if="((offers.length == 0) || !searched && $route.query.postcode)">
-                    <v-card-text class="display-1" >Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
+                <v-overlay style="z-index: 1" absolute :opacity=0.8 v-show="(!searched)">
+                    <v-card-text class="display-1">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
+                    <v-btn color="primary" class="text-center" outlined v-show="mobil" @click="displayMap = !displayMap" >zurück</v-btn>
                 </v-overlay>
-                <l-map style="width: 100%; z-index:0;" :zoom="zoom" :center="center" >
+                <l-map style="z-index:0;" :zoom="zoom" :center="center" ref="map">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
                         <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
                             <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
                     </l-control>
+                    <l-circle :lat-lng="radiusMarker" :radius="searchradius * 1000" color="#4d4238" fillColor="#ed9a00" />
                     <l-marker v-for="(offer, index) in offers" :key="index" :lat-lng=offer.geoPointNew>
                         <l-popup>
                             <v-row :key="index*10">
@@ -20,7 +22,7 @@
                                     <v-list-item :key="index*11 + 1">
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
-                                            <v-list-item-subtitle>{{offer.description}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle v-html="offer.description"></v-list-item-subtitle>
                                             <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}} mit einer Mindestdauer: {{offer.minDuration}} Tagen</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
@@ -43,7 +45,7 @@
         <v-col class="col-12 col-md-4">
             <v-card height="null" v-show="!displayMap">
                 <v-row>
-                    <v-col>
+                    <v-col @keyup.enter="atSearch()">
                         <v-card-title>Suche nach Anzeigen</v-card-title>
                         <v-row class="justify-center">
                             <v-text-field v-bind="size" class="mb-3 mr-3 ml-3 col-10 cols-xs-4 col-sm-6" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
@@ -59,18 +61,19 @@
                     </v-col>
                 </v-row>
                 <v-row class="justify-center">
-                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="displayMap = !displayMap" v-show="mobil">
+                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="activeMap()" v-show="mobil">
                         <v-icon class="ma-0 pa-0" v-show="mobil">mdi-map</v-icon>
                         Karte
                     </v-btn>
                     <v-btn v-bind="size" color="primary" id="searchbutton" @click="atSearch();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
-                    <v-btn v-bind="size" color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
+                    <v-btn v-bind="size" color="secondary" id="createbutton" @click="$router.push('/createOffer');" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
                 </v-row>
                 <v-divider></v-divider>
                 <v-card-subtitle> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
-                <v-card-text class="text-center title" v-if="user && (offers.length == 0)">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
+                <v-card-text class="text-center title" v-if="mobil && (offers.length == 0) && !searched">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
+                <v-card-text class="text-center title" v-if="user && (offers.length == 0) && searched">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
                 <v-container v-if="!user && (offers.length == 0) && searched">
-                    <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich jedoch, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
+                    <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich trotzdem, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
                     <v-row class="justify-center py-0">
                         <v-btn color="primary" outlined @click="$router.push('/register')">registrieren</v-btn>
                         <v-btn color="primary" outlined @click="$router.push('/information')">mehr Erfahren</v-btn>
@@ -85,7 +88,7 @@
                                     <v-list-item :key="index*11 + 1">
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
-                                            <v-list-item-subtitle>{{offer.description}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle v-html="offer.description"></v-list-item-subtitle>
                                             <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}} mit einer Mindestdauer: {{offer.minDuration}} Tagen</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
@@ -121,6 +124,7 @@ import {
     LMarker,
     LPopup,
     LControl,
+    LCircle,
 } from 'vue2-leaflet';
 //marker fix
 import {
@@ -137,7 +141,8 @@ export default {
     data: () => ({
         user: false,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        zoom: 7,
+        zoom: 9,
+        radiusMarker: [49.877629, 8.654673],
         center: [49.877629, 8.654673],
         center_layout: 'center',
         colorEintrag: '#fffff',
@@ -154,14 +159,29 @@ export default {
         mobil: false,
         displayMap: false,
         offerData: null,
+        map: null,
     }),
+
     metaInfo() {
         return {
             title: 'Anzeigen - ernteretter',
             meta: [{
-                name: 'description',
-                content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
-            }]
+                    name: 'og:title',
+                    content: 'Ernteretter'
+                },
+                {
+                    name: 'og:description',
+                    content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
+                },
+                {
+                    name: 'og:image',
+                    content: require('../assets/ernteretter.png')
+                },
+                {
+                    name: 'description',
+                    content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
+                }
+            ]
         }
     },
     components: {
@@ -170,6 +190,7 @@ export default {
         LMarker,
         LPopup,
         LControl,
+        LCircle,
     },
     computed: {
         size() {
@@ -184,14 +205,20 @@ export default {
         }
     },
     methods: {
-        createOffer() {
-            this.$router.push("/createOffer");
+        activeMap(){
+            this.displayMap = !this.displayMap
+            
+            setTimeout(() => {
+                
+            }, 1000);
+
+            this.$vuetify.goTo(0)
         },
         details(data) {
             this.offerData = data
         },
         onResize() {
-            
+
             if (window.innerWidth < 960) {
                 this.mobil = true
                 this.displayMap = false
@@ -209,9 +236,13 @@ export default {
                     postcode: this.zipsearch,
                 }
             })
-            this.searchOffersNew()
+            if (this.zipsearch) {
+                this.searchOffersPostcode()
+            } else {
+                this.searchOffersOnlyTitle()
+            }
         },
-        async searchOffersNew() {
+        async searchOffersPostcode() {
             var URL = "https://nominatim.openstreetmap.org/search/de"
             URL = URL + "/" + this.zipsearch.replace(" ", "%20") + "?format=json&addressdetails=1&limit=1"
             var response = await fetch(URL)
@@ -230,6 +261,9 @@ export default {
             West = West._coordinate
             var upperPoint = new firebase.firestore.GeoPoint(North[0], East[1])
             var lowerPoint = new firebase.firestore.GeoPoint(South[0], West[1])
+            this.radiusMarker = [lat, lon]
+            var newZoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
+            this.map.flyTo(this.radiusMarker, newZoom)
             firebase.firestore().collection('offers').where('geoPoint', '<=', upperPoint).where('geoPoint', '>=', lowerPoint)
                 .get().then((snapshot) => {
                     this.offers = []
@@ -240,7 +274,7 @@ export default {
                             this.offers.push({
                                 ...doc.data(),
                                 id: doc.id,
-                                geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude]
+                                geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude],
                             })
                         }
                     })
@@ -251,53 +285,77 @@ export default {
                     });
                 })
         },
+        async searchOffersOnlyTitle() {
+            firebase.firestore().collection('offers').where('title', '>=', this.search).limit(50).get().then((snapshot) => {
+                this.offers = []
+                this.searched = true
+                snapshot.forEach((doc) => {
+                    this.offers.push({
+                        ...doc.data(),
+                        id: doc.id,
+                        geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude]
+                    })
+
+                })
+            })
+        }
     },
     mounted() {
+        this.$nextTick(() => {
+            this.map = this.$refs.map.mapObject // work as expected
+        })
         this.searched = false
         if (this.$route.query.postcode) {
             this.zipsearch = this.$route.query.postcode
-
+                
             if (this.$route.query.title) {
                 this.search = this.$route.query.title
             }
 
             if (this.$route.query.radius) {
                 this.searchradius = this.$route.query.radius
+                this.zoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
             }
 
             this.zipsearch = this.$route.query.postcode
-            this.searchOffersNew()
+            this.searchOffersPostcode()
         } else {
             firebase.auth().onAuthStateChanged((user) => {
-                if(user){
+                if (user) {
                     this.user = user
-                firebase.firestore().collection('helpers').doc(user.uid).get().then((doc) => {
-                    if (doc.exists) {
-                        if (doc.data().searchRange > 0) {
-                            this.searchradius = doc.data().searchRange
-                        }
-                        if (doc.data().place.postcode) {
-                            this.zipsearch = doc.data().place.postcode
-                            this.searchOffersNew()
-                        }
-                    } else {
-                        firebase.firestore().collection('agrarians').doc(user.uid).get().then((doc) => {
-                            console.log(user.uid);
-
-                            console.log(doc.data());
+                    firebase.firestore().collection('helpers').doc(user.uid).get().then((doc) => {
+                        if (doc.exists) {
                             if (doc.data().searchRange > 0) {
-                                this.zipsearch = doc.data().searchRange
+                                this.searchradius = doc.data().searchRange
                             }
                             if (doc.data().place.postcode) {
                                 this.zipsearch = doc.data().place.postcode
-                                this.searchOffersNew()
+                                this.searchOffersPostcode()
                             }
-                        })
-                    }
-                })
+                        } else {
+                            firebase.firestore().collection('agrarians').doc(user.uid).get().then((doc) => {
+                                console.log(user.uid);
+
+                                console.log(doc.data());
+                                if (doc.data().searchRange > 0) {
+                                    this.zipsearch = doc.data().searchRange
+                                }
+                                if (doc.data().place.postcode) {
+                                    this.zipsearch = doc.data().place.postcode
+                                    this.searchOffersPostcode()
+                                }
+                            })
+                        }
+                    })
                 }
             })
         }
     }
 }
 </script>
+
+<style>
+.map {
+    width: 100vw;
+}
+</style>

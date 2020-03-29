@@ -59,6 +59,18 @@ export default {
         return {
             title: 'Startseite - ernteretter',
             meta: [{
+                name: 'og:title',
+                content: 'Ernteretter'
+            },
+            {
+                name: 'og:description',
+                content: 'Eine Plattform zum Vermitteln von Helfern und Landwirten'
+            },
+            {
+                name: 'og:image',
+                content: require('../assets/ernteretter.png')
+            },
+            {
                 name: 'description',
                 content: 'Eine Plattform zum Vermitteln von Helfern und Landwirten'
             }]
