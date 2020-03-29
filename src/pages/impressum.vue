@@ -23,3 +23,16 @@
     Impressum vom <a href="https://www.impressum-generator.de">Impressum Generator</a> der <a href="https://www.kanzlei-hasselbach.de/">Kanzlei Hasselbach, Rechtsanwälte für Arbeitsrecht und Familienrecht</a>
 </v-card>
 </template>
+<script>
+export default {
+    metaInfo() {
+        return {
+            title: 'Impressum - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Die Impressumsseite von ernteretter'
+            }]
+        }
+    },
+}
+</script>

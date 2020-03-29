@@ -19,6 +19,15 @@ export default {
         }
     },
     methods: {
+        metaInfo() {
+        return {
+            title: 'Registere dich - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Regestiere dich bei ernteretter und werde Helfer oder lasse dir helfen'
+            }]
+        }
+    },
         onResize() {
             if (window.innerWidth < 452) {
                 this.responiveNeeded = true

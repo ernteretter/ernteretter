@@ -51,14 +51,23 @@ export default {
     mounted() {
         this.alreadyLoggedIn(this.$router);
     },
+    metaInfo() {
+        return {
+            title: 'Login - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Logge dich hier für ernteretter ein'
+            }]
+        }
+    },
     data() {
         return {
-            alertText: "",
-            alertType: "error",
+            alertText: "Warum kann ich mich nicht einloggen? Alle Accounts, erstellt vor dem 28.03.2020, wurden aus datenstrukturellen Gründen gelöscht.",
+            alertType: "info",
             displayPasswordForgotten: false,
             mail: '',
             password: '',
-            displayAlert: false,
+            displayAlert: true,
             documents: [],
             showPassword: false,
             overlay: false,
