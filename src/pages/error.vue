@@ -1,7 +1,7 @@
 <template>
   <v-card>
       <v-card-text>
-          Es ist ein Fehler aufgetreten. DU NOOOBS
+          Es ist ein Fehler aufgetreten.
       </v-card-text>
   </v-card>
 </template>
