@@ -78,6 +78,7 @@ export default {
                                         this.chatID = this.chatID2;
                                         this.fetchMessages();
                                     }
+
                                 });
                         } else {
                             this.fetchMessages();
@@ -111,6 +112,13 @@ export default {
         fetchMessages() {
             console.log("fetching messages");
             let firestore = firebase.firestore();
+
+            firestore.collection("chats").doc(this.chatID).update({
+                lastViewed: firebase.firestore.Timestamp.now()
+            }).then(() => {
+                console.log("success");
+            }).catch(e => console.log(e));
+
             firestore
                 .collection("chats")
                 .doc(this.chatID)
