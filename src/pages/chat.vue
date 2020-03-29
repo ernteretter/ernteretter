@@ -109,9 +109,18 @@ export default {
                     console.log(error);
                 });
         },
-        fetchMessages() {
+        async fetchMessages() {
             console.log("fetching messages");
             let firestore = firebase.firestore();
+            let seenBefore = [];
+            let ref = await firestore.collection("chats").doc(this.chatID).get();
+            if (ref.data().seen != null && ref.data().seen <= 2) {
+                seenBefore= ref.data().seen;
+            }
+            seenBefore.push(this.firstUserID);
+            firestore.collection("chats").doc(this.chatID).update({
+                seen: seenBefore,
+            })
 
             firestore
                 .collection("chats")
@@ -135,7 +144,7 @@ export default {
             firestore.collection("chats").doc(this.chatID).update({
                 seen: [this.firstUserID],
             }).catch(e => console.error(e));
-    
+
             var newMessage = firestore
                 .collection("chats")
                 .doc(this.chatID)
