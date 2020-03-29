@@ -10,12 +10,12 @@
         Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.</h3>
     </div>
     <v-row class="py-10 px-0" no-gutters>
-        <v-hover v-slot:default="{ hover }">
-            <v-btn color="primary" :outlined="!hover" style="stroke-width: 50px" width="48%" height="6vh" class="rounded-button-right mx-0 pa-0 font-weight-bold display-1" :small="responiveNeeded" :large="!responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
+        <v-hover v-slot:default="{ hover }" class="col-12 col-md-6">
+            <v-btn color="primary" :outlined="!hover" style="stroke-width: 50px" :max-width="responiveNeeded ? '100%' : '48%'" height="6vh" class="rounded-button-right mx-0 pa-0 font-weight-bold display-1" :small="responiveNeeded" :large="!responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
         </v-hover>
         <v-spacer></v-spacer>
-        <v-hover v-slot:default="{ hover }">
-        <v-btn color="primary" :outlined="!hover" width="48%" height="6vh" class="rounded-button-left mx-0 pa-0 font-weight-bold display-1" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
+        <v-hover v-slot:default="{ hover }" class="col-12 col-md-6">
+        <v-btn color="primary" :outlined="!hover" :max-width="responiveNeeded ? '100%' : '48%'" height="6vh" class="rounded-button-left mx-0 pa-0 font-weight-bold display-1" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
         </v-hover>
     </v-row>
     <v-row>
@@ -76,7 +76,7 @@ export default {
     },
     methods: {
         onResize() {
-            if (window.innerWidth < 452) {
+            if (window.innerWidth < 960) {
                 this.responiveNeeded = true
             } else {
                 this.responiveNeeded = false
