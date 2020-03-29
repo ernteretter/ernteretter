@@ -4,7 +4,7 @@
         <v-card-title class="primary">
             <span class="headline white--text">Termine</span>
             <v-spacer></v-spacer>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="Suche" single-line hide-details color="white" dark></v-text-field>
+            <v-text-field v-model="search" append-icon="mdi-magnify" label="Suche" single-line hide-details color="white" dark @change="atSearch"></v-text-field>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" @click="$router.push('createOffer')">
@@ -16,7 +16,7 @@
         </v-card-title>
         <v-spacer></v-spacer>
         <v-container>
-            <v-data-table :headers="headers" :items="mixedOffers" item-key="id" :loading="loading" loading-text="Lädt...Bitte warten" :server-items-length="mixedOffers.length" class="elevation-1" :search="search">
+            <v-data-table :headers="headers" :items="mixedOffers" item-key="id" :loading="loading" loading-text="Lädt...Bitte warten" :server-items-length="mixedOffers.length" class="elevation-1">
                 <template v-slot:item.action="{item}">
                     <v-icon small class="mr-2" @click="editItem(item)" v-if="item.agrarianId == user.uid">mdi-pencil-outline </v-icon>
                     <v-icon small class="mr-2" @click="deleteItem(item)" v-if="item.agrarianId == user.uid">mdi-delete</v-icon>
@@ -42,36 +42,6 @@ export default {
             }
         });
     },
-    watch: {
-        search(val) {
-            this.mixedOffers = [];
-            firebase.firestore().collection('acceptedOffers').where('helperId', '==', this.user.uid).where('title', "==", val).get().then(async (querySnapshot) => {
-                querySnapshot.forEach(async (doc) => {
-                    var data = doc.data()
-                    this.offerIDs.push(data.offerId)
-                })
-                for (let offerID of this.offerIDs) {
-                    firebase.firestore().collection('offers').doc(offerID).get().then(async (querySnapshot) => {
-                        if (querySnapshot.exists) {
-                            this.mixedOffers.push({
-                                ...querySnapshot.data(),
-                                id: querySnapshot.id
-                            })
-                        }
-                    })
-                }
-            })
-            firebase.firestore().collection('offers').where('agrarianId', '==', this.user.uid).where('title', "==", val).get().then(async (querySnapshot) => {
-                querySnapshot.forEach(async (doc) => {
-                    this.mixedOffers.push({
-                        ...doc.data(),
-                        id: doc.id
-                    })
-                })
-            })
-
-        }
-    },
     data() {
         return {
             deleteSnackSuccess: true,
@@ -95,7 +65,7 @@ export default {
                 {
                     text: 'fehlende Helfer',
                     align: 'right',
-                    value: 'helpCount'
+                    value: 'helperCount'
                 },
                 {
                     text: 'Aktionen',
@@ -121,36 +91,69 @@ export default {
                         if (querySnapshot.exists) {
                             this.mixedOffers.push({
                                 ...querySnapshot.data(),
-                                id: querySnapshot.id
+                                id: querySnapshot.id,
+                                startDate: querySnapshot.data().startDate.toDate().toLocaleDateString(),
+                                helperCount: querySnapshot.data().maxHelpers - querySnapshot.data().helperCount
                             })
                         }
                     })
                 }
             })
             await firebase.firestore().collection('offers').where('agrarianId', '==', usID).get().then(async (querySnapshot) => {
+                console.log("Hello");
+                
                 querySnapshot.forEach(async (doc) => {
                     this.mixedOffers.push({
                         ...doc.data(),
-                        id: doc.id
+                        id: doc.id,
+                        startDate: doc.data().startDate.toDate().toLocaleDateString()
                     })
                 })
             })
-            for (let i in this.mixedOffers) {
-                await firebase.firestore().collection("acceptedOffers").where("offerId", "==", this.mixedOffers[i]).get().then(snapshot => {
-                    this.mixedOffers[i].helpCount = this.mixedOffers[i].maxHelpers - snapshot.size;
-                    this.mixedOffers[i].startDate = this.mixedOffers[i].startDate.toDate().toLocaleDateString()
+        },
+        async atSearch(){
+            this.mixedOffers = []
+            this.offerIDs = []
+            var usID = await firebase.auth()
+            this.user = usID.currentUser
+            usID = usID.currentUser.uid
+            console.log(this.search);
+            if(this.search){
+            firebase.firestore().collection('acceptedOffers').where('helperId', '==', usID).where('title', '==', this.search).get().then(async (querySnapshot) => {
+                querySnapshot.forEach(async (doc) => {
+                    var data = doc.data()
+                    this.offerIDs.push(data.offerId)
                 })
-                
-                
+                for (let offerID of this.offerIDs) {
+                    firebase.firestore().collection('offers').doc(offerID).get().then(async (querySnapshot) => {
+                        if (querySnapshot.exists) {
+                            this.mixedOffers.push({
+                                ...querySnapshot.data(),
+                                id: querySnapshot.id,
+                                startDate: querySnapshot.data().startDate.toDate().toLocaleDateString(),
+                                helperCount: querySnapshot.data().maxHelpers - querySnapshot.data().helperCount
+                            })
+                        }
+                    })
+                }
+            })
+            } else {
+                this.fetch()
             }
-            /*
-            this.mixedOffers = this.mixedOffers.sort((a, b) => {
-                a > b ? 1 : (b > a ? -1 : 0)
-            }) */
-
+            await firebase.firestore().collection('offers').where('agrarianId', '==', usID).where('title', '==', this.search).get().then(async (querySnapshot) => {
+                console.log("Hello");
+                
+                querySnapshot.forEach(async (doc) => {
+                    this.mixedOffers.push({
+                        ...doc.data(),
+                        id: doc.id,
+                        startDate: doc.data().startDate.toDate().toLocaleDateString()
+                    })
+                })
+            })
         },
         showItem(item) {
-            this.$router.push("offer/" + item.id)
+            this.$router.push("offers/" + item.id)
         },
         editItem(item) {
             this.$router.push("editOffer/" + item.id)
