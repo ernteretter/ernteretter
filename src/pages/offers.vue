@@ -5,6 +5,7 @@
             <v-card style="height: 85vh">
                 <v-overlay style="z-index: 1" absolute :opacity=0.8 v-show="(!searched)">
                     <v-card-text class="display-1">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
+                    <v-btn color="primary" class="text-center" outlined v-show="mobil" @click="displayMap = !displayMap" >zurück</v-btn>
                 </v-overlay>
                 <l-map style="z-index:0;" :zoom="zoom" :center="center" ref="map">
                     <l-tile-layer :url="url"></l-tile-layer>
@@ -60,17 +61,17 @@
                     </v-col>
                 </v-row>
                 <v-row class="justify-center">
-                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="displayMap = !displayMap" v-show="mobil">
+                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="activeMap()" v-show="mobil">
                         <v-icon class="ma-0 pa-0" v-show="mobil">mdi-map</v-icon>
                         Karte
                     </v-btn>
                     <v-btn v-bind="size" color="primary" id="searchbutton" @click="atSearch();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
-                    <v-btn v-bind="size" color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
+                    <v-btn v-bind="size" color="secondary" id="createbutton" @click="$router.push('/createOffer');" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
                 </v-row>
                 <v-divider></v-divider>
                 <v-card-subtitle> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
                 <v-card-text class="text-center title" v-if="mobil && (offers.length == 0) && !searched">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
-                <v-card-text class="text-center title" v-if="user && (offers.length == 0)">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
+                <v-card-text class="text-center title" v-if="user && (offers.length == 0) && searched">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
                 <v-container v-if="!user && (offers.length == 0) && searched">
                     <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich trotzdem, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
                     <v-row class="justify-center py-0">
@@ -204,8 +205,14 @@ export default {
         }
     },
     methods: {
-        createOffer() {
-            this.$router.push("/createOffer");
+        activeMap(){
+            this.displayMap = !this.displayMap
+            
+            setTimeout(() => {
+                
+            }, 1000);
+
+            this.$vuetify.goTo(0)
         },
         details(data) {
             this.offerData = data
