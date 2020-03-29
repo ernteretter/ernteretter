@@ -3,17 +3,17 @@
     <v-row>
         <v-col v-if="!mobil || displayMap">
             <v-card style="height: 85vh">
-                <v-overlay style="z-index: 1" absolute :opacity=0.8 v-show="((offers.length == 0) || !searched && $route.query.postcode)">
+                <v-overlay style="z-index: 1" absolute :opacity=0.8 v-show="(!searched)">
                     <v-card-text class="display-1">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
                 </v-overlay>
-                <l-map style="z-index:0;" :zoom="zoom" :center="center">
+                <l-map style="z-index:0;" :zoom="zoom" :center="center" ref="map">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
                         <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
                             <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
                     </l-control>
-                    <l-circle :lat-lng="center" :radius="searchradius * 1000" color="#4d4238" fillColor="#ed9a00" />
+                    <l-circle :lat-lng="radiusMarker" :radius="searchradius * 1000" color="#4d4238" fillColor="#ed9a00" />
                     <l-marker v-for="(offer, index) in offers" :key="index" :lat-lng=offer.geoPointNew>
                         <l-popup>
                             <v-row :key="index*10">
@@ -44,7 +44,7 @@
         <v-col class="col-12 col-md-4">
             <v-card height="null" v-show="!displayMap">
                 <v-row>
-                    <v-col>
+                    <v-col @keyup.enter="atSearch()">
                         <v-card-title>Suche nach Anzeigen</v-card-title>
                         <v-row class="justify-center">
                             <v-text-field v-bind="size" class="mb-3 mr-3 ml-3 col-10 cols-xs-4 col-sm-6" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
@@ -141,6 +141,7 @@ export default {
         user: false,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         zoom: 9,
+        radiusMarker: [49.877629, 8.654673],
         center: [49.877629, 8.654673],
         center_layout: 'center',
         colorEintrag: '#fffff',
@@ -157,6 +158,7 @@ export default {
         mobil: false,
         displayMap: false,
         offerData: null,
+        map: null,
     }),
 
     metaInfo() {
@@ -252,9 +254,9 @@ export default {
             West = West._coordinate
             var upperPoint = new firebase.firestore.GeoPoint(North[0], East[1])
             var lowerPoint = new firebase.firestore.GeoPoint(South[0], West[1])
-            console.log(this.$refs.map.mapObject);
-            this.center = [lat, lon]
-            this.zoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
+            this.radiusMarker = [lat, lon]
+            var newZoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
+            this.map.flyTo(this.radiusMarker, newZoom)
             firebase.firestore().collection('offers').where('geoPoint', '<=', upperPoint).where('geoPoint', '>=', lowerPoint)
                 .get().then((snapshot) => {
                     this.offers = []
@@ -292,10 +294,13 @@ export default {
         }
     },
     mounted() {
+        this.$nextTick(() => {
+            this.map = this.$refs.map.mapObject // work as expected
+        })
         this.searched = false
         if (this.$route.query.postcode) {
             this.zipsearch = this.$route.query.postcode
-
+                
             if (this.$route.query.title) {
                 this.search = this.$route.query.title
             }
