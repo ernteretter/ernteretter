@@ -3,10 +3,10 @@
     <v-row>
         <v-col class="col-12 col-md-8" v-show="!mobil || displayMap">
             <v-card style="height: 85vh">
-                <v-overlay absolute :opacity=0.8 v-if="((offers.length == 0) || !searched && $route.query.postcode)">
-                    <v-card-text class="display-1" >Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
+                <v-overlay style="z-index: 1" absolute :opacity=0.8 v-if="((offers.length == 0) || !searched && $route.query.postcode)">
+                    <v-card-text class="display-1">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
                 </v-overlay>
-                <l-map style="z-index:0;" :zoom="zoom" :center="center" >
+                <l-map style="z-index:0;" :zoom="zoom" :center="center">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
                         <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
@@ -20,7 +20,7 @@
                                     <v-list-item :key="index*11 + 1">
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
-                                            <v-list-item-subtitle>{{offer.description}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle>{{offer.description.replace(/<br>\\*/g, "\n")}}</v-list-item-subtitle>
                                             <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}} mit einer Mindestdauer: {{offer.minDuration}} Tagen</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
@@ -68,6 +68,7 @@
                 </v-row>
                 <v-divider></v-divider>
                 <v-card-subtitle> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
+                <v-card-text class="text-center title" v-if="mobil && (offers.length == 0) && !searched">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
                 <v-card-text class="text-center title" v-if="user && (offers.length == 0)">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
                 <v-container v-if="!user && (offers.length == 0) && searched">
                     <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich trotzdem, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
@@ -191,7 +192,7 @@ export default {
             this.offerData = data
         },
         onResize() {
-            
+
             if (window.innerWidth < 960) {
                 this.mobil = true
                 this.displayMap = false
@@ -209,9 +210,13 @@ export default {
                     postcode: this.zipsearch,
                 }
             })
-            this.searchOffersNew()
+            if(this.zipsearch){
+                this.searchOffersPostcode()
+            } else {
+                this.searchOffersOnlyTitle()
+            }
         },
-        async searchOffersNew() {
+        async searchOffersPostcode() {
             var URL = "https://nominatim.openstreetmap.org/search/de"
             URL = URL + "/" + this.zipsearch.replace(" ", "%20") + "?format=json&addressdetails=1&limit=1"
             var response = await fetch(URL)
@@ -252,6 +257,20 @@ export default {
                     });
                 })
         },
+        async searchOffersOnlyTitle() {
+            firebase.firestore().collection('offers').where('title', '>=', this.search).limit(50).get().then((snapshot) => {
+                this.offers = []
+                this.searched = true
+                snapshot.forEach((doc) => {
+                    this.offers.push({
+                        ...doc.data(),
+                        id: doc.id,
+                        geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude]
+                    })
+
+                })
+            })
+        }
     },
     mounted() {
         this.searched = false
@@ -267,35 +286,35 @@ export default {
             }
 
             this.zipsearch = this.$route.query.postcode
-            this.searchOffersNew()
+            this.searchOffersPostcode()
         } else {
             firebase.auth().onAuthStateChanged((user) => {
-                if(user){
+                if (user) {
                     this.user = user
-                firebase.firestore().collection('helpers').doc(user.uid).get().then((doc) => {
-                    if (doc.exists) {
-                        if (doc.data().searchRange > 0) {
-                            this.searchradius = doc.data().searchRange
-                        }
-                        if (doc.data().place.postcode) {
-                            this.zipsearch = doc.data().place.postcode
-                            this.searchOffersNew()
-                        }
-                    } else {
-                        firebase.firestore().collection('agrarians').doc(user.uid).get().then((doc) => {
-                            console.log(user.uid);
-
-                            console.log(doc.data());
+                    firebase.firestore().collection('helpers').doc(user.uid).get().then((doc) => {
+                        if (doc.exists) {
                             if (doc.data().searchRange > 0) {
-                                this.zipsearch = doc.data().searchRange
+                                this.searchradius = doc.data().searchRange
                             }
                             if (doc.data().place.postcode) {
                                 this.zipsearch = doc.data().place.postcode
-                                this.searchOffersNew()
+                                this.searchOffersPostcode()
                             }
-                        })
-                    }
-                })
+                        } else {
+                            firebase.firestore().collection('agrarians').doc(user.uid).get().then((doc) => {
+                                console.log(user.uid);
+
+                                console.log(doc.data());
+                                if (doc.data().searchRange > 0) {
+                                    this.zipsearch = doc.data().searchRange
+                                }
+                                if (doc.data().place.postcode) {
+                                    this.zipsearch = doc.data().place.postcode
+                                    this.searchOffersPostcode()
+                                }
+                            })
+                        }
+                    })
                 }
             })
         }
