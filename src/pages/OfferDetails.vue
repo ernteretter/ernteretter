@@ -1,5 +1,7 @@
 <template>
 <div class="offer-details mx-auto">
+    <v-snackbar v-model="showRegisterMessage" color="success" top>erfolgreich angemeldet</v-snackbar>
+    <v-snackbar v-model="showDisregisterMessage" color="error" top>erfolgreich abgemeldet</v-snackbar>
     <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn> <v-btn @click="showAlert = false;" outlined>Nein</v-btn> </v-alert>
     <div class="inner">
         <div class="details-header">
@@ -134,7 +136,9 @@ export default {
         isAccepted: false,
         isOwner: false,
         uid: false,
-        helperCount: 0
+        helperCount: 0,
+        showRegisterMessage: false,
+        showDisregisterMessage: false,
     }),
     async created() {
         let offerId = this.$route.params.offerId;
@@ -241,6 +245,8 @@ export default {
                     acceptDate: new Date()
                 })
                 .then(() => {
+                    this.showRegisterMessage = true
+                    this.showDisregisterMessage = false
                     this.isAccepted = true;
                     this.helperCount++;
                 });
@@ -259,6 +265,8 @@ export default {
                             .doc("acceptedOffers/" + snapshot.docs[0].id)
                             .delete()
                             .then(() => {
+                                this.showRegisterMessage = false
+                                this.showDisregisterMessage = true
                                 this.isAccepted = false;
                                 this.helperCount--;
                             });

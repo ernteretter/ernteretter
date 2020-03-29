@@ -3,7 +3,7 @@
     <v-row>
         <v-col class="col-12 col-md-8" v-show="!mobil || displayMap">
             <v-card style="height: 85vh">
-                <v-overlay style="z-index: 1" absolute :opacity=0.8 v-if="((offers.length == 0) || !searched && $route.query.postcode)">
+                <v-overlay style="z-index: 1" absolute :opacity=0.8 v-show="((offers.length == 0) || !searched && $route.query.postcode)">
                     <v-card-text class="display-1">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
                 </v-overlay>
                 <l-map style="z-index:0;" :zoom="zoom" :center="center">
