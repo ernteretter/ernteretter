@@ -1,12 +1,15 @@
 <template>
 <v-card class="mx-auto" @keyup.enter="createMessage()" max-width="1000" max-height="100vh">
-    <v-card-title>{{othersName}}</v-card-title>
+    <v-row class="px-3">
+        <v-icon @click="$router.go(-1)" class="pa-0 ma-0">mdi-arrow-left</v-icon>
+        <v-card-title>{{othersName}}</v-card-title>
+    </v-row>
     <v-container id="container" style="max-height: 65vh" class="overflow-y-auto">
         <v-card :class="(message.author == firstUserID) ? 'pa-0 col-8 col-md-5 ml-auto my-2' : 'pa-0 col-8 col-md-5 mr-auto my-2'" v-for="(message, index) in messages" :key="index">
             <v-card-text :class="(message.author == firstUserID) ? 'message2 white--text pa-2 text-end' : 'message1 white--text pa-2'">{{message.text}}</v-card-text>
         </v-card>
     </v-container>
-    <v-text-field class="px-2" color="primary" v-model="currentMessage" label="Nachricht eingeben" append-outer-icon="mdi-send" @click:append-outer="createMessage()"></v-text-field>
+    <v-text-field class="px-2"   color="primary" v-model="currentMessage" label="Nachricht eingeben" append-outer-icon="mdi-send" @click:append-outer="createMessage()"></v-text-field>
 </v-card>
 </template>
 

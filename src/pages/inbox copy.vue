@@ -1,28 +1,26 @@
 <template>
 <v-card max-width="1000" min-height="600" class="mx-auto">
-    <v-card-title v-if="chatroomsNew.length > 0" id="headerNew">neue Nachrichten</v-card-title>
+    <v-card-title v-if="chatroomsNew.length > 0" id="header">Neue Nachrichten</v-card-title>
     <v-divider />
-    <v-list three-line class="ma-2 ma-md-10" @click="gotoChat(chat)" v-for="(chat, index1) in chatroomsNew" :key="index1">
-        <v-list-item-content style="cursor: pointer; border-bottom: 2px solid #ed9a00;" @click="gotoChat(chat)">
-            <v-row class="px-3">
-                <v-list-item-title class="title col-6 col-md-5 pa-0">{{chat.name}}</v-list-item-title>
-                <v-list-item-subtitle class="col-5 text-end pa-0"> {{formatDate(chat.time)}} </v-list-item-subtitle>
-            </v-row>
-            <v-list-item-subtitle class="body-1" :class="chat.iSentLast ? 'secondary--text' : 'primary--text'">{{chat.lastMessage}}</v-list-item-subtitle>
-        </v-list-item-content>
+    <v-list three-line class="ma-10" @click="gotoChat(chat)" v-for="(chat, index1) in chatroomsNew" :key="index1">
+        <v-subheader>{{chat.name}}</v-subheader>
+        <v-list-item>{{formatDate(chat.time)}</v-list-item>
+        <v-divider />
+        <v-row>
+            <v-card-text class="body-1" :class="chat.iSentLast ? 'secondary--text' : 'primary--text'">{{chat.lastMessage}}</v-card-text>
+        </v-row>
     </v-list>
 
-    <v-card-title v-if="chatroomsOld.length > 0" id="headerOld">gelesene Nachrichten</v-card-title>
+    <v-card-title v-if="chatroomsOld.length > 0" id="header">Alte Nachrichten</v-card-title>
     <v-divider />
-    <v-list three-line class="ma-2 ma-md-10" @click="gotoChat(chat) " v-for="(chat, index1) in chatroomsOld" :key="index1">
-        <v-list-item-content style="cursor: pointer; border-bottom: 2px solid #ed9a00;" @click="gotoChat(chat)">
-            <v-row class="px-3">
-                <v-list-item-title class="title col-6 col-md-5 pa-0">{{chat.name}}</v-list-item-title>
-                <v-list-item-subtitle class="col-5 text-end pa-0"> {{formatDate(chat.time)}} </v-list-item-subtitle>
-            </v-row>
-            <v-list-item-subtitle class="body-1" :class="chat.iSentLast ? 'secondary--text' : 'primary--text'">{{chat.lastMessage}}</v-list-item-subtitle>
-        </v-list-item-content>
-    </v-list>
+    <v-card class="ma-10" @click="gotoChat(chat)" v-for="(chat, index) in chatroomsOld" :key="index">
+        <v-card-title>{{chat.name}}</v-card-title>
+        <v-card-text class="caption">{{formatDate(chat.time)}}</v-card-text>
+        <v-divider />
+        <v-row>
+            <v-card-text class="body-1" :class="chat.iSentLast ? 'secondary--text' : 'primary--text'">{{chat.lastMessage}}</v-card-text>
+        </v-row>
+    </v-card>
 </v-card>
 </template>
 
@@ -149,13 +147,8 @@ export default {
 </script>
 
 <style>
-#headerNew {
+#header {
     color: white;
     background: var(--v-primary-base);
-}
-
-#headerOld {
-    color: white;
-    background: var(--v-secondary-base);
 }
 </style>
