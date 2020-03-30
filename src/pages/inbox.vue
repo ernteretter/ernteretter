@@ -93,50 +93,71 @@ export default {
                                 id: d.id
                             }));
                             currentMessages = currentMessages.sort();
-
-                            firestore.collection("helpers").doc(otherAuthor).get().then((doc) => {
-                                if (doc.exists) {
-                                    let lastMessage = currentMessages[currentMessages.length - 1];
-                                    let iSentLast = false;
-                                    if (lastMessage.data.author == this.currentUser) {
-                                        iSentLast = true;
-                                    }
-                                    console.log("seen: " + data.seen);
-                                    this.chatrooms.push({
-                                        name: doc.data().name,
-                                        seen: data.seen,
-                                        userID: doc.id,
-                                        lastMessage: lastMessage.data.text,
-                                        iSentLast: iSentLast,
-                                        time: lastMessage.id
-                                    });
-                                } else {
-                                    firestore.collection("agrarians").doc(otherAuthor).get().then((doc) => {
-                                        if (doc.exists) {
-                                            let lastMessage = currentMessages[currentMessages.length - 1];
-                                            let iSentLast = false;
-                                            if (lastMessage.data.author == this.currentUser) {
-                                                iSentLast = true;
-                                            }
-                                            console.log("seen: " + data.seen);
-                                            this.chatrooms.push({
-                                                name: doc.data().name,
-                                                seen: data.seen,
-                                                userID: doc.id,
-                                                lastMessage: lastMessage.data.text,
-                                                iSentLast: iSentLast,
-                                                time: lastMessage.id
-                                            });
+                            console.log(data);
+                            if (data.isGroupchat) {
+                                console.log("found groupchat1: " + c.id);
+                                let offerSnapshot = await firebase.firestore().collection("offers").doc(c.id).get();
+                                    if(offerSnapshot.data() != null) {
+                                        console.log("found groupchat");
+                                        let lastMessage = currentMessages[currentMessages.length - 1];
+                                        let iSentLast = false;
+                                        if (lastMessage.data.author == this.currentUser) {
+                                            iSentLast = true;
                                         }
-                                    }).catch(e => {
-                                        console.log(e);
+                                        this.chatrooms.push({
+                                            name: offerSnapshot.data().title,
+                                            seen: data.seen,
+                                            userID: c.id,
+                                            lastMessage: lastMessage.data.text,
+                                            iSentLast: iSentLast,
+                                            time: lastMessage.id
+                                        });
+                                    }
+                            } else {
+                                firestore.collection("helpers").doc(otherAuthor).get().then((doc) => {
+                                    if (doc.exists) {
+                                        let lastMessage = currentMessages[currentMessages.length - 1];
+                                        let iSentLast = false;
+                                        if (lastMessage.data.author == this.currentUser) {
+                                            iSentLast = true;
+                                        }
+                                        console.log("seen: " + data.seen);
+                                        this.chatrooms.push({
+                                            name: doc.data().name,
+                                            seen: data.seen,
+                                            userID: doc.id,
+                                            lastMessage: lastMessage.data.text,
+                                            iSentLast: iSentLast,
+                                            time: lastMessage.id
+                                        });
+                                    } else {
+                                        firestore.collection("agrarians").doc(otherAuthor).get().then((doc) => {
+                                            if (doc.exists) {
+                                                let lastMessage = currentMessages[currentMessages.length - 1];
+                                                let iSentLast = false;
+                                                if (lastMessage.data.author == this.currentUser) {
+                                                    iSentLast = true;
+                                                }
+                                                console.log("seen: " + data.seen);
+                                                this.chatrooms.push({
+                                                    name: doc.data().name,
+                                                    seen: data.seen,
+                                                    userID: doc.id,
+                                                    lastMessage: lastMessage.data.text,
+                                                    iSentLast: iSentLast,
+                                                    time: lastMessage.id
+                                                });
+                                            }
+                                        }).catch(e => {
+                                            console.log(e);
 
-                                    })
-                                }
-                            }).catch(e => {
-                                console.error(e);
+                                        })
+                                    }
+                                }).catch(e => {
+                                    console.error(e);
 
-                            })
+                                })
+                            }
                         });
                     }).catch(e => {
                         console.error(e);

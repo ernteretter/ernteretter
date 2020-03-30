@@ -133,18 +133,24 @@ methods: {
     async createRoom() {
         console.log("creating room");
         let firestore = firebase.firestore();
+        let data = {
+            authors: [],
+            isGroupchat: false,
+        };
         let authors = [];
         if(this.isGroupchat){
             let allAcceptedOffers = await firestore.collection("acceptedOffers").where("offerId", "==", this.pathID).get();
             allAcceptedOffers.forEach(a => authors.push(a.data().helperId));
+            data.isGroupchat = true;
         }
         else {
             authors = [this.firstUserID, this.pathID];
         }
+        data.authors = authors;
         firestore
             .collection("chats")
             .doc(this.chatID)
-            .set({authors: authors})
+            .set(data)
             .catch(error => {
                 console.log("logged in as: " + this.firstUserID);
                 console.log("second user: " + this.pathID);
