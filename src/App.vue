@@ -35,7 +35,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app :dense="drawer" v-resize="onResize">
+    <v-app-bar app :dense="drawer" v-resize="onResize" >
       <v-row align="center" justify="center">
         <v-col cols="4">
           <v-row>

@@ -37,7 +37,8 @@ Vue.use(Meta)
 const routes = [
   {name: "landingPage", path: "/", component: landingPage},
   {name: "offers", path: "/offers", component: offers},
-  {name: 'offer-details', path: "/offers/:offerId", component: OfferDetails},
+  {name: "offers", path: "/offers/:search", component: offers},
+  {name: 'offer-details', path: "/offer/:offerId", component: OfferDetails},
   {name: "login", path: "/login", component: login, meta: {requiresNotAuth: true}},
   {name: "createOffers", path: "/createOffer", component: createOffer, meta: {requiresAuth: true, requiresFarmer: true}},
   {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer, meta: {requiresAuth: true, requiresFarmer: true}},
@@ -60,14 +61,14 @@ const router = new VueRouter({
 })
 
 // Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDzHKaBLhLz9G2q84cn9yvNUqP77S0te_g",
-  authDomain: "ernteretter.firebaseapp.com",
-  databaseURL: "https://ernteretter.firebaseio.com",
-  projectId: "ernteretter",
-  storageBucket: "ernteretter.appspot.com",
-  messagingSenderId: "382367402085",
-  appId: "1:382367402085:web:e4af34683a66509efc9e8c"
+var firebaseConfig = {
+  apiKey: "AIzaSyA2kfwebAU94p2SLOVqVXIPi_Pst6xrcio",
+  authDomain: "ernteretterdev.firebaseapp.com",
+  databaseURL: "https://ernteretterdev.firebaseio.com",
+  projectId: "ernteretterdev",
+  storageBucket: "ernteretterdev.appspot.com",
+  messagingSenderId: "87968775388",
+  appId: "1:87968775388:web:8f5dd99c299d7614098819"
 };
 firebase.initializeApp(firebaseConfig);
 
