@@ -40,11 +40,9 @@ service cloud.firestore {
     	//schreibe message wenn du selbst autor bist,
       // lese wenn du teil des chatrooms bist
       match /messages/{messageid} {
-      	allow read: if get(/databases/$(database)/documents/chats/$(chatid)).data.authors[0] == request.auth.uid || 
-      								get(/databases/$(database)/documents/chats/$(chatid)).data.authors[1] == request.auth.uid;
+        allow read: if request.auth.uid in get(/databases/$(database)/documents/chats/$(chatid)).data.authors;
       	allow create: if request.resource.data.author == request.auth.uid &&
-        							(get(/databases/$(database)/documents/chats/$(chatid)).data.authors[0] == request.auth.uid || 
-      								get(/databases/$(database)/documents/chats/$(chatid)).data.authors[1] == request.auth.uid);
+         request.auth.uid in get(/databases/$(database)/documents/chats/$(chatid)).data.authors;
       }
     }
   }
