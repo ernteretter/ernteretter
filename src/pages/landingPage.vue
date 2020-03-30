@@ -1,6 +1,6 @@
 <template>
-<v-card class="mx-auto" max-width="1000px">
-    <div style="padding-top: 30%; padding-bottom: 10%;" >
+<div class="mx-auto" style="max-width:1000px">
+    <div style="padding-top: 20%; padding-bottom: 10%;" >
         <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto " @click="$router.push('/')" max-width="100%" style="{cursor: pointer};" />
     </div>
     <v-spacer></v-spacer>
@@ -11,11 +11,11 @@
     </div>
     <v-row class="py-10 px-0" no-gutters>
         <v-hover v-slot:default="{ hover }" class="col-12 col-md-6">
-            <v-btn color="primary" :outlined="!hover" style="stroke-width: 50px" :max-width="responiveNeeded ? '100%' : '48%'" height="6vh" class="rounded-button-right mx-0 pa-0 font-weight-bold display-1" :small="responiveNeeded" :large="!responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
+            <v-btn color="primary" :outlined="!hover" style="stroke-width: 50px" :max-width="responiveNeeded ? '100%' : '48%'" height="6vh" :class="responiveNeeded ? 'rounded-button-right mx-0 pa-0 font-weight-bold title font-regular' : 'rounded-button-right mx-0 pa-0 font-weight-bold display-2 font-regular'" :small="responiveNeeded" :large="!responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
         </v-hover>
         <v-spacer></v-spacer>
         <v-hover v-slot:default="{ hover }" class="col-12 col-md-6">
-        <v-btn color="primary" :outlined="!hover" :max-width="responiveNeeded ? '100%' : '48%'" height="6vh" class="rounded-button-left mx-0 pa-0 font-weight-bold display-1" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
+        <v-btn color="primary" :outlined="!hover" :max-width="responiveNeeded ? '100%' : '48%'" height="6vh" :class="responiveNeeded ? 'rounded-button-left mx-0 pa-0 font-weight-bold title' : 'rounded-button-left mx-0 pa-0 font-weight-bold display-2'" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
         </v-hover>
     </v-row>
     <v-row>
@@ -49,7 +49,7 @@
             <v-icon large>mdi-github</v-icon>
         </a>
     </v-row>
-</v-card>
+</div>
 </template>
 
 <script>
