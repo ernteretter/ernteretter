@@ -116,6 +116,10 @@ export default {
                     data.user.updateProfile({
                         displayName: this.name
                     }).then(() => {
+                        firebase.auth().useDeviceLanguage();
+                        firebase.auth().currentUser.sendEmailVerification().catch((err) => {
+                            console.log(err + " E-Mail wurde nicht versandt");   
+                        })
                         let firestore = firebase.firestore();
                         let newAgrarian = firestore.collection('agrarians').doc(agrarianData.uid);
                         newAgrarian.set(agrarianData).then(function () {

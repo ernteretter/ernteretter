@@ -35,11 +35,10 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app :dense="drawer" v-resize="onResize">
+    <v-app-bar app :dense="drawer" v-resize="onResize" >
       <v-row align="center" justify="center">
         <v-col cols="4">
           <v-row>
-            <v-icon color="secondary">mdi-barley</v-icon>
             <v-icon
               color="primary"
               @click="displayDrawer = !displayDrawer"

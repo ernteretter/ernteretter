@@ -3,8 +3,10 @@
     <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn> <v-btn @click="showAlert = false;" outlined>Nein</v-btn> </v-alert>
     <div class="inner">
         <div class="details-header">
-            <div class="title-section">
-                <v-icon @click="close()">mdi-arrow-left</v-icon>
+            <div class="title-section pa-0 ma-0">
+                <v-btn class="pa-0 ma-0">
+                    <v-icon  @click="close()">mdi-arrow-left</v-icon>
+                </v-btn>
                 <div class="page-heading">{{ offer.title }}</div>
                 <div class="page-sub-heading">{{ agrarian.name }}</div>
             </div>
