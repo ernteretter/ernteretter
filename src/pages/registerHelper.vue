@@ -40,7 +40,7 @@
                 <div>
                     <h3 align="center" class="mx-auto"> In welchem Umkreis möchtest du Hilfemöglichkeiten vorgeschlagen bekommen? </h3>
                     <v-col cols="10" sm="12">
-
+                         <v-text-field v-model="postCode" label="PLZ" single-line solo />
                         <v-slider label="Radius (km)" thumb-label="always" thumb-size="24" thumb-color="primary" v-model="searchRange" class="align-center pt-7" :max="searchRangeMax" :min="searchRangeMin" hide-details>
                             <!--<template v-slot:append>
                                         <v-text-field
@@ -120,6 +120,7 @@ export default {
         experienceItems: ['keine', 'bisschen', 'viel', 'ich kann Wissen vermitteln'],
         name: "",
         mail: "",
+        postCode: "",
         password: "",
         showPassword: false,
         harvestTypes: [],
@@ -168,7 +169,8 @@ export default {
                         durationMinType: this.durationMinType,
                         durationMax: this.durationMax,
                         durationMaxType: this.durationMaxType,
-                        experience: this.experience
+                        experience: this.experience,
+                        postCode: this.postCode,
                     };
                     let router = this.$router;
                     data.user.updateProfile({
