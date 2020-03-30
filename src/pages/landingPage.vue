@@ -1,13 +1,13 @@
 <template>
 <div class="mx-auto" style="max-width:1000px">
-    <div style="padding-top: 20%; padding-bottom: 10%;" >
+    <div style="padding-top: 20%; padding-bottom: 10%;">
         <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto " @click="$router.push('/')" max-width="100%" style="{cursor: pointer};" />
     </div>
     <v-spacer></v-spacer>
     <div class="pb-10">
-        <h1 class="text" style="font-weight: 700;">Auch in dieser besondern Zeit  </h1>
-    <h3 class="text mx-auto">wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
-        Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.</h3>
+        <h1 class="text" :style="responiveNeeded ? 'font-weight: 600; font-size: 1.5rem' : 'font-weight: 700; font-size: 2rem'">Auch in dieser besondern Zeit </h1>
+        <h3 class="text mx-auto" :style="responiveNeeded ? 'font-weight: 500;' : 'font-weight: 600'">wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
+            Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.</h3>
     </div>
     <v-row class="py-10 px-0" no-gutters>
         <v-hover v-slot:default="{ hover }" class="col-12 col-md-6">
@@ -15,14 +15,15 @@
         </v-hover>
         <v-spacer></v-spacer>
         <v-hover v-slot:default="{ hover }" class="col-12 col-md-6">
-        <v-btn color="primary" :outlined="!hover" :max-width="responiveNeeded ? '100%' : '48%'" height="6vh" :class="responiveNeeded ? 'rounded-button-left mx-0 pa-0 font-weight-bold title' : 'rounded-button-left mx-0 pa-0 font-weight-bold display-2'" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
+            <v-btn color="primary" :outlined="!hover" :max-width="responiveNeeded ? '100%' : '48%'" height="6vh" :class="responiveNeeded ? 'rounded-button-left mx-0 pa-0 font-weight-bold title' : 'rounded-button-left mx-0 pa-0 font-weight-bold display-2'" :small="responiveNeeded" :large="!responiveNeeded" to="/offers">Ich möchte helfen</v-btn>
         </v-hover>
     </v-row>
     <v-row>
         <router-link to="/information" style="padding-top: 10vh; padding-bottom: 3vh; text-decoration: none" class="mx-auto display-1">
             <v-btn color="primary" large dense outlined class="py-2 my-0">
                 <v-icon>mdi-arrow-down-bold</v-icon>
-                Weitere Informationen</v-btn>
+                Weitere Informationen
+            </v-btn>
         </router-link>
     </v-row>
     <v-row>
@@ -105,11 +106,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style>
-.text  {
+.text {
     font-family: 'Open Sans', sans-serif;
     color: black;
     display: inline;
 }
+
 #title {
     word-break: keep-all;
 }
