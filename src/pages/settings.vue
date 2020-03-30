@@ -175,7 +175,7 @@
       <v-tab-item>
         <v-card flat>
           <v-card-text>
-            <v-form ref="formAccount" v-model="validAccount" class="col-md-6 col-sm-12 col-sx-12">
+            <v-form ref="formAccount" v-model="validPassword" class="col-md-6 col-sm-12 col-sx-12">
               <v-text-field
                 v-model="oldpassword"
                 :rules="rules.password"
@@ -197,14 +197,14 @@
                   dense
                   outlined
                   type="error"
-                  v-if="!validAccount"
+                  v-if="!validPassword"
                 >Die Felder sind nicht vollständig ausgefüllt</v-alert>
               </v-row>
             </v-form>
             <v-container>
               <v-row>
                 <v-spacer></v-spacer>
-                <v-btn color="success" :disabled="!validAccount" @click="updatePassword">Fertig</v-btn>
+                <v-btn color="success" :disabled="!validPassword" @click="updatePassword">Fertig</v-btn>
               </v-row>
             </v-container>
           </v-card-text>
@@ -269,6 +269,7 @@ export default {
       isAgrarian: false,
       doc_id: "",
       validAccount: true,
+      validPassword: true,
       rules: {
         name: [value => !!value.trim() || "Name wird benötigt."],
         mail: [
