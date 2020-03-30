@@ -1,6 +1,6 @@
 <template>
 <v-card max-width="1000" class="mx-auto my-10">
-    <v-container class="py-10" >
+    <v-container class="py-10">
         <v-card-text class="text-center display-2">Wer bist du?</v-card-text>
         <v-row class="justify-center" no-gutters>
             <v-btn color="primary" outlined class="rounded-button-right" large v-resize="onResize" to="/registerFarmers">Landwirt</v-btn>
@@ -18,16 +18,29 @@ export default {
             responiveNeeded: false
         }
     },
+    metaInfo() {
+            return {
+                title: 'Registere dich - ernteretter',
+                meta: [{
+                        name: 'description',
+                        content: 'Regestiere dich bei ernteretter und werde Helfer oder lasse dir helfen'
+                    },
+                    {
+                        name: 'og:title',
+                        content: 'Ernteretter'
+                    },
+                    {
+                        name: 'og:description',
+                        content: 'Regestiere dich bei ernteretter und werde Helfer oder lasse dir helfen'
+                    },
+                    {
+                        name: 'og:image',
+                        content: require('../assets/ernteretter.png')
+                    },
+                ]
+            }
+        },
     methods: {
-        metaInfo() {
-        return {
-            title: 'Registere dich - ernteretter',
-            meta: [{
-                name: 'description',
-                content: 'Regestiere dich bei ernteretter und werde Helfer oder lasse dir helfen'
-            }]
-        }
-    },
         onResize() {
             if (window.innerWidth < 452) {
                 this.responiveNeeded = true
