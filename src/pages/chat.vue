@@ -9,7 +9,7 @@
             <v-card-text :class="(message.author == firstUserID) ? 'message2 white--text pa-2 text-end' : 'message1 white--text pa-2'">{{message.text}}</v-card-text>
         </v-card>
     </v-container>
-    <v-text-field class="px-2"   color="primary" v-model="currentMessage" label="Nachricht eingeben" append-outer-icon="mdi-send" @click:append-outer="createMessage()"></v-text-field>
+    <v-text-field class="px-2" color="primary" v-model="currentMessage" label="Nachricht eingeben" append-outer-icon="mdi-send" @click:append-outer="createMessage()"></v-text-field>
 </v-card>
 </template>
 
@@ -26,8 +26,9 @@ export default {
             message: {},
             messages: [],
             firstUserID: null,
-            secondUserID: null,
+            pathID: null,
             othersName: "",
+            isGroupchat: false,
             unsubscribe: () => {},
         };
     },
@@ -46,148 +47,171 @@ export default {
 
     },
     mounted() {
-
-        firebase.auth().onAuthStateChanged(user => {
+        //check if user is checked in
+        firebase.auth().onAuthStateChanged(async user => {
             if (!user) {
                 this.$router.push("/login");
                 return;
             } else {
                 this.firstUserID = user.uid;
-                this.secondUserID = this.$route.params.agrarianId;
-
-                firebase
+                this.pathID = this.$route.params.agrarianId;
+                //check if other user is helper, farmer or groupchat
+                let helperSnapshot = await firebase
                     .firestore()
                     .collection("helpers")
-                    .doc(this.secondUserID)
-                    .get()
-                    .then(snapshot => {
-                        if (snapshot.exists) {
-                            console.log("othersname: " + snapshot.data().name);
-                            this.othersName = snapshot.data().name;
-                        } else {
-                            firebase
-                                .firestore()
-                                .collection("agrarians")
-                                .doc(this.secondUserID)
-                                .get()
-                                .then(snapshot => {
-                                    console.log("othersname: " + snapshot.data().name);
-                                    this.othersName = snapshot.data().name;
-                                });
+                    .doc(this.pathID)
+                    .get();
+                //helper
+                if (helperSnapshot.data() != null) {
+                    console.log("othersname: " + helperSnapshot.data().name);
+                    this.othersName = helperSnapshot.data().name;
+                } else {
+                    let farmerSnapshot = await firebase
+                        .firestore()
+                        .collection("agrarians")
+                        .doc(this.pathID)
+                        .get()
+                    //farmer
+                    if(farmerSnapshot.data() != null) {
+                        console.log("othersname: " + farmerSnapshot.data().name);
+                        this.othersName = farmerSnapshot.data().name;
+                    }
+                    //groupchat
+                    else {
+                        let offerSnapshot = await firebase.firestore().collection("offers").doc(this.pathID).get();
+                        if(offerSnapshot.data() != null) {
+                            this.isGroupchat = true;
+                            this.othersName = offerSnapshot.data().title;
                         }
-                    });
-
-                this.chatID = this.firstUserID + "_" + this.secondUserID;
-                this.chatID2 = this.secondUserID + "_" + this.firstUserID;
-
-                let firestore = firebase.firestore();
-                firestore
-                    .collection("chats")
-                    .doc(this.chatID)
-                    .get()
-                    .then(snapshot => {
-                        if (!snapshot.exists) {
-                            firestore
-                                .collection("chats")
-                                .doc(this.chatID2)
-                                .get()
-                                .then(snapshot => {
-                                    if (!snapshot.exists) {
-                                        this.createRoom();
-                                    } else {
-                                        this.chatID = this.chatID2;
-                                        this.fetchMessages();
-                                    }
-
-                                });
-                        } else {
-                            this.fetchMessages();
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                    }
+                }
             }
+
+        this.chatID = this.firstUserID + "_" + this.pathID;
+        this.chatID2 = this.pathID + "_" + this.firstUserID;
+        console.log("groupchat? " + this.isGroupchat);
+        if(this.isGroupchat){
+            this.chatID = this.pathID;
+        }
+
+        //check if room exists already
+        let firestore = firebase.firestore();
+        firestore
+            .collection("chats")
+            .doc(this.chatID)
+            .get()
+            .then(snapshot => {
+                if (!snapshot.exists && !this.isGroupchat) {
+                    firestore
+                        .collection("chats")
+                        .doc(this.chatID2)
+                        .get()
+                        .then(snapshot => {
+                            //if not -> create Room
+                            if (!snapshot.exists) {
+                                this.createRoom();
+                            //else just fetch all messages
+                            } else {
+                                this.chatID = this.chatID2;
+                                this.fetchMessages();
+                            }
+
+                        });
+                } else if(!snapshot.exists && this.isGroupchat) {
+                    //its a groupchat and we need to create the room
+                    this.createRoom();
+                } else {
+                    this.fetchMessages();
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
         });
+},
+methods: {
+    async createRoom() {
+        console.log("creating room");
+        let firestore = firebase.firestore();
+        let authors = [];
+        if(this.isGroupchat){
+            let allAcceptedOffers = await firestore.collection("acceptedOffers").where("offerId", "==", this.pathID).get();
+            allAcceptedOffers.forEach(a => authors.push(a.data().helperId));
+        }
+        else {
+            authors = [this.firstUserID, this.pathID];
+        }
+        firestore
+            .collection("chats")
+            .doc(this.chatID)
+            .set({authors: authors})
+            .catch(error => {
+                console.log("logged in as: " + this.firstUserID);
+                console.log("second user: " + this.pathID);
+                console.log(this.chatID);
+                console.log(authors);
+                console.log(error);
+            });
     },
-    methods: {
-        createRoom() {
-            console.log("creating room");
-            let data = {
-                authors: [this.firstUserID, this.secondUserID],
-            };
-            let firestore = firebase.firestore();
-            firestore
-                .collection("chats")
-                .doc(this.chatID)
-                .set(data)
-                .catch(error => {
-                    console.log("logged in as: " + this.firstUserID);
-                    console.log("second user: " + this.secondUserID);
-                    console.log(this.chatID);
-                    console.log(data);
-                    console.log(error);
-                });
-        },
-        async fetchMessages() {
-            console.log("fetching messages");
-            let firestore = firebase.firestore();
-            let ref = await firestore.collection("chats").doc(this.chatID).get();
+    async fetchMessages() {
+        console.log("fetching messages");
+        let firestore = firebase.firestore();
+        let ref = await firestore.collection("chats").doc(this.chatID).get();
+        this.messages = [];
+        this.unsubscribe = firestore
+            .collection("chats")
+            .doc(this.chatID)
+            .collection("messages").onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(doc => {
+                    console.log("found message: " + doc.doc.data());
+                    this.messages.push(doc.doc.data());
 
-            this.unsubscribe = firestore
-                .collection("chats")
-                .doc(this.chatID)
-                .collection("messages").onSnapshot(snapshot => {
-                    snapshot.docChanges().forEach(doc => {
-                        console.log("found message: " + doc.doc.data());
-                        this.messages.push(doc.doc.data());
-
-                        let seenBefore = [];
-                        if (ref.data().seen != null && ref.data().seen <= 2) {
-                            seenBefore = ref.data().seen;
-                        }
-                        seenBefore.push(this.firstUserID);
-                        firestore.collection("chats").doc(this.chatID).update({
-                            seen: seenBefore,
-                        })
+                    let seenBefore = [];
+                    if (ref.data().seen != null && ref.data().seen <= 2) {
+                        seenBefore = ref.data().seen;
+                    }
+                    seenBefore.push(this.firstUserID);
+                    firestore.collection("chats").doc(this.chatID).update({
+                        seen: seenBefore,
                     })
-
                 })
-        },
-        createMessage() {
-            console.log("creating message");
-            if (this.currentMessage == null) {
-                return;
-            }
-            let firestore = firebase.firestore();
 
-            firestore.collection("chats").doc(this.chatID).update({
-                seen: [this.firstUserID],
-            }).catch(e => console.error(e));
+            })
+    },
+    createMessage() {
+        console.log("creating message");
+        if (this.currentMessage == null) {
+            return;
+        }
+        let firestore = firebase.firestore();
 
-            var newMessage = firestore
-                .collection("chats")
-                .doc(this.chatID)
-                .collection("messages")
-                .doc(Date.now().toString());
-            let message = {
-                author: firebase.auth().currentUser.uid,
-                text: this.currentMessage
-            };
-            newMessage
-                .set(message)
-                .then(() => {
-                    console.log("Chat written!");
-                    this.currentMessage = "";
-                })
-                .catch(error => {
-                    console.log("message:" + message.text);
-                    console.log(error);
-                    alert("Konnte nachricht nicht abschicken.");
-                    this.$router.push("/error");
-                });
-        },
-    }
+        firestore.collection("chats").doc(this.chatID).update({
+            seen: [this.firstUserID],
+        }).catch(e => console.error(e));
+
+        var newMessage = firestore
+            .collection("chats")
+            .doc(this.chatID)
+            .collection("messages")
+            .doc(Date.now().toString());
+        let message = {
+            author: firebase.auth().currentUser.uid,
+            text: this.currentMessage
+        };
+        newMessage
+            .set(message)
+            .then(() => {
+                console.log("Chat written!");
+                this.currentMessage = "";
+            })
+            .catch(error => {
+                console.log("message:" + message.text);
+                console.log(error);
+                alert("Konnte nachricht nicht abschicken.");
+                this.$router.push("/error");
+            });
+    },
+}
 };
 </script>
 
