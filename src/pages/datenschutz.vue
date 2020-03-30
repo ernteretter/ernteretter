@@ -199,3 +199,16 @@
     
   </v-card>
 </template>
+<script>
+export default {
+  metaInfo() {
+        return {
+            title: 'Datenschutz - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Die Datenschutzseite zu ernteretter'
+            }]
+        }
+    },
+}
+</script>

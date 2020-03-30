@@ -1,9 +1,9 @@
 <template>
 <div v-resize="onResize">
     <v-row>
-        <v-col class="col-12 col-md-8" v-show="!mobil || displayMap">
-            <v-card style="height: 85vh;">
-                <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center">
+        <v-col class="col-12 col-md-8" v-show="(!mobil || displayMap) && !displayDetails">
+            <v-card style="height: 85vh">
+                <l-map style="width: 100%" :zoom="zoom" :center="center">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
                         <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
@@ -13,7 +13,7 @@
                     <l-marker v-for="(offer, index) in offers" :key="index" :lat-lng=offer.geoPointNew>
                         <l-popup>
                             <v-row :key="index*10">
-                                <v-col :key="index" cols="7" class="px-0">
+                                <v-col :key="index" cols="7" class="px-0 mx-0">
                                     <v-list-item :key="index*11 + 1">
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
@@ -22,13 +22,13 @@
                                         </v-list-item-content>
                                     </v-list-item>
                                 </v-col>
-                                <v-col :key="index * 10 + 2" cols="4" align="end" class="px-0">
-                                    <v-list-item-content class="pa-0">
+                                <v-col :key="index * 10 + 2" cols="4" align="end" class="pa-0">
+                                    <v-list-item-content>
                                         <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
                                         <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-card-actions :key="index * 10 + 3">
-                                        <v-btn @click="details(offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
+                                        <v-btn @click="details(offer)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
                                     </v-card-actions>
                                 </v-col>
                             </v-row>
@@ -38,26 +38,28 @@
             </v-card>
         </v-col>
         <v-col class="col-12 col-md-4">
-            <v-card height="80vh" v-show="!displayMap">
+            <v-card height="null" v-show="!displayMap && !displayDetails">
                 <v-row>
                     <v-col>
-                        <v-row class="justify-center ">
+                        <v-card-title>Suche nach Anzeigen</v-card-title>
+                        <v-row class="justify-center">
                             <v-text-field v-bind="size" class="mb-3 mr-3 ml-3 col-10 cols-xs-4 col-sm-6" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
-                            <v-text-field class="mb-3 mr-3 ml-3 col-9 col-xs-4 col-sm-4 " outlined type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="Suche nach PLZ" />
-                            <span class="col-1 md-col-0 pa-0 ma-0">
-                                <v-icon class="px-0 ma-auto" color="primary" v-show="mobil" @click="displayMap = !displayMap">mdi-map</v-icon>
-                            </span>
+                            <v-text-field class="mb-md-3 mr-3 ml-3 col-10 col-xs-4 col-sm-4 " outlined type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="Suche nach PLZ" />
                         </v-row>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-3 mr-6 ma-xs-0 ">
+                    <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-md-0 mr-md-0 xs-ma-0 xs-pa-0">
                         <v-responsive :max-width="600" :min-height="60">
                             <v-slider class="pt-7 mr-5 ml-3" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
                         </v-responsive>
                     </v-col>
                 </v-row>
                 <v-row class="justify-center">
+                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="displayMap = !displayMap" v-show="mobil">
+                        <v-icon class="ma-0 pa-0" v-show="mobil">mdi-map</v-icon>
+                        Karte
+                    </v-btn>
                     <v-btn v-bind="size" color="primary" id="searchbutton" @click="searchOffersNew();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
                     <v-btn v-bind="size" color="secondary" id="createbutton" @click="createOffer();" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
                 </v-row>
@@ -68,7 +70,7 @@
                     <v-list three-line tile outlined :color="colorEintrag">
                         <template v-for="(offer, index) in offers">
                             <v-row :key="index*10">
-                                <v-col :key="index" cols="10">
+                                <v-col :key="index" class="pr-0">
                                     <v-list-item :key="index*11 + 1">
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
@@ -77,14 +79,12 @@
                                         </v-list-item-content>
                                     </v-list-item>
                                 </v-col>
-                                <v-col :key="index * 10 + 2" cols="2" align="end">
+                                <v-col :key="index * 10 + 2" class="col-3 col-xs-3 col-sm-1 col-md-3 pr-1 mr-2 my-5" align="end">
                                     <v-list-item-content class="pa-0">
                                         <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
                                         <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
                                     </v-list-item-content>
-                                    <v-card-actions :key="index * 10 + 3">
-                                        <v-btn @click="details(offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
-                                    </v-card-actions>
+                                    <v-btn @click="details(offer)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
                                 </v-col>
                             </v-row>
                             <v-divider :key="index * 10 + 4" color="orange"></v-divider>
@@ -94,6 +94,9 @@
             </v-card>
         </v-col>
     </v-row>
+    <v-row>
+        <OfferDetails :offer="offerData" :user="user" v-show="displayDetails" @close="closeDetails" />
+    </v-row>
 </div>
 </template>
 
@@ -101,6 +104,7 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
 import "firebase/auth";
+import OfferDetails from "./../components/OfferDetails.vue"
 import {
     GeoCoordinate
 } from 'geocoordinate';
@@ -124,13 +128,13 @@ Icon.Default.mergeOptions({
 export default {
     name: "OfferList",
     data: () => ({
+        user: null,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         zoom: 7,
         center: [49.877629, 8.654673],
         center_layout: 'center',
         colorEintrag: '#fffff',
         detailbutton: '#fffff',
-        //filteredList:[],
         item_color: 'primary',
         offers: [],
         search: "",
@@ -141,13 +145,25 @@ export default {
         offercount: 0,
         mobil: false,
         displayMap: false,
+        displayDetails: false,
+        offerData: null,
     }),
+    metaInfo() {
+        return {
+            title: 'Anzeigen - ernteretter',
+            meta: [{
+                name: 'description',
+                content: 'Alle Anzeigen von Landwirten, denen in deiner Nähe geholfen werden muss'
+            }]
+        }
+    },
     components: {
         LMap,
         LTileLayer,
         LMarker,
         LPopup,
         LControl,
+        OfferDetails,
     },
     computed: {
         size() {
@@ -162,22 +178,24 @@ export default {
         }
     },
     methods: {
+        closeDetails() {
+            this.displayDetails = false
+        },
         createOffer() {
             this.$router.push("/createOffer");
         },
-        details(id) {
-            this.$router.push({
-                name: "offer-details",
-                params: {
-                    offerId: id
-                }
-            });
+        details(data) {
+            this.offerData = data
+            this.displayDetails = true
         },
         onResize() {
+            
             if (window.innerWidth < 960) {
                 this.mobil = true
+                this.displayMap = false
             } else {
                 this.mobil = false
+                this.displayMap = false
             }
         },
         async searchOffersNew() {
@@ -222,6 +240,7 @@ export default {
     },
     mounted() {
         firebase.auth().onAuthStateChanged((user) => {
+            this.user = user
             firebase.firestore().collection('helpers').doc(user.uid).get().then((doc) => {
                 if (doc.exists) {
                     if (doc.data().searchRange > 0) {

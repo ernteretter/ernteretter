@@ -242,25 +242,26 @@ export default {
         let firestore = firebase.firestore();
         let docRef = firestore.collection("offers").doc(offerId);
         docRef.get().then((doc) => {
+            var data = doc.data()
             if (doc.exists) {
-                this.address = doc.data().address;
-                this.street = doc.data().address.street;
-                this.postCode = doc.data().address.postCode;
-                this.houseNumber = doc.data().address.number;
-                this.city = doc.data().address.city;
-                this.title = doc.data().title;
-                this.radioErnteSaat = doc.data().workType ? 1 : 0;
-                this.maxHelpers = doc.data().maxHelpers;
-                this.place = doc.data().postCode;
-                this.harvestType = doc.data().harvestType;
-                this.harvestTypeSpecial = doc.data().harvestTypeSpecial;
-                this.startDate = this.formatDateObject(doc.data().startDate.toDate());
-                this.endDate = this.formatDateObject(doc.data().endDate.toDate());
-                this.salary = doc.data().salary;
-                this.equipment = doc.data().equipment;
-                this.driverslicence = doc.data().driverslicence;
-                this.description = doc.data().description;
-                this.radioErnteSaat = doc.data().workType;
+                this.address = data.address;
+                this.street = data.address.street;
+                this.postCode = data.address.postCode;
+                this.houseNumber = data.address.number;
+                this.city = data.address.city;
+                this.title = data.title;
+                this.radioErnteSaat = data.workType ? 1 : 0;
+                this.maxHelpers = data.maxHelpers;
+                this.place = data.postCode;
+                this.harvestType = data.harvestType;
+                this.harvestTypeSpecial = data.harvestTypeSpecial;
+                this.startDate = this.formatDateObject(data.startDate.toDate());
+                this.endDate = this.formatDateObject(data.endDate.toDate());
+                this.salary = data.salary;
+                this.equipment = data.equipment;
+                this.driverslicence = data.driverslicence;
+                this.description = data.description;
+                this.radioErnteSaat = data.workType;
                 this.convertAddressToGeoPoint()
             }
         })
