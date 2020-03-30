@@ -1,5 +1,6 @@
 <template>
 <v-card max-width="1000" min-height="600" class="mx-auto">
+    <v-card-title v-if="!(chatrooms.length > 0)" id="headerNew" >Du hast noch keine Nachrichten :(</v-card-title>
     <v-card-title v-if="chatroomsNew.length > 0" id="headerNew">neue Nachrichten</v-card-title>
     <v-divider />
     <v-list three-line class="ma-2 ma-md-10" @click="gotoChat(chat)" v-for="(chat, index1) in chatroomsNew" :key="index1">
