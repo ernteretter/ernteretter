@@ -1,7 +1,6 @@
 <template>
 <v-app>
     <v-alert v-if="displayAlert" dismissible :type="alertType" width="400px" class="mx-auto mt-5">{{alertText}}</v-alert>
-
     <v-col cols="12">
         <v-card class="mx-auto mt-5 col-sm-12 col-md-5" transition="slide-x-transition" v-if="!displayPasswordForgotten">
             <v-card-title class="secondary--text">
@@ -55,9 +54,22 @@ export default {
         return {
             title: 'Login - ernteretter',
             meta: [{
-                name: 'description',
-                content: 'Logge dich hier für ernteretter ein'
-            }]
+                    name: 'description',
+                    content: 'Logge dich hier für ernteretter ein'
+                },
+                {
+                    name: 'og:title',
+                    content: 'Ernteretter'
+                },
+                {
+                    name: 'og:description',
+                    content: 'Logge dich hier für ernteretter ein'
+                },
+                {
+                    name: 'og:image',
+                    content: require('../assets/ernteretter.png')
+                },
+            ]
         }
     },
     data() {

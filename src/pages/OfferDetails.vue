@@ -1,18 +1,27 @@
 <template>
-<div class="offer-details" v-if="offer && agrarian">
-    <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn> <v-btn @click="showAlert = false;" outlined>Nein</v-btn> </v-alert>
+<div class="offer-details mx-auto">
+    <v-snackbar v-model="showRegisterMessage" color="success" top>erfolgreich angemeldet</v-snackbar>
+    <v-snackbar v-model="showDisregisterMessage" color="error" top>erfolgreich abgemeldet</v-snackbar>
+    <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn>
+        <v-btn @click="showAlert = false;" outlined>Nein</v-btn>
+    </v-alert>
     <div class="inner">
         <div class="details-header">
             <div class="title-section">
+                <v-icon class="pa-0 ma-0" @click="$router.go(-1)">mdi-arrow-left</v-icon>
                 <div class="page-heading">{{ offer.title }}</div>
                 <div class="page-sub-heading">{{ agrarian.name }}</div>
             </div>
             <div class="action-section">
                 <div class="accept-cancel">
-                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true"><v-icon>mdi-delete</v-icon></v-btn>
-                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()"><v-icon>mdi-pencil-outline</v-icon></v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true">
+                        <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()">
+                        <v-icon>mdi-pencil-outline</v-icon>
+                    </v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted && !isOwner" @click="removeMe">Abmelden</v-btn>
-                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isAccepted && !isOwner"  @click="addMe">Anmelden</v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isAccepted && !isOwner" @click="addMe">Anmelden</v-btn>
                 </div>
                 <div class="status-chip" v-if="offer.maxHelpers">
                     <b>{{ offer.maxHelpers - helperCount }}</b>
@@ -20,15 +29,6 @@
                 </div>
             </div>
         </div>
-
-        <section class="description">
-            <div class="description-header section-header">
-                <div class="section-headline">Beschreibung</div>
-            </div>
-            <div class="description-body section-body">
-                {{ offer.description }}
-            </div>
-        </section>
 
         <section class="harvesttype" v-if="offer.harvestType">
             <div class="equipment-header section-header">
@@ -77,13 +77,15 @@
         </section>
 
         <section>
-            <div class="section-header">
+            <!-- 
+                <div class="section-header">
                 <div class="section-headline">Zeitraum</div>
                 <p v-if="offer.minDuration">
                     <b>Hinweis:</b> Mindestdauer
                     <b>{{ offer.minDuration }} Tage</b>
                 </p>
             </div>
+            -->
             <div class="section-body">
                 <p v-if="offer.startDate">
                     <v-icon>mdi-calendar</v-icon>{{ new Date(offer.startDate.seconds * 1000) | formatDate }}
@@ -92,6 +94,15 @@
                         {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
                     </span>
                 </p>
+            </div>
+        </section>
+
+        <section class="description">
+            <div class="description-header section-header">
+                <div class="section-headline">Beschreibung</div>
+            </div>
+            <div class="description-body section-body">
+                <span v-html="offer.description"></span>
             </div>
         </section>
         <section>
@@ -113,6 +124,12 @@
                 </div>
             </div>
         </section>
+        <v-col class="my-5 map" style="height:30vh;">
+            <l-map style="z-index:0;" :zoom="zoom" :center="offer.geoPointNew">
+                <l-tile-layer :url="url"></l-tile-layer>
+                <l-marker :lat-lng="markerLatLng"></l-marker>
+            </l-map>
+        </v-col>
     </div>
 </div>
 </template>
@@ -121,18 +138,67 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
 import "firebase/auth";
+import {
+    LMap,
+    LTileLayer,
+    LMarker
+} from 'vue2-leaflet';
+//marker fix
+import {
+    Icon
+} from 'leaflet';
+delete Icon.Default.prototype._getIconUrl;
+Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 export default {
     name: "OfferDetails",
-    data: () => ({
-        showAlert: false,
-        offer: false,
-        agrarian: false,
-        isAccepted: false,
-        isOwner: false,
-        uid: false,
-        helperCount: 0
-    }),
+    data() {
+        return {
+            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            markerLatLng: [47.313220, -1.319482],
+            zoom: 14,
+            showAlert: false,
+            offer: false,
+            agrarian: false,
+            isAccepted: false,
+            isOwner: false,
+            uid: false,
+            helperCount: 0,
+            showRegisterMessage: false,
+            showDisregisterMessage: false,
+        }
+    },
+    components: {
+        LMap,
+        LTileLayer,
+        LMarker
+    },
+    metaInfo() {
+        return {
+            title: this.offer.title,
+            meta: [{
+                    name: 'description',
+                    content: this.offer.title
+                },
+                {
+                    name: 'og:title',
+                    content: 'Ernteretter'
+                },
+                {
+                    name: 'og:description',
+                    content: this.offer.title
+                },
+                {
+                    name: 'og:image',
+                    content: require('../assets/ernteretter.png')
+                },
+            ]
+        }
+    },
     async created() {
         let offerId = this.$route.params.offerId;
         firebase.auth().onAuthStateChanged(user => {
@@ -151,8 +217,10 @@ export default {
                 if (snapshot.exists) {
                     this.offer = {
                         ...snapshot.data(),
-                        id: snapshot.id
+                        id: snapshot.id,
+                        geoPointNew: [snapshot.data().geoPoint.latitude, snapshot.data().geoPoint.longitude],
                     };
+                    this.markerLatLng = this.offer.geoPointNew
                     return firebase
                         .firestore()
                         .doc("agrarians/" + snapshot.data().agrarianId)
@@ -238,6 +306,8 @@ export default {
                     acceptDate: new Date()
                 })
                 .then(() => {
+                    this.showRegisterMessage = true
+                    this.showDisregisterMessage = false
                     this.isAccepted = true;
                     this.helperCount++;
                 });
@@ -256,6 +326,8 @@ export default {
                             .doc("acceptedOffers/" + snapshot.docs[0].id)
                             .delete()
                             .then(() => {
+                                this.showRegisterMessage = false
+                                this.showDisregisterMessage = true
                                 this.isAccepted = false;
                                 this.helperCount--;
                             });
@@ -282,6 +354,10 @@ a {
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+.map {
+    width: 100vw;
 }
 
 section {
