@@ -175,10 +175,9 @@
       <v-tab-item>
         <v-card flat>
           <v-card-text>
-            <v-form ref="formAccount" v-model="validPassword" class="col-md-6 col-sm-12 col-sx-12">
+            <v-form ref="formAccount" class="col-md-6 col-sm-12 col-sx-12">
               <v-text-field
                 v-model="oldpassword"
-                :rules="rules.password"
                 :type="showPasswordOld ? 'text' : 'password'"
                 label="Altes Passwort"
                 :append-icon="showPasswordOld ? 'mdi-eye' : 'mdi-eye-off'"
@@ -186,25 +185,16 @@
               ></v-text-field>
               <v-text-field
                 v-model="newpassword"
-                :rules="rules.password"
                 :type="showPasswordNew ? 'text' : 'password'"
-                label="Neues Passwort"
+                label="Neues Passwort (Mindestens 6 Zeichen)"
                 :append-icon="showPasswordNew ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="showPasswordNew = !showPasswordNew"
               ></v-text-field>
-              <v-row justify="center">
-                <v-alert
-                  dense
-                  outlined
-                  type="error"
-                  v-if="!validPassword"
-                >Die Felder sind nicht vollständig ausgefüllt</v-alert>
-              </v-row>
             </v-form>
             <v-container>
               <v-row>
                 <v-spacer></v-spacer>
-                <v-btn color="success" :disabled="!validPassword" @click="updatePassword">Fertig</v-btn>
+                <v-btn color="success" @click="updatePassword">Fertig</v-btn>
               </v-row>
             </v-container>
           </v-card-text>
@@ -214,6 +204,7 @@
     <v-snackbar v-model="snackbar" color="blue">Daten wurden gespeichert.</v-snackbar>
     <v-snackbar v-model="snackbarAlert" color="red">Ein Fehler ist aufgetreten.</v-snackbar>
     <v-snackbar v-model="snackbarPasswordAlert" color="red">Das alte Passwort ist falsch.</v-snackbar>
+    <v-snackbar v-model="shortPasswordAlert" color="red">Das neue Passwort ist zu kurz.</v-snackbar>
   </v-card>
 </template>
 
@@ -239,6 +230,7 @@ export default {
       snackbar: false,
       snackbarAlert: false,
       snackbarPasswordAlert: false,
+      shortPasswordAlert: false,
       erfahrung: ["keine", "wenig", "viel", "kann lehren"],
       activeButton: true,
       tabs: null,
@@ -269,7 +261,6 @@ export default {
       isAgrarian: false,
       doc_id: "",
       validAccount: true,
-      validPassword: true,
       rules: {
         name: [value => !!value.trim() || "Name wird benötigt."],
         mail: [
@@ -279,7 +270,6 @@ export default {
             return pattern.test(value) || "Ungültige E-Mail-Adresse.";
           }
         ],
-        password: [value => !!value || "Passwort wird benötigt."]
       }
     };
   },
@@ -361,10 +351,14 @@ export default {
       this.user
         .reauthenticateWithCredential(credential)
         .then(userS => {
-          if (userS) {
+          if (userS && this.newpassword.length > 5) {
             this.user.updatePassword(this.newpassword);
             this.snackbar = true;
             setTimeout(function(){this.snackbar = false}, 3000);
+          }
+          else {
+            this.shortPasswordAlert = true;
+          setTimeout(function(){this.shortPasswordAlert = false}, 3000);
           }
         })
         .catch(() => {
