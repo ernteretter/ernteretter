@@ -1,10 +1,10 @@
 <template>
-<div class="mx-auto" style="max-width:1000px">
-    <div style="padding-top: 20%; padding-bottom: 10%;" >
+<div class="mx-auto" style="max-width:1000px;">
+    <div style="padding-top: 8vh; padding-bottom: 4vh;" >
         <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto " @click="$router.push('/')" max-width="100%" style="{cursor: pointer};" />
     </div>
     <v-spacer></v-spacer>
-    <div class="pb-10">
+    <div class="pb-md-10">
         <h1 class="text" style="font-weight: 700;">Auch in dieser besondern Zeit  </h1>
     <h3 class="text mx-auto">wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
         Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.</h3>
