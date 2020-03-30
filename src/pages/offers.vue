@@ -3,10 +3,6 @@
     <v-row>
         <v-col v-if="!mobil || displayMap">
             <v-card style="height: 85vh">
-                <v-overlay style="z-index: 1" absolute :opacity=0.8 v-show="(!searched)">
-                    <v-card-text class="display-1">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
-                    <v-btn color="primary" class="text-center" outlined v-show="mobil" @click="displayMap = !displayMap" >zurück</v-btn>
-                </v-overlay>
                 <l-map style="z-index:0;" :zoom="zoom" :center="center" ref="map">
                     <l-tile-layer :url="url"></l-tile-layer>
                     <l-control position="topright">
@@ -14,7 +10,7 @@
                             <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
                     </l-control>
-                    <l-circle :lat-lng="radiusMarker" :radius="searchradius * 1000" color="#4d4238" fillColor="#ed9a00" />
+                    <l-circle :lat-lng="radiusMarker" :radius="searchradius * 1000" color="#4d4238" fillColor="#ed9a00" v-if="searched" />
                     <l-marker v-for="(offer, index) in offers" :key="index" :lat-lng=offer.geoPointNew>
                         <l-popup>
                             <v-row :key="index*10">
@@ -23,7 +19,7 @@
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
                                             <v-list-item-subtitle v-html="offer.description"></v-list-item-subtitle>
-                                            <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}} mit einer Mindestdauer: {{offer.minDuration}} Tagen</v-list-item-subtitle>
+                                            <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}}</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
                                 </v-col>
@@ -68,8 +64,9 @@
                     <v-btn v-bind="size" color="primary" id="searchbutton" @click="atSearch();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
                     <v-btn v-bind="size" color="secondary" id="createbutton" @click="$router.push('/createOffer');" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
                 </v-row>
-                <v-divider></v-divider>
-                <v-card-subtitle> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
+                <v-divider id="Anzeigen"></v-divider>
+                <v-card-subtitle v-if="searched"> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
+                <v-card-text class="text-center title" v-if="!searched">Die letzten {{offers.length}} Einträge.</v-card-text>
                 <v-card-text class="text-center title" v-if="mobil && (offers.length == 0) && !searched">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
                 <v-card-text class="text-center title" v-if="user && (offers.length == 0) && searched">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
                 <v-container v-if="!user && (offers.length == 0) && searched">
@@ -84,16 +81,17 @@
                     <v-list three-line tile outlined :color="colorEintrag">
                         <template v-for="(offer, index) in offers">
                             <v-row :key="index*10">
-                                <v-col :key="index" class="pr-0">
-                                    <v-list-item :key="index*11 + 1">
+                                <v-col :key="index" class="pr-0 pa-0 col-8">
+                                    <v-list-item :key="index*11 + 1" class="pr-0">
                                         <v-list-item-content>
                                             <v-list-item-title>{{offer.title}}</v-list-item-title>
-                                            <v-list-item-subtitle v-html="offer.description"></v-list-item-subtitle>
-                                            <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}} mit einer Mindestdauer: {{offer.minDuration}} Tagen</v-list-item-subtitle>
+                                            <v-list-item-subtitle v-if="offer.harvestType != 'Sonstiges'"> {{offer.harvestType}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle  v-if="offer.harvestType == 'Sonstiges'"> {{offer.harvestTypeSpecial}} </v-list-item-subtitle>
+                                            <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}}</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
                                 </v-col>
-                                <v-col :key="index * 10 + 2" class="col-3 col-xs-3 col-sm-1 col-md-3 pr-1 mr-2 my-5" align="end">
+                                <v-col :key="index * 10 + 2" class="col-3 col-xs-3 col-sm-1 col-md-3 pr-1 mr-2 my-0" align="end">
                                     <v-list-item-content class="pa-0">
                                         <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
                                         <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
@@ -141,7 +139,7 @@ export default {
     data: () => ({
         user: false,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        zoom: 9,
+        zoom: 7,
         radiusMarker: [49.877629, 8.654673],
         center: [49.877629, 8.654673],
         center_layout: 'center',
@@ -205,11 +203,11 @@ export default {
         }
     },
     methods: {
-        activeMap(){
+        activeMap() {
             this.displayMap = !this.displayMap
-            
+
             setTimeout(() => {
-                
+
             }, 1000);
 
             this.$vuetify.goTo(0)
@@ -241,6 +239,11 @@ export default {
             } else {
                 this.searchOffersOnlyTitle()
             }
+            if (this.mobil) {
+                this.$vuetify.goTo('#Anzeigen')
+            }
+            this.searched = true
+
         },
         async searchOffersPostcode() {
             var URL = "https://nominatim.openstreetmap.org/search/de"
@@ -263,7 +266,11 @@ export default {
             var lowerPoint = new firebase.firestore.GeoPoint(South[0], West[1])
             this.radiusMarker = [lat, lon]
             var newZoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
-            this.map.flyTo(this.radiusMarker, newZoom)
+            if (this.mobil) {
+                this.center = this.radiusMarker
+            } else {
+                this.map.flyTo(this.radiusMarker, newZoom)
+            }
             firebase.firestore().collection('offers').where('geoPoint', '<=', upperPoint).where('geoPoint', '>=', lowerPoint)
                 .get().then((snapshot) => {
                     this.offers = []
@@ -302,12 +309,13 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
-            this.map = this.$refs.map.mapObject // work as expected
+            if (!this.mobil)
+                this.map = this.$refs.map.mapObject // work as expected
         })
         this.searched = false
         if (this.$route.query.postcode) {
             this.zipsearch = this.$route.query.postcode
-                
+
             if (this.$route.query.title) {
                 this.search = this.$route.query.title
             }
@@ -319,7 +327,12 @@ export default {
 
             this.zipsearch = this.$route.query.postcode
             this.searchOffersPostcode()
+            if (this.mobil) {
+                this.$vuetify.goTo('#Anzeigen')
+            }
         } else {
+            /*
+            code dafür dass postleitzahl aus dem user document raus geladen wird
             firebase.auth().onAuthStateChanged((user) => {
                 if (user) {
                     this.user = user
@@ -349,6 +362,22 @@ export default {
                     })
                 }
             })
+            */
+            firebase.firestore().collection('offers').limit(10).get().then((docs) => {
+                docs.forEach((doc) => {
+                    this.offers.push({
+                        ...doc.data(),
+                        id: doc.id,
+                        geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude]
+                    })
+                })
+            })
+            setTimeout(() => {
+                if (this.mobil) {
+                    this.$vuetify.goTo('#Anzeigen')
+                }
+            }, 500);
+
         }
     }
 }
