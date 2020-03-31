@@ -6,8 +6,6 @@ import landingPage from './pages/landingPage'
 import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
 import offers from './pages/offers'
-import history from './pages/history'
-import settings from './pages/settings'
 import createOffer from './pages/createOffer';
 import editOffer from './pages/editOffer';
 import register from './pages/register';
@@ -20,7 +18,6 @@ import impressum from './pages/impressum';
 import chat from './pages/chat';
 import information from './pages/information';
 import error from './pages/error';
-import inbox from './pages/inbox';
 import account from './pages/account';
 
 //plugins
@@ -45,8 +42,6 @@ const routes = [
   {name: "login", path: "/login", component: login, meta: {requiresNotAuth: true}},
   {name: "createOffers", path: "/createOffer", component: createOffer, meta: {requiresAuth: true, requiresFarmer: true}},
   {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer, meta: {requiresAuth: true, requiresFarmer: true}},
-  {name: "history", path: "/history", component: history, meta: {requiresAuth: true}},
-  {name: "settings", path: "/settings", component: settings, meta: {requiresAuth: true}},
   {name: "register", path: "/register", component: register, meta: {requiresNotAuth: true}},
   {name: "registerHelper", path: "/registerHelper", component: registerHelper, meta: {requiresNotAuth: true}},
   {name: "registerHelperSuccess", path: "/registerHelperSuccess", component: registerHelperSuccess, meta: {requiresNotAuth: true}},
@@ -57,7 +52,6 @@ const routes = [
   {name: "information", path: "/information", component: information},
   {name: "error", path:'*', component: error},
   {name: "chat", path: "/chat/:agrarianId", component: chat, meta: {requiresAuth: true}},
-  {name: "inbox", path: "/inbox", component: inbox, meta: {requiresAuth: true}},
   {name: "account", path: "/account", component: account, meta: {requiresAuth: true}},
 ]
 

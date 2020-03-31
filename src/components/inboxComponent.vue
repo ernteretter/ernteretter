@@ -2,8 +2,8 @@
 <v-card max-width="1000" min-height="600" class="mx-auto">
     <v-card-title v-if="chatroomsNew.length > 0" id="headerOld">neue Nachrichten</v-card-title>
     <!-- <v-divider v-if="chatroomsNew.length > 0" /> -->
-        <div style="margin: 20 20 20 20;">
-    <v-card-title v-if="!(chatrooms.length > 0)" id="headerNew" class="justify-center">Du hast noch keine Nachrichten :(</v-card-title>
+    <div style="vertical-align: middle;">
+        <v-card-title v-if="!(chatrooms.length > 0)" id="headerNew" class="noMessages">Du hast noch keine Nachrichten :(</v-card-title>
     </div>
     <v-list three-line class="ma-2 ma-md-10" @click="gotoChat(chat)" v-for="(chat, index1) in chatroomsNew" :key="index1">
         <v-list-item-content style="cursor: pointer; border-bottom: 2px solid #ed9a00;" @click="gotoChat(chat)">
@@ -185,5 +185,23 @@ export default {
     color: var(--v-primary-base);
     background: white;
     height: 60px;
+}
+
+@media (min-width: 714px){
+    .noMessages {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+}
+
+@media (max-width: 714px) {
+    .noMessages {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+    }
 }
 </style>
