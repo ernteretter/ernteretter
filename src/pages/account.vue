@@ -1,8 +1,9 @@
 <template>
 <v-card width="1000" class="mx-auto justify-center">
-    <v-tabs v-model="tab" background-color="primary" dark>
+    <v-tabs mobile-break-point="400" grow centered v-model="tab" background-color="primary" dark>
         <v-tab v-for="item in items" :key="item.tab">
-            {{ item.tab }}
+            <v-icon> {{item.icon}}</v-icon>
+            <v-card-text class="d-none d-md-inline">{{ item.tab }}</v-card-text>
         </v-tab>
     </v-tabs>
 
@@ -42,12 +43,15 @@ export default {
             tab: null,
             items: [{
                     tab: 'Nachrichten',
+                    icon: 'mdi-message'
                 },
                 {
-                    tab: 'Termine',
+                    tab: 'Termine/Anzeigen',
+                    icon: 'mdi-calendar'
                 },
                 {
                     tab: 'Einstellungen',
+                    icon: 'mdi-cog'
                 },
             ],
         }

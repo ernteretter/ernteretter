@@ -12,19 +12,22 @@
             </v-container>
         </v-card>
     </v-overlay>
-    <v-tabs height="60">
+    <v-tabs centered height="60">
         <v-tab>
-            <v-icon left>mdi-account</v-icon>Konto
+            <v-icon left>mdi-account</v-icon>
+            <v-card-text class="d-none d-md-inline">Konto</v-card-text>
         </v-tab>
         <v-tab>
-            <v-icon left>mdi-home</v-icon>Präferenzen
+            <v-icon left>mdi-home</v-icon>
+            <v-card-text class="d-none d-md-inline">Präferenzen</v-card-text>
         </v-tab>
         <v-tab>
-            <v-icon left>mdi-lock</v-icon>Passwort ändern
+            <v-icon left>mdi-lock</v-icon>
+            <v-card-text class="d-none d-md-inline">Passwort ändern</v-card-text>
         </v-tab>
         <v-tab-item>
             <v-card flat>
-              <v-divider />
+                <v-divider />
                 <v-card-text>
                     <v-form ref="formAccount" v-model="validAccount" class="col-md-6 col-sm-12 col-sx-12">
                         <v-text-field v-model="user.displayName" :rules="rules.name" label="Name"></v-text-field>
@@ -54,7 +57,7 @@
             </v-card>
         </v-tab-item>
         <v-tab-item>
-              <v-divider />
+            <v-divider />
             <v-card flat>
                 <v-card-text v-if="isAgrarian">
                     Wo liegt Ihr Hof?
@@ -112,10 +115,9 @@
                         </v-card-text>
                     </v-row>
                     <v-row justify="center">
-                        <v-card-text>
-                            Welche Vorerfahrungen hast du?
-                            <v-textarea v-model="experience" label solo></v-textarea>
-                        </v-card-text>
+                        <v-col cols="auto">
+                            <v-select single-line solo v-model="experience" :items="experienceItems" label="Wie viel Erfahung hast du?"></v-select>
+                        </v-col>
                     </v-row>
                     <v-container>
                         <v-row>
@@ -127,7 +129,7 @@
             </v-card>
         </v-tab-item>
         <v-tab-item>
-              <v-divider />
+            <v-divider />
             <v-card flat>
                 <v-card-text>
                     <v-form ref="formAccount" v-model="validAccount" class="col-md-6 col-sm-12 col-sx-12">
@@ -168,6 +170,7 @@ export default {
     },
     data() {
         return {
+            experienceItems: ['keine Vorerfahrung', 'wenig Vorerfahrung', 'viel Vorerfahrung', 'ich kann Wissen vermitteln'],
             oldpassword: "",
             newpassword: "",
             showPasswordOld: false,
