@@ -21,6 +21,7 @@ import chat from './pages/chat';
 import information from './pages/information';
 import error from './pages/error';
 import inbox from './pages/inbox';
+import account from './pages/account';
 
 //plugins
 import firebase from 'firebase/app'
@@ -57,6 +58,7 @@ const routes = [
   {name: "error", path:'*', component: error},
   {name: "chat", path: "/chat/:agrarianId", component: chat, meta: {requiresAuth: true}},
   {name: "inbox", path: "/inbox", component: inbox, meta: {requiresAuth: true}},
+  {name: "account", path: "/account", component: account, meta: {requiresAuth: true}},
 ]
 
 const router = new VueRouter({
@@ -66,6 +68,12 @@ const router = new VueRouter({
 
 // Initialize Firebase
 var firebaseConfig = {
+  apiKey: "AIzaSyA2kfwebAU94p2SLOVqVXIPi_Pst6xrcio",
+    authDomain: "ernteretterdev.firebaseapp.com",
+    databaseURL: "https://ernteretterdev.firebaseio.com",
+    projectId: "ernteretterdev",
+    storageBucket: "ernteretterdev.appspot.com",
+    appId: "1:87968775388:web:0e7b3606e1982743098819"
   //firebaseapi key
 };
 firebase.initializeApp(firebaseConfig);

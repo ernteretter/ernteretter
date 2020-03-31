@@ -264,7 +264,7 @@ export default {
         { value: "weeks", text: "Wochen" }
       ],
       searchRangeMin: 0,
-      searchRangeMax: 50,
+      searchRangeMax: 100,
       place: {},
       isAgrarian: false,
       doc_id: "",
