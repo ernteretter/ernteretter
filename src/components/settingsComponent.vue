@@ -2,7 +2,7 @@
 <v-card max-width="1000px" class="mx-auto" id="hello">
     <v-overlay v-if="overlay">
         <v-card>
-            <v-card-text>Bist du sicher, dass du diesen Account entgültig löschen willst?.</v-card-text>
+            <v-card-text>Bist du sicher, dass du diesen Account entgültig löschen willst?</v-card-text>
             <v-container>
                 <v-row class="mx-auto">
                     <v-btn color="success" @click="overlay=false">abbrechen</v-btn>
