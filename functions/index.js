@@ -23,19 +23,19 @@ exports.deleteProfile = functions.region('europe-west2').auth.user().onDelete((u
                     snapshot.forEach(s => {
                         acceptedOffers.push(s);
                         console.log("found accepted offer form helperId. accept-offer-id: " + s.id);
-                            admin.firestore().collection('acceptedOffers').doc(s.id).delete().then(() => {
-                                console.log("Deleted acceptedOffers from helper: " + user.uid);
-                                return "du hurensohn";
-                            }).catch(error => {
-                                console.log("error helper delete from acceptedoffer: " + error);
-                            });
+                        admin.firestore().collection('acceptedOffers').doc(s.id).delete().then(() => {
+                            console.log("Deleted acceptedOffers from helper: " + user.uid);
+                            return "du hurensohn";
+                        }).catch(error => {
+                            console.log("error helper delete from acceptedoffer: " + error);
+                        });
                     });
                     return "lul";
                 }).catch(error => {
                     console.log("error with getting acceptedOffers: " + error);
                 });
 
-                
+
                 return "lul";
             }).catch(error => {
                 console.log("error deleting helper error: " + error);
@@ -52,11 +52,11 @@ exports.deleteProfile = functions.region('europe-west2').auth.user().onDelete((u
                         offersWithId.push(s);
                         console.log("found offer from agrarian: " + s.id);
                         admin.firestore().collection('offers').doc(s.id).delete().then(() => {
-                        console.log("Deleted offers from agrarian: " + user.uid);
-                        return "du hurensohn";
-                    }).catch(error => {
-                        console.log("error agrarian delete from offer: " + error);
-                    });
+                            console.log("Deleted offers from agrarian: " + user.uid);
+                            return "du hurensohn";
+                        }).catch(error => {
+                            console.log("error agrarian delete from offer: " + error);
+                        });
                     })
                     return "lul";
                 }).catch(error => {
@@ -76,16 +76,78 @@ exports.deleteProfile = functions.region('europe-west2').auth.user().onDelete((u
 });
 
 //onDelete --> decrement helperCount
-exports.decrementHelperCounter = functions.region('europe-west2').firestore.document('acceptedOffers/{acceptedOfferId}').onDelete((acceptedOffer) => {
-    admin.firestore().collection('offers').doc(acceptedOffer.data().offerId).get().then((offer) => {
-        console.log("updating offer");
+// exports.decrementHelperCounter = functions.region('europe-west2').firestore.document('acceptedOffers/{acceptedOfferId}').onDelete((acceptedOffer) => {
+//     admin.firestore().collection('offers').doc(acceptedOffer.data().offerId).get().then((offer) => {
+//         console.log("updating offer");
+//         let helperCount = offer.data().helperCount;
+//         let data = {
+//             helperCount: helperCount - 1,
+//         }
+
+//         offer.ref.update(data).then(() => {
+//             console.log("updated helperCount to: " + (helperCount - 1).toString());
+//             return "blub";
+//         }).catch(error => {
+//             console.log("error updating helperCount: " + error);
+//         });
+//         return "hi";
+//     }).catch(error => {
+//         console.log("error counting down offer-helpers after deletion: " + error);
+//     })
+//     return true;
+// });
+
+// //onCreate --> increment helpercount
+// exports.incrementHelperCounter = functions.region('europe-west2').firestore.document('acceptedOffers/{acceptedOfferId}').onCreate((acceptedOffer) => {
+//     admin.firestore().collection('offers').doc(acceptedOffer.data().offerId).get().then((offer) => {
+//         console.log("updating offer");
+//         let helperCount = offer.data().helperCount;
+//         let data = {
+//             helperCount: helperCount + 1,
+//         }
+//         offer.ref.update(data).then(() => {
+//             console.log("updated helperCount to: " + (helperCount + 1).toString());
+//             return "blub";
+//         }).catch(error => {
+//             console.log("error updating helperCount: " + error);
+//         });
+//         return "hey";
+//     }).catch(error => {
+//         console.log("error counting up offer-helpers after creation: " + error);
+//     })
+//     return true;
+// });
+
+
+exports.countHelpers = functions.region('europe-west2').firestore.document('acceptedOffers/{acceptedOfferId}').onWrite((acceptedOffer) => {
+    if (acceptedOffer.before.data() !== undefined && acceptedOffer.after.data() === undefined) {
+        admin.firestore().collection('offers').doc(acceptedOffer.before.data().offerId).get().then((offer) => {
+            console.log("removing one helper from helpercount");
+            let helperCount = offer.data().helperCount;
+            let data = {
+                helperCount: helperCount - 1,
+            }
+            offer.ref.update(data).then(() => {
+                console.log("updated helperCount to: " + (helperCount - 1).toString());
+                return "blub";
+            }).catch(error => {
+                console.log("error updating helperCount: " + error);
+            });
+            return "hey";
+        }).catch(error => {
+            console.log("error counting up offer-helpers after creation: " + error);
+        })
+    }
+    else if(acceptedOffer.before.data() === undefined && acceptedOffer.after.data() !== undefined) {
+        admin.firestore().collection('offers').doc(acceptedOffer.after.data().offerId).get().then((offer) => {
+        console.log("adding one helper to helpercount");
         let helperCount = offer.data().helperCount;
         let data = {
-            helperCount: helperCount - 1,
+            helperCount: helperCount + 1,
         }
 
         offer.ref.update(data).then(() => {
-            console.log("updated helperCount to: " + (helperCount - 1).toString());
+            console.log("updated helperCount to: " + (helperCount + 1).toString());
             return "blub";
         }).catch(error => {
             console.log("error updating helperCount: " + error);
@@ -94,26 +156,6 @@ exports.decrementHelperCounter = functions.region('europe-west2').firestore.docu
     }).catch(error => {
         console.log("error counting down offer-helpers after deletion: " + error);
     })
-    return true;
-});
-
-//onCreate --> increment helpercount
-exports.incrementHelperCounter = functions.region('europe-west2').firestore.document('acceptedOffers/{acceptedOfferId}').onCreate((acceptedOffer) => {
-    admin.firestore().collection('offers').doc(acceptedOffer.data().offerId).get().then((offer) => {
-        console.log("updating offer");
-        let helperCount = offer.data().helperCount;
-        let data = {
-            helperCount: helperCount + 1,
-        }
-        offer.ref.update(data).then(() => {
-            console.log("updated helperCount to: " + (helperCount + 1).toString());
-            return "blub";
-        }).catch(error => {
-            console.log("error updating helperCount: " + error);
-        });
-        return "hey";
-    }).catch(error => {
-        console.log("error counting up offer-helpers after creation: " + error);
-    })
+    }
     return true;
 });
