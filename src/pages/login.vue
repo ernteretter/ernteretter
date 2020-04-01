@@ -157,8 +157,14 @@ export default {
         .auth()
         .signInWithPopup(provider)
         .then(function(result) {
+          if(result){
           this.mail = result.user.mail;
           console.log("User " + result.user);
+          }
+          else{
+            console.log("new user");
+            
+          }
         })
         .catch(function(error) {
           console.log("Something went wrong" + error);
