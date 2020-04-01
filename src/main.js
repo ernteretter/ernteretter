@@ -61,7 +61,10 @@ const router = new VueRouter({
 })
 
 // Initialize Firebase
+var firebaseConfig = {
 
+};
+firebase.initializeApp(firebaseConfig);
 
 Vue.config.productionTip = false
 router.beforeEach(async (to, from, next) => {
