@@ -6,8 +6,8 @@
     <v-spacer></v-spacer>
     <div class="pb-md-10 text">
         <h1>Auch in dieser besonderen Zeit </h1>
-        <h3 class="mx-auto">wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
-            Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.</h3>
+        <h3 class="mx-auto">wachsen unsere Pflanzen und versorgen uns alle mit Nahrung - ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
+            Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch diesem Jahr gewährleitet werden kann. Auf dieser Plattform können Landwirte unkompliziert motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.</h3>
     </div>
     <v-row class="button" no-gutters>
         <v-hover v-slot:default="{ hover }" class="col-12 col-md-6">
@@ -147,12 +147,27 @@ export default {
 
 @media (max-width: 320px) {
     .picture {
+        display: none;
         padding-top: 0vh;
         padding-bottom: 0vh;
     }
+    .text h1 {
+        font-weight: 600;
+        font-size: 1.2rem;
+        line-height: 3vh;
+        font-family: 'Open Sans', sans-serif;
+        color: black;
+        display: inline;
+    }
+    .text h3 {
+        font-weight: 500;
+        font-size: 1rem;
+        line-height: 1.0vh;
+        display: inline;
+    }
 }
 
-@media (max-width: 960px) {
+@media (min-width: 321px) and (max-width: 960px) {
     .picture {
         padding-top: 2vh;
         padding-bottom: 4vh;
@@ -161,7 +176,7 @@ export default {
     .text h1 {
         font-weight: 600;
         font-size: 1.5rem;
-        line-height: 3vh;
+        line-height: 2.5vh;
         font-family: 'Open Sans', sans-serif;
         color: black;
         display: inline;
@@ -169,7 +184,8 @@ export default {
 
     .text h3 {
         font-weight: 500;
-        line-height: 3.5vh;
+        font-size: 2.5vh;
+        line-height: 3.0vh;
         display: inline;
     }
 
