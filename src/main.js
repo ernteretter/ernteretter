@@ -61,14 +61,14 @@ const router = new VueRouter({
 })
 
 // Initialize Firebase
-var firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyA2kfwebAU94p2SLOVqVXIPi_Pst6xrcio",
-    authDomain: "ernteretterdev.firebaseapp.com",
-    databaseURL: "https://ernteretterdev.firebaseio.com",
-    projectId: "ernteretterdev",
-    storageBucket: "ernteretterdev.appspot.com",
-    appId: "1:87968775388:web:0e7b3606e1982743098819"
-  //firebaseapi key
+  authDomain: "ernteretterdev.firebaseapp.com",
+  databaseURL: "https://ernteretterdev.firebaseio.com/",
+  projectId: "ernteretterdev",
+  storageBucket: "ernteretterdev.appspot.com",
+  messagingSenderId: "87968775388",
+  appId: "1:87968775388:web:0e7b3606e1982743098819"
 };
 firebase.initializeApp(firebaseConfig);
 
