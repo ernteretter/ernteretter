@@ -134,7 +134,8 @@
                 <v-card-text>
                     <v-form ref="formAccount" class="col-md-6 col-sm-12 col-sx-12">
                         <v-text-field v-model="oldpassword"  :type="showPasswordOld ? 'text' : 'password'" label="Altes Passwort" :append-icon="showPasswordOld ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPasswordOld = !showPasswordOld"></v-text-field>
-                        <v-text-field v-model="newpassword"  :type="showPasswordNew ? 'text' : 'password'" label="Neues Passwort (Mindestens 6 Zeichen)" :append-icon="showPasswordNew ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPasswordNew = !showPasswordNew"></v-text-field>
+                        <v-text-field v-model="newpassword"  :type="showPasswordNew ? 'text' : 'password'" label="Neues Passwort (Mindestens 8 Zeichen)" :append-icon="showPasswordNew ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPasswordNew = !showPasswordNew"></v-text-field>
+                        <v-text-field v-model="repeatPassword"  :type="showPasswordRepeat ? 'text' : 'password'" label="Neues Passwort wiederholen" :append-icon="showPasswordRepeat ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPasswordRepeat = !showPasswordRepeat"></v-text-field>
                     </v-form>
                     <v-container>
                         <v-row>
@@ -150,7 +151,8 @@
     <v-snackbar v-model="snackbarAlert" color="red">Ein Fehler ist aufgetreten.</v-snackbar>
     <v-snackbar v-model="snackbarPasswordAlert" color="red">Das alte Passwort ist falsch.</v-snackbar>
      <v-snackbar v-model="shortPasswordAlert" color="red">Das neue Passwort ist zu kurz.</v-snackbar>
-    <v-snackbar v-model="samePasswordAlert" color="red">Das Passwörter dürfen nicht übereinstimmen.</v-snackbar>
+    <v-snackbar v-model="samePasswordAlert" color="red">Die Passwörter dürfen nicht übereinstimmen.</v-snackbar>
+    <v-snackbar v-model="repeatPasswordAlert" color="red">Passwortwiederholung stimmt nicht mit neuem Passwort überein.</v-snackbar>
 </v-card>
 </template>
 
@@ -172,13 +174,16 @@ export default {
             experienceItems: ['keine Vorerfahrung', 'wenig Vorerfahrung', 'viel Vorerfahrung', 'ich kann Wissen vermitteln'],
             oldpassword: "",
             newpassword: "",
+            repeatPassword: "",
             showPasswordOld: false,
             showPasswordNew: false,
+            showPasswordRepeat: false,
             shortPasswordAlert: false,
             snackbar: false,
             snackbarAlert: false,
             snackbarPasswordAlert: false,
             samePasswordAlert: false,
+            repeatPasswordAlert: false,
             erfahrung: ["keine", "wenig", "viel", "kann lehren"],
             activeButton: true,
             tabs: null,
@@ -308,20 +313,27 @@ export default {
             this.user
                 .reauthenticateWithCredential(credential)
                 .then(userS => {
-                    if (userS && this.newpassword.length > 5 && this.oldpassword != this.newpassword) {
+                    if (userS && this.newpassword.length > 7 && this.oldpassword != this.newpassword && this.newpassword == this.repeatPassword) {
                         this.user.updatePassword(this.newpassword);
                         this.snackbar = true;
                         setTimeout(function () {
                             this.snackbar = false
                         }, 3000);
+                        this.oldpassword = "";
+                        this.newpassword = "";
+                        this.repeatPassword ="";
                     }
-                    else if(this.newpassword.length <= 5){
+                    else if(this.newpassword.length <= 7){
                         this.shortPasswordAlert = true;
                         setTimeout(function(){this.shortPasswordAlert = false}, 3000);
                     }
                     else if(this.newpassword == this.oldpassword){
                         this.samePasswordAlert = true;
                         setTimeout(function(){this.samePasswordAlert = false}, 3000);
+                    }
+                    else if(this.newpassword != this.repeatPassword){
+                        this.repeatPasswordAlert = true;
+                        setTimeout(function(){this.repeatPasswordAlert = false}, 3000);
                     }
                 })
                 .catch(() => {
