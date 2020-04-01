@@ -1,111 +1,181 @@
 <template>
-<div v-resize="onResize">
-    <v-row>
-        <v-col v-if="!mobil || displayMap">
-            <v-card style="height: 85vh">
-                <l-map style="z-index:0;" :zoom="zoom" :center="center" ref="map">
-                    <l-tile-layer :url="url"></l-tile-layer>
-                    <l-control position="topright">
-                        <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
-                            <v-icon>mdi-arrow-right</v-icon>
-                        </v-btn>
-                    </l-control>
-                    <l-circle :lat-lng="radiusMarker" :radius="searchradius * 1000" color="#4d4238" fillColor="#ed9a00" v-if="searched" />
-                    <l-marker v-for="(offer, index) in offers" :key="index" :lat-lng=offer.geoPointNew>
-                        <l-popup>
-                            <v-row :key="index*10">
-                                <v-col :key="index" cols="7" class="px-0 mx-0">
-                                    <v-list-item :key="index*11 + 1">
-                                        <v-list-item-content>
-                                            <v-list-item-title>{{offer.title}}</v-list-item-title>
-                                            <v-list-item-subtitle v-html="offer.description"></v-list-item-subtitle>
-                                            <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}}</v-list-item-subtitle>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                </v-col>
-                                <v-col :key="index * 10 + 2" cols="4" align="end" class="pa-0">
-                                    <v-list-item-content>
-                                        <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
-                                        <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-card-actions :key="index * 10 + 3">
-                                        <v-btn @click="$router.push('offer/' + offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
-                                    </v-card-actions>
-                                </v-col>
-                            </v-row>
-                        </l-popup>
-                    </l-marker>
-                </l-map>
-            </v-card>
-        </v-col>
-        <v-col class="col-12 col-md-4">
-            <v-card height="null" v-show="!displayMap">
-                <v-row>
-                    <v-col @keyup.enter="atSearch()">
-                        <v-card-title>Suche nach Anzeigen</v-card-title>
-                        <v-row class="justify-center">
-                            <v-text-field v-bind="size" class="mb-3 mr-3 ml-3 col-10 cols-xs-4 col-sm-6" outlined type="text" v-model="search" placeholder="Suche nach Titel" />
-                            <v-text-field class="mb-md-3 mr-3 ml-3 col-10 col-xs-4 col-sm-4 " outlined type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="Suche nach PLZ" />
-                        </v-row>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col id="radiussilder" :align="center_layout" :justify="center_layout" class="ma-md-0 mr-md-0 xs-ma-0 xs-pa-0">
-                        <v-responsive :max-width="600" :min-height="60">
-                            <v-slider class="pt-7 mr-5 ml-3" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
-                        </v-responsive>
-                    </v-col>
-                </v-row>
-                <v-row class="justify-center">
-                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="activeMap()" v-show="mobil">
-                        <v-icon class="ma-0 pa-0" v-show="mobil">mdi-map</v-icon>
-                        Karte
-                    </v-btn>
-                    <v-btn v-bind="size" color="primary" id="searchbutton" @click="atSearch();" class="rounded-button-left ma-3" min-width="11%">SUCHE</v-btn>
-                    <v-btn v-bind="size" color="secondary" id="createbutton" @click="$router.push('/createOffer');" class="rounded-button-right ma-3" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
-                </v-row>
-                <v-divider id="Anzeigen"></v-divider>
-                <v-card-subtitle v-if="searched"> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
-                <v-card-text class="text-center title" v-if="!searched">Die letzten {{offers.length}} Einträge.</v-card-text>
-                <v-card-text class="text-center title" v-if="mobil && (offers.length == 0) && !searched">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
-                <v-card-text class="text-center title" v-if="user && (offers.length == 0) && searched">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
-                <v-container v-if="!user && (offers.length == 0) && searched">
-                    <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich trotzdem, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
-                    <v-row class="justify-center py-0">
-                        <v-btn color="primary" outlined @click="$router.push('/register')">registrieren</v-btn>
-                        <v-btn color="primary" outlined @click="$router.push('/information')">mehr Erfahren</v-btn>
-                    </v-row>
-                </v-container>
+<div>
+    <div style="z-index: 2; width: 90vw; height: 100vh; position: relative;" v-if="displaySearch">
+        <v-icon class="jusitfy-center pa-0 ma-0" @click="displaySearch = false">mdi-close</v-icon>
+        <v-text-field autofocus label="PLZ" class="mx-2 mt-2" single-line solo></v-text-field>
+        <v-slider v-if="!mobil" class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
+        <v-select single-line solo v-model="harvestType" :items="items" class="mx-2" label="Was soll geerntet/gesäht werden?"></v-select>
+        <v-row justify="center">
+            <v-col>
+                <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                    <template v-slot:activator="{ on }">
+                        <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-icon="mdi-calendar" readonly v-on="on" />
+                    </template>
+                    <v-date-picker v-model="startDate" :min="dateNow" :max="endDate" locale="de-DE">
+                        <v-spacer></v-spacer>
+                        <v-btn text outlined color="primary" @click="menuStartDate = false">Abbrechen</v-btn>
+                        <v-btn text outlined color="primary" @click="$refs.menuStartDate.save(startDate)">OK</v-btn>
+                    </v-date-picker>
+                </v-menu>
+                <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                    <template v-slot:activator="{ on }">
+                        <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-icon="mdi-calendar" readonly v-on="on" />
+                    </template>
+                    <v-date-picker v-model="endDate" :min="(startDate && (startDate > dateNow)) ? startDate : dateNow" locale="de-DE">
+                        <v-spacer></v-spacer>
+                        <v-btn text outlined color="primary" @click="menuEndDate = false">Abbrechen</v-btn>
+                        <v-btn text outlined color="primary" @click="$refs.menuEndDate.save(endDate)">OK</v-btn>
+                    </v-date-picker>
+                </v-menu>
+            </v-col>
+        </v-row>
+        <v-container class="justify-center">
+            <v-btn v-bind="size" style="margin: 0.5vw 1vw 0vw 1vw" color="primary" id="searchbutton" @click="atSearch();" class="rounded-button-left" min-width="11%">SUCHE</v-btn>
+            <v-btn v-bind="size" color="secondary" id="createbutton" @click="$router.push('/createOffer');" class="rounded-button-right ma-3 mr-0" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
+        </v-container>
+    </div>
 
-                <v-container style="max-height: 50%" class="overflow-y-auto">
-                    <v-list three-line tile outlined :color="colorEintrag">
-                        <template v-for="(offer, index) in offers">
-                            <v-row :key="index*10">
-                                <v-col :key="index" class="pr-0 pa-0 col-8">
-                                    <v-list-item :key="index*11 + 1" class="pr-0">
+    <div v-resize="onResize" v-if="!displaySearch">
+
+        <v-row>
+            <v-col v-if="!mobil || displayMap">
+                <v-card style="height: 85vh">
+                    <l-map style="z-index:0;" :zoom="zoom" :center="center" ref="map">
+                        <l-tile-layer :url="url"></l-tile-layer>
+                        <l-control position="topright">
+                            <v-btn color="primary" @click="displayMap = !displayMap" v-show="displayMap">
+                                <v-icon>mdi-arrow-right</v-icon>
+                            </v-btn>
+                        </l-control>
+                        <l-circle :lat-lng="radiusMarker" :radius="searchradius * 1000" color="#4d4238" fillColor="#ed9a00" v-if="searched" />
+                        <l-marker v-for="(offer, index) in offers" :key="index" :lat-lng=offer.geoPointNew>
+                            <l-popup>
+                                <v-row :key="index*10">
+                                    <v-col :key="index" cols="7" class="px-0 mx-0">
+                                        <v-list-item :key="index*11 + 1">
+                                            <v-list-item-content>
+                                                <v-list-item-title>{{offer.title}}</v-list-item-title>
+                                                <v-list-item-subtitle v-html="offer.description"></v-list-item-subtitle>
+                                                <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}}</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-col>
+                                    <v-col :key="index * 10 + 2" cols="4" align="end" class="pa-0">
                                         <v-list-item-content>
-                                            <v-list-item-title>{{offer.title}}</v-list-item-title>
-                                            <v-list-item-subtitle v-if="offer.harvestType != 'Sonstiges'"> {{offer.harvestType}}</v-list-item-subtitle>
-                                            <v-list-item-subtitle  v-if="offer.harvestType == 'Sonstiges'"> {{offer.harvestTypeSpecial}} </v-list-item-subtitle>
-                                            <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
                                         </v-list-item-content>
-                                    </v-list-item>
-                                </v-col>
-                                <v-col :key="index * 10 + 2" class="col-3 col-xs-3 col-sm-1 col-md-3 pr-1 mr-2 my-0" align="end">
-                                    <v-list-item-content class="pa-0">
-                                        <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
-                                        <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-btn @click="$router.push('offer/' + offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
-                                </v-col>
-                            </v-row>
-                            <v-divider :key="index * 10 + 4" color="orange"></v-divider>
-                        </template>
-                    </v-list>
-                </v-container>
-            </v-card>
-        </v-col>
-    </v-row>
+                                        <v-card-actions :key="index * 10 + 3">
+                                            <v-btn @click="$router.push('offer/' + offer.id)" color="primary" class="rounded-button-left ma-0" x-small> Details </v-btn>
+                                        </v-card-actions>
+                                    </v-col>
+                                </v-row>
+                            </l-popup>
+                        </l-marker>
+                    </l-map>
+                </v-card>
+            </v-col>
+            <v-col class="col-12 col-md-4">
+                <v-card height="null" v-show="!displayMap">
+                    <v-container>
+                        <v-row>
+                            <v-col class="pb-0" @keyup.enter="atSearch()">
+                                <v-row>
+                                    <v-card-title class="pa-0 pl-3 pa-md-auto">Suche nach Anzeigen</v-card-title>
+                                    <v-spacer></v-spacer>
+                                    <v-tooltip bottom v-if="!mobil">
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn v-on="on" @click="$router.push('createOffer')" v-bind="size" color="secondary" id="createbutton" class="rounded-button-right">
+                                                <v-icon color="primary">mdi-plus-circle-outline</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>neue Anzeige erstellen</span>
+                                    </v-tooltip>
+                                </v-row>
+                                <v-row class="justify-center">
+                                    <v-text-field hide-details class="mb-md-1 mx-3 pl-3" single-line solo type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="PLZ" @focus="decideMobilSearch()"></v-text-field>
+                                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="activeMap()">
+                                        <v-icon class="ma-0 pa-0" v-if="mobil">mdi-map</v-icon>
+                                        {{mobil ? 'Karte' : 'Suche'}}
+                                    </v-btn>
+                                </v-row>
+                                <v-container v-if="!mobil">
+                                    <v-select class="ma-0 pa-0" single-line solo v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
+                                    <v-row>
+                                        <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                                            <template v-slot:activator="{ on }">
+                                                <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-icon="mdi-calendar" readonly v-on="on" class="col-5" />
+                                            </template>
+                                            <v-date-picker v-model="startDate" :min="dateNow" :max="endDate" locale="de-DE">
+                                                <v-spacer></v-spacer>
+                                                <v-btn text outlined color="primary" @click="menuStartDate = false">Abbrechen</v-btn>
+                                                <v-btn text outlined color="primary" @click="$refs.menuStartDate.save(startDate)">OK</v-btn>
+                                            </v-date-picker>
+                                        </v-menu>
+                                        <v-col class="col-2">
+                                            <v-card-tex class="text-center">bis</v-card-tex>
+                                        </v-col>
+                                        <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                                            <template v-slot:activator="{ on }">
+                                                <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-icon="mdi-calendar" readonly v-on="on" class="col-5" />
+                                            </template>
+                                            <v-date-picker v-model="endDate" :min="(startDate && (startDate > dateNow)) ? startDate : dateNow" locale="de-DE">
+                                                <v-spacer></v-spacer>
+                                                <v-btn text outlined color="primary" @click="menuEndDate = false">Abbrechen</v-btn>
+                                                <v-btn text outlined color="primary" @click="$refs.menuEndDate.save(endDate)">OK</v-btn>
+                                            </v-date-picker>
+                                        </v-menu>
+
+                                    </v-row>
+                                </v-container>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-slider v-if="!mobil" class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
+                        </v-row>
+                    </v-container>
+                    <v-divider id="Anzeigen"></v-divider>
+                    <v-card-subtitle v-if="searched"> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
+                    <v-card-text class="text-center title pb-0" v-if="!searched">Die letzten {{offers.length}} Einträge.</v-card-text>
+                    <v-card-text class="text-center title" v-if="mobil && (offers.length == 0) && !searched">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
+                    <v-card-text class="text-center title" v-if="user && (offers.length == 0) && searched">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
+                    <v-container v-if="!user && (offers.length == 0) && searched">
+                        <v-card-text class="text-center title">Es wurden keine Anzeigen in ihrere Nähe gefunden, bitte registrieren Sie sich trotzdem, um auf zukünftige Anzeigen hingewiesen zu werden.</v-card-text>
+                        <v-row class="justify-center py-0">
+                            <v-btn color="primary" outlined @click="$router.push('/register')">registrieren</v-btn>
+                            <v-btn color="primary" outlined @click="$router.push('/information')">mehr Erfahren</v-btn>
+                        </v-row>
+                    </v-container>
+
+                    <v-container style="max-height: 50%" class="overflow-y-auto">
+                        <v-list three-line tile outlined :color="colorEintrag">
+                            <template v-for="(offer, index) in offers">
+                                <v-row :key="index*10" @click="$router.push('offer/' + offer.id)" class="offer">
+                                    <v-col :key="index" class="pr-0 pa-0 col-8">
+                                        <v-list-item :key="index*11 + 1" class="pr-0">
+                                            <v-list-item-content>
+                                                <v-list-item-title>{{offer.title}}</v-list-item-title>
+                                                <v-list-item-subtitle v-if="offer.harvestType != 'Sonstiges'"> {{offer.harvestType}}</v-list-item-subtitle>
+                                                <v-list-item-subtitle v-if="offer.harvestType == 'Sonstiges'"> {{offer.harvestTypeSpecial}} </v-list-item-subtitle>
+                                                <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}}</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-col>
+                                    <v-col :key="index * 10 + 2" class="col-3 col-xs-3 col-sm-1 col-md-3 pr-1 mr-2 my-0" align="end">
+                                        <v-list-item-content class="pa-0">
+                                            <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-col>
+                                </v-row>
+                                <v-divider :key="index * 10 + 4" color="orange"></v-divider>
+                            </template>
+                        </v-list>
+                    </v-container>
+                </v-card>
+            </v-col>
+        </v-row>
+    </div>
 </div>
 </template>
 
@@ -137,6 +207,15 @@ Icon.Default.mergeOptions({
 export default {
     name: "OfferList",
     data: () => ({
+        harvestType: "",
+        dateNow: new Date().toISOString().substr(0, 10),
+        startDate: null,
+        endDate: null,
+        startDateText: "",
+        endDateText: "",
+        menuStartDate: false,
+        menuEndDate: false,
+        displaySearch: false,
         user: false,
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         zoom: 7,
@@ -158,6 +237,7 @@ export default {
         displayMap: false,
         offerData: null,
         map: null,
+        items: ['Sonstiges', 'Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben'],
     }),
 
     metaInfo() {
@@ -202,7 +282,23 @@ export default {
             } : {}
         }
     },
+    watch: {
+        startDate(val) {
+            this.startDateText = this.formatDate(val);
+            if (this.endDate && (val > this.endDate)) {
+                this.endDate = val;
+            }
+        },
+        endDate(val) {
+            this.endDateText = this.formatDate(val);
+        }
+    },
     methods: {
+        decideMobilSearch() {
+            if (this.mobil) {
+                this.displaySearch = true
+            }
+        },
         activeMap() {
             this.displayMap = !this.displayMap
 
@@ -230,6 +326,9 @@ export default {
                 path: 'offers',
                 query: {
                     title: this.search,
+                    harvestType: this.harvestType,
+                    startDate: this.startDate,
+                    endDate: this.endDate,
                     radius: this.searchradius,
                     postcode: this.zipsearch,
                 }
@@ -244,6 +343,13 @@ export default {
             }
             this.searched = true
 
+        },
+        formatDate(date) {
+            if (!date) {
+                return null;
+            }
+            const [year, month, day] = date.split('-');
+            return `${day}.${month}.${year}`;
         },
         async searchOffersPostcode() {
             var URL = "https://nominatim.openstreetmap.org/search/de"
@@ -285,11 +391,11 @@ export default {
                             })
                         }
                     })
-                    this.offers = this.offers.filter(offer => {
-                        return offer.title
-                            .toLowerCase()
-                            .includes(this.search.toLowerCase());
-                    });
+                    // this.offers = this.offers.filter(offer => {
+                    //     return offer.title 
+                    //         .toLowerCase()
+                    //         .includes(this.search.toLowerCase());
+                    // });
                 })
         },
         async searchOffersOnlyTitle() {
@@ -313,23 +419,29 @@ export default {
                 this.map = this.$refs.map.mapObject // work as expected
         })
         this.searched = false
-        if (this.$route.query.postcode) {
-            this.zipsearch = this.$route.query.postcode
+        var URLquery = this.$route.query
+        if (URLquery.postcode) {
+            this.zipsearch = URLquery.postcode
 
-            if (this.$route.query.title) {
-                this.search = this.$route.query.title
+            if (URLquery.title) {
+                this.search = URLquery.title
             }
-
-            if (this.$route.query.radius) {
-                this.searchradius = this.$route.query.radius
+            if(URLquery.harvestType){
+                this.harvestType = URLquery.harvestType
+            }
+            if(URLquery.startDate){
+                this.startDate = URLquery.startDate
+            }
+            if(URLquery.endDate){
+                this.endDate = URLquery.endDate
+            }
+            if (URLquery.radius) {
+                this.searchradius = URLquery.radius
                 this.zoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
             }
-
-            this.zipsearch = this.$route.query.postcode
+            
+            this.zipsearch = URLquery.postcode
             this.searchOffersPostcode()
-            if (this.mobil) {
-                this.$vuetify.goTo('#Anzeigen')
-            }
         } else {
             /*
             code dafür dass postleitzahl aus dem user document raus geladen wird
@@ -372,11 +484,6 @@ export default {
                     })
                 })
             })
-            setTimeout(() => {
-                if (this.mobil) {
-                    this.$vuetify.goTo('#Anzeigen')
-                }
-            }, 500);
 
         }
     }
@@ -386,5 +493,9 @@ export default {
 <style>
 .map {
     width: 100vw;
+}
+
+.offer {
+    cursor: pointer;
 }
 </style>
