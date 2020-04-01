@@ -6,8 +6,6 @@ import landingPage from './pages/landingPage'
 import OfferDetails from './pages/OfferDetails'
 import login from './pages/login'
 import offers from './pages/offers'
-import history from './pages/history'
-import settings from './pages/settings'
 import createOffer from './pages/createOffer';
 import editOffer from './pages/editOffer';
 import register from './pages/register';
@@ -17,8 +15,10 @@ import registerAgrarian from './pages/registerAgrarian';
 import registerAgrarianSuccess from './pages/registerAgrarianSuccess';
 import datenschutz from './pages/datenschutz';
 import impressum from './pages/impressum';
+import chat from './pages/chat';
 import information from './pages/information';
 import error from './pages/error';
+import account from './pages/account';
 
 //plugins
 import firebase from 'firebase/app'
@@ -42,8 +42,6 @@ const routes = [
   {name: "login", path: "/login", component: login, meta: {requiresNotAuth: true}},
   {name: "createOffers", path: "/createOffer", component: createOffer, meta: {requiresAuth: true, requiresFarmer: true}},
   {name: "edit-offer", path: "/editOffer/:offerId", component: editOffer, meta: {requiresAuth: true, requiresFarmer: true}},
-  {name: "history", path: "/history", component: history, meta: {requiresAuth: true}},
-  {name: "settings", path: "/settings", component: settings, meta: {requiresAuth: true}},
   {name: "register", path: "/register", component: register, meta: {requiresNotAuth: true}},
   {name: "registerHelper", path: "/registerHelper", component: registerHelper, meta: {requiresNotAuth: true}},
   {name: "registerHelperSuccess", path: "/registerHelperSuccess", component: registerHelperSuccess, meta: {requiresNotAuth: true}},
@@ -53,6 +51,8 @@ const routes = [
   {name: "impressum", path: "/impressum", component: impressum},
   {name: "information", path: "/information", component: information},
   {name: "error", path:'*', component: error},
+  {name: "chat", path: "/chat/:agrarianId", component: chat, meta: {requiresAuth: true}},
+  {name: "account", path: "/account", component: account, meta: {requiresAuth: true}},
 ]
 
 const router = new VueRouter({
@@ -62,6 +62,12 @@ const router = new VueRouter({
 
 // Initialize Firebase
 var firebaseConfig = {
+  apiKey: "AIzaSyA2kfwebAU94p2SLOVqVXIPi_Pst6xrcio",
+    authDomain: "ernteretterdev.firebaseapp.com",
+    databaseURL: "https://ernteretterdev.firebaseio.com",
+    projectId: "ernteretterdev",
+    storageBucket: "ernteretterdev.appspot.com",
+    appId: "1:87968775388:web:0e7b3606e1982743098819"
   //firebaseapi key
 };
 firebase.initializeApp(firebaseConfig);

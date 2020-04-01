@@ -14,7 +14,8 @@
 
             <v-row justify="center">
                 <v-col class="col-12 col-md-6">
-                    <v-text-field :rules="rules.password" :type="showPassword ? 'text' : 'password'" label="Wähle ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" v-model="password" single-line solo />
+                    <v-text-field :rules="rules.password" :type="showPassword ? 'text' : 'password'" label="Wähle ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @change="passwordVerifyed()" :error-messages="samePassword ? '' : 'Passwort nicht gleich'" @click:append="showPassword = !showPassword" v-model="password" single-line solo />
+                    <v-text-field :type="showPassword ? 'text' : 'password'" label="Wiederholen Sie das Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @change="passwordVerifyed()" :error-messages="samePassword ? '' : 'Passwort nicht gleich'" @click:append="showPassword = !showPassword" v-model="verifyPassword" :rules="rules.password" single-line solo />
                 </v-col>
             </v-row>
 
@@ -40,7 +41,7 @@
                 <div>
                     <h3 align="center" class="mx-auto"> In welchem Umkreis möchtest du Hilfemöglichkeiten vorgeschlagen bekommen? </h3>
                     <v-col cols="10" sm="12">
-                         <v-text-field v-model="postCode" label="PLZ" single-line solo />
+                         <v-text-field v-model="postCode" label="PLZ" :rules="rules.postCode" single-line solo />
                         <v-slider label="Radius (km)" thumb-label="always" thumb-size="24" thumb-color="primary" v-model="searchRange" class="align-center pt-7" :max="searchRangeMax" :min="searchRangeMin" hide-details>
                             <!--<template v-slot:append>
                                         <v-text-field
@@ -117,11 +118,13 @@ export default {
     name: 'registerHelper',
     data: () => ({
         valid: true,
-        experienceItems: ['keine', 'bisschen', 'viel', 'ich kann Wissen vermitteln'],
+        experienceItems: ['keine Vorerfahrung', 'wenig Vorerfahrung', 'viel Vorerfahrung', 'ich kann Wissen vermitteln'],
         name: "",
         mail: "",
         postCode: "",
         password: "",
+        verifyPassword: "",
+        samePassword: true,
         showPassword: false,
         harvestTypes: [],
         harvestTypesOptions: ["Obst", "Gemüse"],
@@ -138,21 +141,39 @@ export default {
         }, {
             value: "weeks",
             text: "Wochen"
+        },
+        {
+            value: "months",
+            text: "Monate"
         }],
         experience: "",
         rules: {
             name: [value => !!value.trim() || 'Name wird benötigt.'],
-            password: [value => !!value || 'Passwort wird benötigt.'],
+            password: [value => value.lenth >= 8 || 'Passwort muss mindestens 8 Zeichen haben.'],
             mail: [
                 value => !!value.trim() || 'E-Mail-Adresse wird benötigt.',
                 value => {
                     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                     return pattern.test(value) || 'Ungültige E-Mail-Adresse.';
                 }
-            ]
+            ],
+            postCode: [
+                value => !!value.trim() || 'PLZ wird benötigt.',
+                value => {
+                    const pattern = /^[0-9]{5,5}$/;
+                    return pattern.test(value) || 'Ungültige PLZ.';
+                }
+            ],
         }
     }),
     methods: {
+        passwordVerifyed(){
+            if(this.verifyPassword != this.password){
+                this.samePassword = false
+            } else {
+                this.samePassword = true
+            }
+        },
         registerHelper() {
             if (!this.$refs.form.validate()) {
                 return;
