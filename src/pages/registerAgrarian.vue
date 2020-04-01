@@ -10,7 +10,8 @@
             <br />
             <v-col>
                 <v-text-field v-model="name" :rules="rules.name" label="Wie heißen Sie?" single-line solo />
-                <v-text-field :type="showPassword ? 'text' : 'password'" label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword" v-model="password" :rules="rules.password" single-line solo />
+                <v-text-field :type="showPassword ? 'text' : 'password'" label="Wählen Sie ein Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @change="passwordVerifyed()" @click:append="showPassword = !showPassword" v-model="password" :rules="rules.password" :error-messages="samePassword ? '' : 'Passwort nicht gleich'" single-line solo />
+                <v-text-field :type="showPassword ? 'text' : 'password'" label="Wiederholen Sie das Passwort" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @change="passwordVerifyed()" @click:append="showPassword = !showPassword" v-model="verifyPassword" :rules="rules.password" :error-messages="samePassword ? '' : 'Passwort nicht gleich'" single-line solo />
                 <v-text-field v-model="mail" :rules="rules.mail" label="Ihre E-Mail Adresse lautet?" single-line solo />
                 <p id="hinweis">Hinweis: Helfer werden sich bei dieser E-Mail melden.</p>
                 <v-text-field v-model="placeName" :rules="rules.placeName" label="Wie heißt Ihr Hof?" single-line solo />
@@ -42,7 +43,7 @@
                 </v-alert>
             </v-row>
             <v-row justify="center">
-                <v-btn class="rounded-button-left" x-large outlined color="primary" @click="registerAgrarian()" :disabled="!valid">
+                <v-btn class="rounded-button-left" x-large outlined color="primary" @click="registerAgrarian()" :disabled="!valid && !samePassword">
                     Registrieren
                 </v-btn>
             </v-row>
@@ -62,6 +63,8 @@ export default {
         name: "",
         mail: "",
         password: "",
+        verifyPassword: "",
+        samePassword: true,
         showPassword: false,
         placeName: "",
         placeStreet: "",
@@ -70,7 +73,7 @@ export default {
         placeCity: "",
         rules: {
             name: [value => !!value.trim() || 'Name wird benötigt.'],
-            password: [value => !!value || 'Passwort wird benötigt.'],
+            password: [value => value.lenth >= 8 || 'Passwort muss mindestens 8 Zeichen haben.'],
             mail: [
                 value => !!value.trim() || 'E-Mail-Adresse wird benötigt.',
                 value => {
@@ -92,6 +95,13 @@ export default {
         }
     }),
     methods: {
+        passwordVerifyed(){
+            if(this.verifyPassword != this.password){
+                this.samePassword = false
+            } else {
+                this.samePassword = true
+            }
+        },
         registerAgrarian() {
             if (!this.$refs.form.validate()) {
                 return;

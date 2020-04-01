@@ -211,7 +211,7 @@ export default {
       drawerItems: [
         {
           title: "Informationen",
-          icon: "mdi-information",
+          icon: "mdi-information-outline",
           route: "/information",
           condition: true
         },
@@ -222,17 +222,17 @@ export default {
           condition: true
         },
         {
-          title: "Termine",
-          icon: "mdi-calendar-range",
-          route: "/history",
+          title: "Account",
+          icon: "mdi-account-details-outline",
+          route: "/account",
           condition: false
-        },
-        {
-          title: "Einstellungen",
-          icon: "mdi-cog-outline",
-          route: "/settings",
-          condition: false
-        }
+         },
+        // {
+        //   title: "Einstellungen",
+        //   icon: "mdi-cog-outline",
+        //   route: "/settings",
+        //   condition: false
+        // }
       ]
     };
   },
