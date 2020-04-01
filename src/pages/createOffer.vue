@@ -26,7 +26,7 @@
                 </v-tooltip>
             </v-row>
             <v-container>
-                <v-alert v-model="alertAddress" color="error" class="white--text">Adress kann nicht gefunden werden</v-alert>
+                <v-alert v-model="alertAddress" color="error" class="white--text">Adresse kann nicht gefunden werden</v-alert>
                 <v-text-field :rules="rules.street" v-model="street" label="Straße" single-line solo @change="addressFilled" />
                 <v-text-field :rules="rules.houseNumber" v-model="houseNumber" label="Hausnummer" single-line solo @change="addressFilled" />
                 <v-text-field :rules="rules.postCode" v-model="postCode" type="number" label="Postleitzahl" single-line solo @change="addressFilled" />
