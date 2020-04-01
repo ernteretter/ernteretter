@@ -44,5 +44,8 @@ service cloud.firestore {
          request.auth.uid in get(/databases/$(database)/documents/chats/$(chatid)).data.authors;
       }
     }
+    match /feedback/{feedbackid}{
+      allow create: if true
+    }
   }
 }
