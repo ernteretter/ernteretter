@@ -73,7 +73,7 @@ export default {
         placeCity: "",
         rules: {
             name: [value => !!value.trim() || 'Name wird benötigt.'],
-            password: [value => value.lenth >= 8 || 'Passwort muss mindestens 8 Zeichen haben.'],
+            password: [value => value.length >= 8 || 'Passwort muss mindestens 8 Zeichen haben.'],
             mail: [
                 value => !!value.trim() || 'E-Mail-Adresse wird benötigt.',
                 value => {

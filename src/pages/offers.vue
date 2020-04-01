@@ -101,10 +101,10 @@
                                 </v-row>
                                 <v-container v-if="!mobil">
                                     <v-select class="ma-0 pa-0" single-line solo v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
-                                    <v-row>
+                                    <v-row class="col-12">
                                         <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-icon="mdi-calendar" readonly v-on="on" class="col-5" />
+                                                <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-icon="mdi-calendar" readonly v-on="on" class="" />
                                             </template>
                                             <v-date-picker v-model="startDate" :min="dateNow" :max="endDate" locale="de-DE">
                                                 <v-spacer></v-spacer>
@@ -112,12 +112,12 @@
                                                 <v-btn text outlined color="primary" @click="$refs.menuStartDate.save(startDate)">OK</v-btn>
                                             </v-date-picker>
                                         </v-menu>
-                                        <v-col class="col-2">
-                                            <v-card-tex class="text-center">bis</v-card-tex>
+                                        <v-col>
+                                            <v-card-tex class="text-center px-2">bis</v-card-tex>
                                         </v-col>
                                         <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-icon="mdi-calendar" readonly v-on="on" class="col-5" />
+                                                <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-icon="mdi-calendar" readonly v-on="on" class="" />
                                             </template>
                                             <v-date-picker v-model="endDate" :min="(startDate && (startDate > dateNow)) ? startDate : dateNow" locale="de-DE">
                                                 <v-spacer></v-spacer>
@@ -426,20 +426,20 @@ export default {
             if (URLquery.title) {
                 this.search = URLquery.title
             }
-            if(URLquery.harvestType){
+            if (URLquery.harvestType) {
                 this.harvestType = URLquery.harvestType
             }
-            if(URLquery.startDate){
+            if (URLquery.startDate) {
                 this.startDate = URLquery.startDate
             }
-            if(URLquery.endDate){
+            if (URLquery.endDate) {
                 this.endDate = URLquery.endDate
             }
             if (URLquery.radius) {
                 this.searchradius = URLquery.radius
                 this.zoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
             }
-            
+
             this.zipsearch = URLquery.postcode
             this.searchOffersPostcode()
         } else {
