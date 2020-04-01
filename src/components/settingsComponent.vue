@@ -132,17 +132,14 @@
             <v-divider />
             <v-card flat>
                 <v-card-text>
-                    <v-form ref="formAccount" v-model="validAccount" class="col-md-6 col-sm-12 col-sx-12">
-                        <v-text-field v-model="oldpassword" :rules="rules.password" :type="showPasswordOld ? 'text' : 'password'" label="Altes Passwort" :append-icon="showPasswordOld ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPasswordOld = !showPasswordOld"></v-text-field>
-                        <v-text-field v-model="newpassword" :rules="rules.password" :type="showPasswordNew ? 'text' : 'password'" label="Neues Passwort" :append-icon="showPasswordNew ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPasswordNew = !showPasswordNew"></v-text-field>
-                        <v-row justify="center">
-                            <v-alert dense outlined type="error" v-if="!validAccount">Die Felder sind nicht vollständig ausgefüllt</v-alert>
-                        </v-row>
+                    <v-form ref="formAccount" class="col-md-6 col-sm-12 col-sx-12">
+                        <v-text-field v-model="oldpassword"  :type="showPasswordOld ? 'text' : 'password'" label="Altes Passwort" :append-icon="showPasswordOld ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPasswordOld = !showPasswordOld"></v-text-field>
+                        <v-text-field v-model="newpassword"  :type="showPasswordNew ? 'text' : 'password'" label="Neues Passwort (Mindestens 6 Zeichen)" :append-icon="showPasswordNew ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPasswordNew = !showPasswordNew"></v-text-field>
                     </v-form>
                     <v-container>
                         <v-row>
                             <v-spacer></v-spacer>
-                            <v-btn color="success" :disabled="!validAccount" @click="updatePassword">Fertig</v-btn>
+                            <v-btn color="success" @click="updatePassword">Fertig</v-btn>
                         </v-row>
                     </v-container>
                 </v-card-text>
@@ -152,6 +149,8 @@
     <v-snackbar v-model="snackbar" color="blue">Daten wurden gespeichert.</v-snackbar>
     <v-snackbar v-model="snackbarAlert" color="red">Ein Fehler ist aufgetreten.</v-snackbar>
     <v-snackbar v-model="snackbarPasswordAlert" color="red">Das alte Passwort ist falsch.</v-snackbar>
+     <v-snackbar v-model="shortPasswordAlert" color="red">Das neue Passwort ist zu kurz.</v-snackbar>
+    <v-snackbar v-model="samePasswordAlert" color="red">Das Passwörter dürfen nicht übereinstimmen.</v-snackbar>
 </v-card>
 </template>
 
@@ -175,9 +174,11 @@ export default {
             newpassword: "",
             showPasswordOld: false,
             showPasswordNew: false,
+            shortPasswordAlert: false,
             snackbar: false,
             snackbarAlert: false,
             snackbarPasswordAlert: false,
+            samePasswordAlert: false,
             erfahrung: ["keine", "wenig", "viel", "kann lehren"],
             activeButton: true,
             tabs: null,
@@ -307,12 +308,20 @@ export default {
             this.user
                 .reauthenticateWithCredential(credential)
                 .then(userS => {
-                    if (userS) {
+                    if (userS && this.newpassword.length > 5 && this.oldpassword != this.newpassword) {
                         this.user.updatePassword(this.newpassword);
                         this.snackbar = true;
                         setTimeout(function () {
                             this.snackbar = false
                         }, 3000);
+                    }
+                    else if(this.newpassword.length <= 5){
+                        this.shortPasswordAlert = true;
+                        setTimeout(function(){this.shortPasswordAlert = false}, 3000);
+                    }
+                    else if(this.newpassword == this.oldpassword){
+                        this.samePasswordAlert = true;
+                        setTimeout(function(){this.samePasswordAlert = false}, 3000);
                     }
                 })
                 .catch(() => {
