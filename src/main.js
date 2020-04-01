@@ -69,9 +69,13 @@ firebase.initializeApp(firebaseConfig);
 Vue.config.productionTip = false
 router.beforeEach(async (to, from, next) => {
   //muss angemeldet sein
+  console.log("Helo 1");
+  
   if(to.matched.some(record => record.meta.requiresAuth)){
     firebase.auth().onAuthStateChanged((user) => {
       if(user){
+        console.log(user.providerData);
+        
         //ist angemeldet
         if(to.matched.some(record => record.meta.requiresFarmer)){
           firebase.firestore().collection("agrarians").doc(user.uid).get().then((doc) => {
@@ -92,10 +96,26 @@ router.beforeEach(async (to, from, next) => {
       }
     })
   } else if(to.matched.some(record => record.meta.requiresNotAuth)){
+    console.log("User is not authenticated")
     firebase.auth().onAuthStateChanged((user) => {
       if(user){
-        next({name: "landingPage"})
-      } else {
+        user.providerData
+        console.log("User is in database");
+        console.log("providerid " + user.providerData);
+        //if(true)
+        //{
+          console.log("Helo");
+          console.log("start" + from.fullPath);
+          
+          console.log("destination" + to.fullPath);
+          
+          next({name: register})
+        //}
+        //else {
+        //next({name: "landingPage"})
+        //}
+      }
+      else {
         next()
       }
     })
