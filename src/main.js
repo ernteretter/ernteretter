@@ -19,8 +19,6 @@ import datenschutz from './pages/datenschutz';
 import impressum from './pages/impressum';
 import information from './pages/information';
 import error from './pages/error';
-import account from './pages/account';
-import feedback from './pages/feedback'
 
 //plugins
 import firebase from 'firebase/app'
@@ -54,7 +52,6 @@ const routes = [
   {name: "datenschutz", path: "/datenschutz", component: datenschutz},
   {name: "impressum", path: "/impressum", component: impressum},
   {name: "information", path: "/information", component: information},
-  {name: "feedback", path: "/feedback", component: feedback},
   {name: "error", path:'*', component: error},
 ]
 
@@ -64,14 +61,8 @@ const router = new VueRouter({
 })
 
 // Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDzHKaBLhLz9G2q84cn9yvNUqP77S0te_g",
-  authDomain: "ernteretter.firebaseapp.com",
-  databaseURL: "https://ernteretter.firebaseio.com",
-  projectId: "ernteretter",
-  storageBucket: "ernteretter.appspot.com",
-  messagingSenderId: "382367402085",
-  appId: "1:382367402085:web:8f275e7557d9d570fc9e8c"
+var firebaseConfig = {
+  //firebaseapi key
 };
 firebase.initializeApp(firebaseConfig);
 
