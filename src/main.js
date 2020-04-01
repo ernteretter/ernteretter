@@ -19,6 +19,8 @@ import datenschutz from './pages/datenschutz';
 import impressum from './pages/impressum';
 import information from './pages/information';
 import error from './pages/error';
+import account from './pages/account';
+import feedback from './pages/feedback'
 
 //plugins
 import firebase from 'firebase/app'
@@ -52,6 +54,7 @@ const routes = [
   {name: "datenschutz", path: "/datenschutz", component: datenschutz},
   {name: "impressum", path: "/impressum", component: impressum},
   {name: "information", path: "/information", component: information},
+  {name: "feedback", path: "/feedback", component: feedback},
   {name: "error", path:'*', component: error},
 ]
 
