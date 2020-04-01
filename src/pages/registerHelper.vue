@@ -117,7 +117,7 @@ export default {
     name: 'registerHelper',
     data: () => ({
         valid: true,
-        experienceItems: ['keine', 'bisschen', 'viel', 'ich kann Wissen vermitteln'],
+        experienceItems: ['keine Vorerfahrung', 'wenig Vorerfahrung', 'viel Vorerfahrung', 'ich kann Wissen vermitteln'],
         name: "",
         mail: "",
         postCode: "",

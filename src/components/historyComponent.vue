@@ -1,20 +1,17 @@
 <template>
-<v-app>
-    <v-card class="mx-auto mt-5" max-width="1000px">
-        <v-card-title class="primary">
-            <span class="headline white--text">Termine</span>
-            <v-spacer></v-spacer>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="Suche" single-line hide-details color="white" dark @change="atSearch"></v-text-field>
+   <v-card>
+        <v-toolbar height="60" elevation="0">
+            <v-text-field v-model="search" append-icon="mdi-magnify" label="Suche" single-line hide-details @change="atSearch"></v-text-field>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" @click="$router.push('createOffer')">
-                        <v-icon color="primary">mdi-plus-circle-outline</v-icon>
+                    <v-btn v-on="on" @click="$router.push('/createOffer')">
+                        <v-icon color="secondary">mdi-plus</v-icon>
                     </v-btn>
                 </template>
                 <span>neue Anzeige erstellen</span>
             </v-tooltip>
-        </v-card-title>
-        <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-divider />
         <v-container>
             <v-data-table :headers="headers" :items="mixedOffers" item-key="id" :loading="loading" loading-text="Lädt...Bitte warten" :server-items-length="mixedOffers.length" class="elevation-1">
                 <template v-slot:item.action="{item}">
@@ -24,17 +21,18 @@
                 </template>
             </v-data-table>
         </v-container>
-    </v-card>
     <v-snackbar v-if="deleteSnackSuccess" color="success">Termin erfolgreich gelöscht</v-snackbar>
     <v-snackbar v-if="deleteSnackFail" color="red">Termin konnte nicht gelöscht werden</v-snackbar>
-</v-app>
+   </v-card>
 </template>
 
 <script>
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import historyComponent from "../components/historyComponent.vue";
 export default {
+    name: historyComponent,
     async mounted() {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
@@ -180,5 +178,4 @@ export default {
 </script>
 
 <style>
-
 </style>
