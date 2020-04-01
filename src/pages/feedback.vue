@@ -45,7 +45,7 @@ export default {
         }
     },
     methods: {
-        send(){
+        send() {
             firebase.firestore().collection('feedback').add({
                 name: this.name,
                 mail: this.mail,
@@ -55,7 +55,7 @@ export default {
                 this.haventSendFeedback = false
             }).catch(err => {
                 console.log(err);
-                
+
             })
         }
     },
