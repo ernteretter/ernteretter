@@ -1,15 +1,15 @@
 <template>
 <div class="mx-auto" style="max-width:1000px;">
-    <div :style="!picture ? 'padding-top: 0vh; padding-bottom: 0vh;' : responiveNeeded?'padding-top: 2vh; padding-bottom: 4vh;' : 'padding-top: 8vh; padding-bottom: 4vh;' ">
+    <div class="picture">
         <v-img :src="require('../../Ernteretter-Logo_03.png')" class="mx-auto " @click="$router.push('/')" max-width="100%" v-if="picture" />
     </div>
     <v-spacer></v-spacer>
-    <div class="pb-md-10">
-        <h1 class="text" :style="responiveNeeded ? 'font-weight: 600; font-size: 1.5rem; line-height: 3vh' : 'font-weight: 700; font-size: 2rem'">Auch in dieser besondern Zeit </h1>
-        <h3 class="text mx-auto" :style="responiveNeeded ? 'font-weight: 500; line-height: 3vh' : 'font-weight: 600'">wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
+    <div class="pb-md-10 text">
+        <h1>Auch in dieser besonderen Zeit </h1>
+        <h3 class="mx-auto">wachsen unsere Pflanzen und versorgen uns alle mit Nahrung ein hoffnungsvolles Zeichen in der Corona-Krise. Erntehelfer, die größtenteils aus dem Ausland kommen, können aufgrund geschlossener Landesgrenzen nicht zu uns gelangen.
             Lasst uns alle mithelfen, damit die Aussaat, Pflege und Ernte unserer Feldfrüchte auch in motivierte Erntehelfer finden und sich mit ihnen in Verbindung setzten.</h3>
     </div>
-    <v-row class="py-10 px-0" no-gutters>
+    <v-row class="button" no-gutters>
         <v-hover v-slot:default="{ hover }" class="col-12 col-md-6">
             <v-btn color="primary" :outlined="!hover" style="stroke-width: 50px" :max-width="responiveNeeded ? '100%' : '48%'" height="8vh" :class="responiveNeeded ? 'rounded-button-right mx-0 pa-0 font-weight-bold title font-regular' : 'rounded-button-right mx-0 pa-0 font-weight-bold display-1 font-regular'" :small="responiveNeeded" :large="!responiveNeeded" v-resize="onResize" to="/registerFarmers">Ich brauche Hilfe</v-btn>
         </v-hover>
@@ -92,7 +92,7 @@ export default {
     methods: {
         onResize() {
             console.log(window.innerWidth);
-            
+
             if (window.innerWidth <= 320) {
                 this.picture = false
             } else if (window.innerWidth < 960) {
@@ -125,13 +125,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
-<style>
-.text {
-    font-family: 'Open Sans', sans-serif;
-    color: black;
-    display: inline;
-}
-
+<style scoped>
 #title {
     word-break: keep-all;
 }
@@ -149,5 +143,65 @@ export default {
     width: 100%;
     height: 100%;
     border: 0;
+}
+
+@media (max-width: 320px) {
+    .picture {
+        padding-top: 0vh;
+        padding-bottom: 0vh;
+    }
+}
+
+@media (max-width: 960px) {
+    .picture {
+        padding-top: 2vh;
+        padding-bottom: 4vh;
+    }
+
+    .text h1 {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 3vh;
+        font-family: 'Open Sans', sans-serif;
+        color: black;
+        display: inline;
+    }
+
+    .text h3 {
+        font-weight: 500;
+        line-height: 3.5vh;
+        display: inline;
+    }
+
+    .button {
+        padding-top: 4vh;
+        padding-bottom: 4vh;
+    }
+
+}
+
+@media (min-width: 960px) {
+    .picture {
+        padding-top: 8vh;
+        padding-bottom: 4vh;
+    }
+
+    .text h1 {
+        font-weight: 700;
+        font-size: 2rem;
+        font-family: 'Open Sans', sans-serif;
+        color: black;
+        display: inline;
+    }
+
+    .text h3 {
+        font-weight: 600;
+        display: inline;
+    }
+
+    .button {
+        padding-top: 8vh;
+        padding-bottom: 4vh;
+    }
 }
 </style>
