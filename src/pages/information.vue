@@ -1,11 +1,11 @@
 <template>
 <v-card max-width="1000px" class="mx-auto">
-    <v-card-title class="display-1"> 
-        Prototyp
-        <v-icon large class="mx-3" color="primary">mdi-tree-outline</v-icon>
+    <v-card-title class="display-1">
+        ernteretter
+        <v-icon large class="mx-3" color="primary">mdi-barley</v-icon>
     </v-card-title>
     <v-card-text class="title font-weight-regular">
-        Dies ist ein Prototyp welcher im Rahmen des <a class="mx-0" href="https://wirvsvirushackathon.org/" target="_blank"> #WirVsVirus Hackathon</a> entstanden ist. Es war unglaublich toll zu sehen wie engagiert und anpackend man über Distanzen mit anderen Menschen zusammenarbeiten und gemeinsame Ziele in kürzester Zeit erreichen kann. Wir hoffen, dass unser Projektbeitrag jeden da draußen dazu ermutigt in diesen herausfordernden und gleichzeitig unglaublich spannenden Zeiten über sich hinauszuwachsen und sich einzubringen.
+        Dies ist ein Projekt, dass im Rahmen des <a class="mx-0" href="https://wirvsvirushackathon.org/" target="_blank"> #WirVsVirus Hackathon</a> entstanden ist. Es war unglaublich toll zu sehen wie engagiert und anpackend man über Distanzen mit anderen Menschen zusammenarbeiten und gemeinsame Ziele in kürzester Zeit erreichen kann. Wir hoffen, dass unser Projektbeitrag jeden da draußen dazu ermutigt in diesen herausfordernden und gleichzeitig unglaublich spannenden Zeiten über sich hinauszuwachsen und sich einzubringen.
         <p></p>
         Wir schaffen das, daran haben wir keinen Zweifel!
         <p></p>
@@ -16,7 +16,7 @@
         <v-icon large class="mx-3" color="primary">mdi-lightbulb-on-outline</v-icon>
     </v-card-title>
     <v-card-text class="title font-weight-regular">
-        <strong> ERNTERETTER </strong>ist eine Plattform für die Vermittlung von Erntehelfern in Deutschland. Sie bringt Landwirt:innen mit Helfer:innen aus dem Umland zusammen.
+        <strong> ernteretter </strong>ist eine Plattform für die Vermittlung von Erntehelfern in Deutschland. Sie bringt Landwirt:innen mit Helfer:innen aus dem Umland zusammen.
         <p></p>
         Die Landwirte können eine Anzeige mit ihrem Bedarf an Helfer:innen, Erntedauer, sowie Art und Ort der Ernte aufgeben. Die <strong>Ernteretter:innen</strong> können anschließend die Anzeigen und Aufrufe der Bauern durchsuchen und sich auf ein passendes Jobangebot melden.
         <p></p>
@@ -26,7 +26,7 @@
     </v-card-text>
     <v-card-title class="display-1">
         Inspiration
-        <v-icon large class="mx-3" color="primary">mdi-barley</v-icon>
+        <v-icon large class="mx-3" color="primary"> mdi-tree-outline</v-icon>
     </v-card-title>
     <v-card-text class="title font-weight-regular">
         Aufgrund der Corona-Krise haben <strong>geschlossene Grenzen</strong> dafür gesorgt, dass die sonst üppige Zahl an ausländischen Erntehelfern keinen Zugang mehr findet. Es fehlen <strong>ca. 300.000 Erntehelfer:innen</strong> welche vermehrt für die am 23. März beginnende Hochsaison der Erntearbeit benötigt werden. Die Auswirkungen der fehlenden Arbeitskräfte führen dazu, dass…
@@ -38,7 +38,7 @@
         <p></p>
         Diesem Missstand möchten wir mit unserer Plattform, welche Landwirt:innen mit Helfer:innen in der Region auf benutzerfreundliche und schnelle Weise zusammenbringt, entgegentreten.
         <p></p>
-        <p> Um das zu gewährleisten haben wir unser Konzept mit dem Namen - <strong>ERNTERETTER</strong> entwickelt.</p>
+        <p> Um das zu gewährleisten haben wir unser Konzept mit dem Namen - <strong>ernteretter</strong> entwickelt.</p>
     </v-card-text>
 </v-card>
 </template>
