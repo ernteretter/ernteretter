@@ -65,8 +65,16 @@
     <v-content>
         <!-- Provides the application the proper gutter -->
         <v-container fluid>
+            <v-speed-dial fixed right bottom class="mb-10">
+                <template v-slot:activator>
+                    <v-btn color="primary" fab @click="$router.push('/feedback')">
+                        <v-icon>mdi-comment-quote-outline</v-icon>
+                    </v-btn>
+                </template>
+
+            </v-speed-dial>
             <!-- If using vue-router -->
-            <router-view></router-view>
+            <router-view class="routerView"></router-view>
         </v-container>
     </v-content>
     <v-footer app padless absolute color="dunkelgrau">

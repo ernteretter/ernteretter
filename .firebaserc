@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "ernteretter"
+    "default": "ernteretter",
+    "ernteretterDev": "ernteretterdev"
   }
 }
