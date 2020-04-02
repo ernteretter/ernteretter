@@ -149,7 +149,7 @@
                     </v-container>
                     <v-divider id="Anzeigen"></v-divider>
                     <v-card-subtitle v-if="searched"> Ihre Suchanfrage hat {{offers.length}} Anzeige(n) ergeben. </v-card-subtitle>
-                    <v-card-text class="text-center title pb-0" v-if="!searched">Die letzten {{offers.length}} Einträge.</v-card-text>
+                    <v-card-text class="pt-md-10 display-1 pb-0 font-weight-black" v-if="!searched">Die letzten {{offers.length}} Einträge.</v-card-text>
                     <v-card-text class="text-center title" v-if="mobil && (offers.length == 0) && !searched">Bitte spezifizieren Sie zunächst ihre Suche</v-card-text>
                     <v-card-text class="text-center title" v-if="user && (offers.length == 0) && searched">Es wurden keine Anzeigen in ihrere Nähe gefunden.</v-card-text>
                     <v-container v-if="!user && (offers.length == 0) && searched">
@@ -167,17 +167,17 @@
                                     <v-col :key="index" class="pr-0 pa-0 col-8">
                                         <v-list-item :key="index*11 + 1" class="pr-0">
                                             <v-list-item-content>
-                                                <v-list-item-title>{{offer.title}}</v-list-item-title>
+                                                <v-list-item-title class="font-weight-bold">{{offer.title}}</v-list-item-title>
                                                 <v-list-item-subtitle v-if="offer.harvestType != 'Sonstiges'"> {{offer.harvestType}}</v-list-item-subtitle>
                                                 <v-list-item-subtitle v-if="offer.harvestType == 'Sonstiges'"> {{offer.harvestTypeSpecial}} </v-list-item-subtitle>
                                                 <v-list-item-subtitle>vom {{offer.startDate.toDate().toLocaleDateString()}} bis {{offer.endDate.toDate().toLocaleDateString()}}</v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
                                     </v-col>
-                                    <v-col :key="index * 10 + 2" class="col-3 col-xs-3 col-sm-1 col-md-3 pr-1 mr-2 my-0" align="end">
+                                    <v-col :key="index * 10 + 2" class="col-xs-3 col-sm-1 col-md-4" align="end">
                                         <v-list-item-content class="pa-0">
-                                            <v-list-item-subtitle aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
-                                            <v-list-item-subtitle aligin="center">{{offer.address.city}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle class="font-weight-bold" aligin="center">{{offer.helperCount}}/{{offer.maxHelpers}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle class="font-weight-bold" aligin="center">{{offer.address.city}}</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-col>
                                 </v-row>
