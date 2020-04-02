@@ -65,7 +65,7 @@
     <v-content>
         <!-- Provides the application the proper gutter -->
         <v-container fluid>
-            <v-speed-dial fixed left bottom class="mb-10">
+            <v-speed-dial fixed right bottom class="mb-10">
                 <template v-slot:activator>
                     <v-btn color="primary" fab @click="$router.push('/feedback')">
                         <v-icon>mdi-comment-quote-outline</v-icon>

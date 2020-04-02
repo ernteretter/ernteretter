@@ -123,7 +123,7 @@
                                             <v-row>
                                                 <v-select class="px-3" hide-details single-line solo v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
                                                 <v-spacer></v-spacer>
-                                                <v-btn outlined color="primary" class="ma-auto">alles zurücksetzen</v-btn>
+                                                <v-btn outlined color="primary" class="ma-auto" @click="searchradius = 5; harvestType = ''; harvestTypeSpecial = ''; zipsearch = ''; endDate = '', menuEndDate = false; endDateText = false; startDate = ''; menuStartDate = false; startDateText = false;">alles zurücksetzen</v-btn>
                                             </v-row>
                                         </v-row>
                                     </v-expand-transition>
@@ -134,10 +134,10 @@
                                     </v-row>
                                 </v-container>
                                 <v-row class="justify-center">
-                                    <v-btn @click="$router.push('createOffer')" v-bind="size" color="secondary" id="createbutton" class="rounded-button-right">
+                                    <v-btn v-if="!mobil" @click="$router.push('createOffer')" v-bind="size" color="secondary" id="createbutton" class="rounded-button-right">
                                         Anzeige erstellen
                                     </v-btn>
-                                    <v-btn class="rounded-button-right" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="getOffersByFilter()">
+                                    <v-btn v-if="!mobil" class="rounded-button-right" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="getOffersByFilter()">
                                         Suche
                                     </v-btn>
                                 </v-row>
@@ -428,8 +428,6 @@ export default {
 
                     })
             } else if (this.startDate) {
-                console.log("Hello");
-
                 query.where('startDate', '>=', new Date(this.startDate)).get().then((snapshot) => {
                     this.offers = []
                     this.searched = true
@@ -491,6 +489,16 @@ export default {
                     this.offers = this.offers.filter(offer => {
                         return offer.harvestTypeSpecial == this.harvestTypeSpecial
                     });
+                })
+            } else {
+                firebase.firestore().collection('offers').limit(10).get().then((docs) => {
+                    docs.forEach((doc) => {
+                        this.offers.push({
+                            ...doc.data(),
+                            id: doc.id,
+                            geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude]
+                        })
+                    })
                 })
             }
         },
