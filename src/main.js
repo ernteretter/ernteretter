@@ -61,7 +61,7 @@ const router = new VueRouter({
 })
 
 // Initialize Firebase
-var firebaseConfig = {
+const firebaseConfig = {
 
 };
 firebase.initializeApp(firebaseConfig);
