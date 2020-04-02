@@ -9,7 +9,7 @@
             <v-col>
                 <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
                     <template v-slot:activator="{ on }">
-                        <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-icon="mdi-calendar" readonly v-on="on" />
+                        <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
                     </template>
                     <v-date-picker v-model="startDate" :min="dateNow" :max="endDate" locale="de-DE">
                         <v-spacer></v-spacer>
@@ -19,7 +19,7 @@
                 </v-menu>
                 <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
                     <template v-slot:activator="{ on }">
-                        <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-icon="mdi-calendar" readonly v-on="on" />
+                        <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
                     </template>
                     <v-date-picker v-model="endDate" :min="(startDate && (startDate > dateNow)) ? startDate : dateNow" locale="de-DE">
                         <v-spacer></v-spacer>
@@ -30,7 +30,7 @@
             </v-col>
         </v-row>
         <v-container class="justify-center">
-            <v-btn v-bind="size" style="margin: 0.5vw 1vw 0vw 1vw" color="primary" id="searchbutton" @click="atSearch();" class="rounded-button-left" min-width="11%">SUCHE</v-btn>
+            <v-btn v-bind="size" style="margin: 0.5vw 1vw 0vw 1vw" color="primary" id="searchbutton" @click="getOffersByFilter();" class="rounded-button-left" min-width="11%">SUCHE</v-btn>
             <v-btn v-bind="size" color="secondary" id="createbutton" @click="$router.push('/createOffer');" class="rounded-button-right ma-3 mr-0" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
         </v-container>
     </div>
@@ -77,61 +77,74 @@
             </v-col>
             <v-col class="col-12 col-md-4">
                 <v-card height="null" v-show="!displayMap">
-                    <v-container>
+                    <v-container class="pt-0 mt-0">
                         <v-row>
                             <v-col class="pb-0" @keyup.enter="atSearch()">
                                 <v-row>
                                     <v-card-title class="pa-0 pl-3 pa-md-auto">Suche nach Anzeigen</v-card-title>
                                     <v-spacer></v-spacer>
-                                    <v-tooltip bottom v-if="!mobil">
-                                        <template v-slot:activator="{ on }">
-                                            <v-btn v-on="on" @click="$router.push('createOffer')" v-bind="size" color="secondary" id="createbutton" class="rounded-button-right">
-                                                <v-icon color="primary">mdi-plus-circle-outline</v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>neue Anzeige erstellen</span>
-                                    </v-tooltip>
+
                                 </v-row>
                                 <v-row class="justify-center">
+
                                     <v-text-field hide-details class="mb-md-1 mx-3 pl-3" single-line solo type="text" v-model="zipsearch" maxlength="5" minlength="4" minval placeholder="PLZ" @focus="decideMobilSearch()"></v-text-field>
-                                    <v-btn class="rounded-button-right ma-3" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="activeMap()">
-                                        <v-icon class="ma-0 pa-0" v-if="mobil">mdi-map</v-icon>
-                                        {{mobil ? 'Karte' : 'Suche'}}
+                                    <v-btn class="rounded-button-right ma-3 ma-md-0 my-md-2" v-bind="size" color="primary" id="searchbutton" v-if="mobil" min-width="11%" @click="activeMap()">
+                                        <v-icon class="ma-0 pa-0">mdi-map</v-icon>
+                                        Karte
                                     </v-btn>
                                 </v-row>
                                 <v-container v-if="!mobil">
-                                    <v-select class="ma-0 pa-0" single-line solo v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
-                                    <v-row class="col-12">
-                                        <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
-                                            <template v-slot:activator="{ on }">
-                                                <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-icon="mdi-calendar" readonly v-on="on" class="" />
-                                            </template>
-                                            <v-date-picker v-model="startDate" :min="dateNow" :max="endDate" locale="de-DE">
+                                    <v-slider v-if="!mobil" class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
+                                    <v-expand-transition>
+                                        <v-row class="col-12" v-show="collapse">
+                                            <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                                                <template v-slot:activator="{ on }">
+                                                    <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
+                                                </template>
+                                                <v-date-picker v-model="startDate" :min="dateNow" :max="endDate" locale="de-DE">
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn text outlined color="primary" @click="menuStartDate = false; startDateText = ''">Abbrechen</v-btn>
+                                                    <v-btn text outlined color="primary" @click="$refs.menuStartDate.save(startDate)">OK</v-btn>
+                                                </v-date-picker>
+                                            </v-menu>
+                                            <v-col>
+                                                <p class="text-center px-2">bis</p>
+                                            </v-col>
+                                            <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                                                <template v-slot:activator="{ on }">
+                                                    <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
+                                                </template>
+                                                <v-date-picker v-model="endDate" :min="(startDate && (startDate > dateNow)) ? startDate : dateNow" locale="de-DE">
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn text outlined color="primary" @click="menuEndDate = false; endDateText = '';">Abbrechen</v-btn>
+                                                    <v-btn text outlined color="primary" @click="$refs.menuEndDate.save(endDate)">OK</v-btn>
+                                                </v-date-picker>
+                                            </v-menu>
+                                            <v-row>
+                                                <v-select class="px-3" hide-details single-line solo v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
                                                 <v-spacer></v-spacer>
-                                                <v-btn text outlined color="primary" @click="menuStartDate = false">Abbrechen</v-btn>
-                                                <v-btn text outlined color="primary" @click="$refs.menuStartDate.save(startDate)">OK</v-btn>
-                                            </v-date-picker>
-                                        </v-menu>
-                                        <v-col>
-                                            <v-card-tex class="text-center px-2">bis</v-card-tex>
-                                        </v-col>
-                                        <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
-                                            <template v-slot:activator="{ on }">
-                                                <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-icon="mdi-calendar" readonly v-on="on" class="" />
-                                            </template>
-                                            <v-date-picker v-model="endDate" :min="(startDate && (startDate > dateNow)) ? startDate : dateNow" locale="de-DE">
-                                                <v-spacer></v-spacer>
-                                                <v-btn text outlined color="primary" @click="menuEndDate = false">Abbrechen</v-btn>
-                                                <v-btn text outlined color="primary" @click="$refs.menuEndDate.save(endDate)">OK</v-btn>
-                                            </v-date-picker>
-                                        </v-menu>
-
+                                                <v-btn outlined color="primary" class="ma-auto">alles zurücksetzen</v-btn>
+                                            </v-row>
+                                        </v-row>
+                                    </v-expand-transition>
+                                    <v-row class="justify-center" @click="collapse = !collapse">
+                                        {{!collapse ? 'mehr' : 'weniger'}}
+                                        <v-icon color="primary" v-show="!collapse">mdi-chevron-down</v-icon>
+                                        <v-icon color="primary" v-show="collapse">mdi-chevron-up</v-icon>
                                     </v-row>
                                 </v-container>
+                                <v-row class="justify-center">
+                                    <v-btn @click="$router.push('createOffer')" v-bind="size" color="secondary" id="createbutton" class="rounded-button-right">
+                                        Anzeige erstellen
+                                    </v-btn>
+                                    <v-btn class="rounded-button-right" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="getOffersByFilter()">
+                                        Suche
+                                    </v-btn>
+                                </v-row>
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-slider v-if="!mobil" class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
+
                         </v-row>
                     </v-container>
                     <v-divider id="Anzeigen"></v-divider>
@@ -238,6 +251,8 @@ export default {
         offerData: null,
         map: null,
         items: ['Sonstiges', 'Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben'],
+        collapse: false,
+        harvestTypeSpecial: "",
     }),
 
     metaInfo() {
@@ -351,52 +366,133 @@ export default {
             const [year, month, day] = date.split('-');
             return `${day}.${month}.${year}`;
         },
-        async searchOffersPostcode() {
-            var URL = "https://nominatim.openstreetmap.org/search/de"
-            URL = URL + "/" + this.zipsearch.replace(" ", "%20") + "?format=json&addressdetails=1&limit=1"
-            var response = await fetch(URL)
-            var responseJSON = await response.json()
-            var lat = parseFloat(responseJSON[0].lat)
-            var lon = parseFloat(responseJSON[0].lon)
-            const center = new GeoCoordinate(lat, lon)
-            var distance = this.searchradius * 1000
-            var North = center.pointAtDistance(distance, 0)
-            var East = center.pointAtDistance(distance, 0.5 * Math.PI)
-            var South = center.pointAtDistance(distance, Math.PI)
-            var West = center.pointAtDistance(distance, 1.5 * Math.PI)
-            North = North._coordinate
-            East = East._coordinate
-            South = South._coordinate
-            West = West._coordinate
-            var upperPoint = new firebase.firestore.GeoPoint(North[0], East[1])
-            var lowerPoint = new firebase.firestore.GeoPoint(South[0], West[1])
-            this.radiusMarker = [lat, lon]
-            var newZoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
-            if (this.mobil) {
-                this.center = this.radiusMarker
-            } else {
-                this.map.flyTo(this.radiusMarker, newZoom)
-            }
-            firebase.firestore().collection('offers').where('geoPoint', '<=', upperPoint).where('geoPoint', '>=', lowerPoint)
-                .get().then((snapshot) => {
+        async getOffersByFilter() {
+            var query = firebase.firestore().collection('offers')
+            if (this.zipsearch) {
+                var URL = "https://nominatim.openstreetmap.org/search/de"
+                URL = URL + "/" + this.zipsearch.replace(" ", "%20") + "?format=json&addressdetails=1&limit=1"
+                var response = await fetch(URL)
+                var responseJSON = await response.json()
+                var lat = parseFloat(responseJSON[0].lat)
+                var lon = parseFloat(responseJSON[0].lon)
+                const center = new GeoCoordinate(lat, lon)
+                var distance = this.searchradius * 1000
+                var North = center.pointAtDistance(distance, 0)
+                var East = center.pointAtDistance(distance, 0.5 * Math.PI)
+                var South = center.pointAtDistance(distance, Math.PI)
+                var West = center.pointAtDistance(distance, 1.5 * Math.PI)
+                North = North._coordinate
+                East = East._coordinate
+                South = South._coordinate
+                West = West._coordinate
+                var upperPoint = new firebase.firestore.GeoPoint(North[0], East[1])
+                var lowerPoint = new firebase.firestore.GeoPoint(South[0], West[1])
+                this.radiusMarker = [lat, lon]
+                var newZoom = 15 - Math.round(Math.log(this.searchradius) / Math.log(2))
+                if (this.mobil) {
+                    this.center = this.radiusMarker
+                } else {
+                    this.map.flyTo(this.radiusMarker, newZoom)
+                }
+                query.where('geoPoint', '<=', upperPoint).where('geoPoint', '>=', lowerPoint)
+                    .get().then((snapshot) => {
+                        this.offers = []
+                        this.searched = true
+                        snapshot.forEach((doc) => {
+                            var data = doc.data()
+                            if (upperPoint.longitude > data.geoPoint.longitude && data.geoPoint.longitude > lowerPoint.longitude) {
+                                this.offers.push({
+                                    ...doc.data(),
+                                    id: doc.id,
+                                    geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude],
+                                })
+                            }
+                        })
+                        this.offers = this.offers.filter(offer => {
+                            return offer.harvestType
+                                .toLowerCase()
+                                .includes(this.harvestType.toLowerCase());
+                        });
+                        if (this.startDate) {
+                            var startDateTimestamp = new Date(this.startDate)
+                            this.offers = this.offers.filter(offer => {
+                                return offer.startDate.toDate().getTime() >= startDateTimestamp
+                            });
+                        }
+                        if (this.endDate) {
+                            var endDateTimestamp = new Date(this.endDate)
+                            this.offers = this.offers.filter(offer => {
+                                return offer.endDate.toDate().getTime() <= endDateTimestamp
+                            });
+                        }
+
+                    })
+            } else if (this.startDate) {
+                console.log("Hello");
+
+                query.where('startDate', '>=', new Date(this.startDate)).get().then((snapshot) => {
                     this.offers = []
                     this.searched = true
                     snapshot.forEach((doc) => {
-                        var data = doc.data()
-                        if (upperPoint.longitude > data.geoPoint.longitude && data.geoPoint.longitude > lowerPoint.longitude) {
-                            this.offers.push({
-                                ...doc.data(),
-                                id: doc.id,
-                                geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude],
-                            })
-                        }
+
+                        this.offers.push({
+                            ...doc.data(),
+                            id: doc.id,
+                            geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude],
+                        })
+
                     })
-                    // this.offers = this.offers.filter(offer => {
-                    //     return offer.title 
-                    //         .toLowerCase()
-                    //         .includes(this.search.toLowerCase());
-                    // });
+                    if (this.endDate) {
+                        var endDateTimestamp = new Date(this.endDate)
+                        this.offers = this.offers.filter(offer => {
+                            return offer.endDate.toDate().getTime() <= endDateTimestamp
+                        });
+                    }
+                    this.offers = this.offers.filter(offer => {
+                        return offer.harvestType
+                            .toLowerCase()
+                            .includes(this.harvestType.toLowerCase());
+                    });
+
                 })
+            } else if (this.endDate) {
+                query.where('endDate', '<=', new Date(this.endDate)).get().then((snapshot) => {
+                    this.offers = []
+                    this.searched = true
+                    snapshot.forEach((doc) => {
+
+                        this.offers.push({
+                            ...doc.data(),
+                            id: doc.id,
+                            geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude],
+                        })
+
+                    })
+                    this.offers = this.offers.filter(offer => {
+                        return offer.harvestType
+                            .toLowerCase()
+                            .includes(this.harvestType.toLowerCase());
+                    });
+
+                })
+            } else if (this.harvestType) {
+                query.where('harvestType', '==', this.harvestType).get().then((snapshot) => {
+                    this.offers = []
+                    this.searched = true
+                    snapshot.forEach((doc) => {
+
+                        this.offers.push({
+                            ...doc.data(),
+                            id: doc.id,
+                            geoPointNew: [doc.data().geoPoint.latitude, doc.data().geoPoint.longitude],
+                        })
+
+                    })
+                    this.offers = this.offers.filter(offer => {
+                        return offer.harvestTypeSpecial == this.harvestTypeSpecial
+                    });
+                })
+            }
         },
         async searchOffersOnlyTitle() {
             firebase.firestore().collection('offers').where('title', '>=', this.search).limit(50).get().then((snapshot) => {
