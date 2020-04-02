@@ -14,13 +14,16 @@
             </div>
             <div class="action-section">
                 <div class="accept-cancel">
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoGroupchat()">
+                        Gruppenchat
+                    </v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true">
                         <v-icon>mdi-delete</v-icon>
                     </v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()">
                         <v-icon>mdi-pencil-outline</v-icon>
                     </v-btn>
-                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isOwner"  @click="gotoChat()">Chat</v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isOwner" @click="gotoChat()">Chat</v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted && !isOwner" @click="removeMe">Abmelden</v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isAccepted && !isOwner" @click="addMe">Anmelden</v-btn>
                 </div>
@@ -283,6 +286,9 @@ export default {
     methods: {
         gotoChat() {
             this.$router.push("/chat/" + this.agrarian.id);
+        },
+        gotoGroupchat() {
+            this.$router.push("/chat/" + this.offer.id);
         },
         gotoEditOffer() {
             this.$router.push("/editOffer/" + this.offer.id);
