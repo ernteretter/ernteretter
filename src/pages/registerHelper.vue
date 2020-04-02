@@ -203,8 +203,8 @@ export default {
                             firebase.auth().currentUser.sendEmailVerification().catch((err) => {
                                 console.log(err + " E-Mail wurde nicht versandt");
                             })
-                            console.log('routing to registerHelper');
-                            router.push('/registerHelperSuccess');
+                            console.log('routing to Offers');
+                            router.push('/offers');
                         }).catch((error) => {
                             console.error("Error registering Helper: ", error);
                         });
