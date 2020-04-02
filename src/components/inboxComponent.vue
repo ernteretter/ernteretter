@@ -1,11 +1,11 @@
 <template>
 <v-card max-width="1000" min-height="600" class="mx-auto">
     <v-card-title v-if="chatroomsNew.length > 0" id="headerOld">neue Nachrichten</v-card-title>
-    <!-- <v-divider v-if="chatroomsNew.length > 0" /> -->
+    <v-divider v-if="chatroomsNew.length > 0" />
     <div style="vertical-align: middle;">
         <v-card-title v-if="!(chatrooms.length > 0)" id="headerNew" class="noMessages">Du hast noch keine Nachrichten :(</v-card-title>
     </div>
-    <v-list three-line class="ma-2 ma-md-10" @click="gotoChat(chat)" v-for="(chat, index1) in chatroomsNew" :key="index1">
+    <v-list three-line class="ma-2 ma-md-10" @click="gotoChat(chat)" v-for="(chat, i) in chatroomsNew" :key="i">
         <v-list-item-content style="cursor: pointer; border-bottom: 2px solid #ed9a00;" @click="gotoChat(chat)">
             <v-row class="px-3">
                 <v-list-item-title class="title col-6 col-md-5 pa-0">{{chat.name}}</v-list-item-title>
@@ -15,9 +15,11 @@
         </v-list-item-content>
     </v-list>
 
+    <v-divider v-if="chatroomsOld.length > 0 && chatroomsNew.length > 0" />
+
     <v-card-title v-if="chatroomsOld.length > 0" id="headerOld">gelesene Nachrichten</v-card-title>
-    <!-- <v-divider /> -->
-    <v-list three-line class="ma-2 ma-md-10" @click="gotoChat(chat) " v-for="(chat, index1) in chatroomsOld" :key="index1">
+    <v-divider />
+    <v-list three-line class="ma-2 ma-md-10" @click="gotoChat(chat) " v-for="(chat, i) in chatroomsOld" :key="'A' + i">
         <v-list-item-content style="cursor: pointer; border-bottom: 2px solid #ed9a00;" @click="gotoChat(chat)">
             <v-row class="px-3">
                 <v-list-item-title class="title col-6 col-md-5 pa-0">{{chat.name}}</v-list-item-title>
@@ -64,6 +66,9 @@ export default {
     watch: {
         chatrooms: {
             handler: function () {
+                if(this.chatrooms.length < 1) {
+                    return;
+                }
                 function sorter(a, b) {
                     return (a.time > b.time ? -1 : (b.time > a.time ? 1 : 0));
                 }
@@ -85,30 +90,36 @@ export default {
                 firestore
                     .collection("chats")
                     .where("authors", "array-contains", this.currentUser)
-                    .get().then(snapshot => {
-                        snapshot.forEach(async c => {
+                    .onSnapshot(snapshot => {
+                        snapshot.docChanges().forEach(async c => {
+                            c = c.doc;
                             let data = c.data();
                             let otherAuthor = data.authors.filter(a => a != this.currentUser)[0];
-                            let messageSnapshot = await firestore.collection("chats").doc(c.id).collection("messages").get().catch(e => {
-                                console.error(e)
-                            });
+
                             let currentMessages = [];
-                            messageSnapshot.forEach(d => currentMessages.push({
-                                data: d.data(),
-                                id: d.id
-                            }));
+                            firestore.collection("chats").doc(c.id).collection("messages").onSnapshot(snapshot => {
+                                snapshot.docChanges().forEach(d => {
+                                    let toPut = {
+                                        data: d.doc.data(),
+                                        id: d.doc.id
+                                    }
+                                    currentMessages.push(toPut);
+                                });
+                            });
                             currentMessages = currentMessages.sort();
-                            console.log(data);
+                            //groupchat
                             if (data.isGroupchat) {
-                                console.log("found groupchat1: " + c.id);
                                 let offerSnapshot = await firebase.firestore().collection("offers").doc(c.id).get();
                                 if (offerSnapshot.data() != null) {
-                                    console.log("found groupchat");
-                                    let lastMessage = currentMessages[currentMessages.length - 1];
                                     let iSentLast = false;
+                                    let lastMessage = currentMessages[currentMessages.length - 1];
                                     if (lastMessage.data.author == this.currentUser) {
                                         iSentLast = true;
                                     }
+
+                                    //if theres another message with same user/chat-id delete that from the inbox
+                                    this.chatrooms = this.chatrooms.filter(a => a.userID != c.id);
+
                                     this.chatrooms.push({
                                         name: offerSnapshot.data().title,
                                         seen: data.seen,
@@ -126,7 +137,10 @@ export default {
                                         if (lastMessage.data.author == this.currentUser) {
                                             iSentLast = true;
                                         }
-                                        console.log("seen: " + data.seen);
+
+                                        //if theres another message with same user/chat-id delete that from the inbox
+                                        this.chatrooms = this.chatrooms.filter(a => a.userID != doc.id);
+
                                         this.chatrooms.push({
                                             name: doc.data().name,
                                             seen: data.seen,
@@ -143,7 +157,9 @@ export default {
                                                 if (lastMessage.data.author == this.currentUser) {
                                                     iSentLast = true;
                                                 }
-                                                console.log("seen: " + data.seen);
+                                                //if theres another message with same user/chat-id delete that from the inbox
+                                                this.chatrooms = this.chatrooms.filter(a => a.userID != doc.id);
+
                                                 this.chatrooms.push({
                                                     name: doc.data().name,
                                                     seen: data.seen,
@@ -164,8 +180,6 @@ export default {
                                 })
                             }
                         });
-                    }).catch(e => {
-                        console.error(e);
 
                     })
             }
@@ -187,13 +201,13 @@ export default {
     height: 60px;
 }
 
-@media (min-width: 714px){
+@media (min-width: 714px) {
     .noMessages {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }
 
 @media (max-width: 714px) {
