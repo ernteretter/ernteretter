@@ -125,7 +125,7 @@ export default {
         CookieLaw
     },
     async mounted() {
-        console.log("Version 0.98");
+        console.log("Version 0.98.1");
         this.onResize();
         await firebase.auth().onAuthStateChanged(user => {
             if (user) {
