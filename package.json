@@ -14,6 +14,7 @@
     "firebase": "^7.12.0",
     "geocoordinate": "^1.2.1",
     "leaflet": "^1.6.0",
+    "mjml": "^4.6.2",
     "node-sass": "^4.13.1",
     "vue": "^2.6.11",
     "vue-cookie-law": "^1.12.0",
@@ -53,5 +54,18 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "description": "## Project setup ``` npm install ```",
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ernteretter/ernteretter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ernteretter/ernteretter/issues"
+  },
+  "homepage": "https://github.com/ernteretter/ernteretter#readme"
 }

@@ -159,3 +159,125 @@ exports.countHelpers = functions.region('europe-west2').firestore.document('acce
     }
     return true;
 });
+
+exports.notifyOnAcceptedOffer = functions.region('europe-west2').firestore.document('acceptedOffers/{acceptedOfferId}').onWrite(async (acceptedOffer) => {
+    var helper
+    var agrarian
+    var offer
+    //erstellt
+    if(acceptedOffer.after.exists){
+        console.log("ich existiere");
+        console.log(acceptedOffer.after.data().helperId)
+        helper = await admin.auth().getUser(acceptedOffer.after.data().helperId).then((user) => {
+            return user
+        })
+        agrarian = await admin.auth().getUser(acceptedOffer.after.data().helperId).then(async (user) => {
+            offer = await admin.firestore().collection("offers").doc(acceptedOffer.after.data().offerId).get().then((offer) => {
+                return offer.data()
+            })
+            return await admin.auth().getUser(offer.agrarianId).then((user) => {
+                return user
+            })
+        })
+        admin.firestore().collection('mail').add({
+            to: helper.email,
+            from: 'ernteretter <noreply@ernte-retter.de>',
+            template: {
+                name: 'acceptedOfferHelper',
+                data : {
+                    name: helper.displayName,
+                    offerTitle: offer.title,
+                }
+            },
+          }).catch(err => {
+              console.log("error notifying helper" + err);
+              
+          })
+          admin.firestore().collection('mail').add({
+            to: agrarian.email,
+            from: 'ernteretter <noreply@ernte-retter.de>',
+            template: {
+            name: 'acceptedOfferAgrarian',
+            data : {
+                    name: agrarian.displayName,
+                    helperName: helper.displayName,
+                    offerTitle: offer.title,
+                }
+            },
+          }).catch(err => {
+              console.log("error notifying helper" + err);
+              
+          })
+    } else {
+        //gelöscht
+        console.log("ich existiere nicht mehr ");
+        console.log(acceptedOffer.before.data().helperId)
+        helper = await admin.auth().getUser(acceptedOffer.before.data().helperId).then((user) => {
+            return user
+        })
+        agrarian = await admin.auth().getUser(acceptedOffer.before.data().helperId).then(async (user) => {
+            offer = await admin.firestore().collection("offers").doc(acceptedOffer.before.data().offerId).get().then((offer) => {
+                return offer.data()
+            })
+            return await admin.auth().getUser(offer.agrarianId).then((user) => {
+                return user
+            })
+        })
+        admin.firestore().collection('mail').add({
+            to: helper.email,
+            from: 'ernteretter <noreply@ernte-retter.de>',
+            template: {
+                name: 'acceptedOfferHelperRemoved',
+                data : {
+                    name: helper.displayName,
+                    offerTitle: offer.title,
+                }
+            },
+          }).catch(err => {
+              console.log("error notifying helper" + err);
+              
+          })
+          admin.firestore().collection('mail').add({
+            to: agrarian.email,
+            from: 'ernteretter <noreply@ernte-retter.de>',
+            template: {
+                name: 'acceptedOfferAgrarianRemoved',
+                data : {
+                    name: agrarian.displayName,
+                    helperName: helper.displayName,
+                    offerTitle: offer.title,
+                }
+            },
+          }).catch(err => {
+              console.log("error notifying helper" + err);
+              
+          })
+    }
+      
+      return true
+    
+})
+
+exports.notifyAtChatMessage = functions.region('europe-west2').firestore.document('chats/{chatId}/messages/{messageId}').onWrite(async (message, context) => {
+    var author = message.after.data().author
+    var chatpartner = context.resource
+    chatpartner = chatpartner.name.slice(60,117).replace(author, "").replace("_", "")
+    chatpartner = await admin.auth().getUser(chatpartner).then((user) => {
+        return user
+    })
+    author = await admin.auth().getUser(author).then((user) => {
+        return user
+    })
+    admin.firestore().collection('mail').add({
+        to: chatpartner.email,
+            from: 'ernteretter <noreply@ernte-retter.de>',
+            template: {
+                name: 'chatMail',
+                data : {
+                    name: chatpartner.displayName,
+                    chatparnterName: author.displayName,
+                    message: message.after.data().text
+                }
+            },
+    })
+})

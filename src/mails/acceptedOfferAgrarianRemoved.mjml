@@ -1,0 +1,84 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text font-weight="400" font-size="16px" color="#000000" line-height="24px" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-text>
+    </mj-attributes>
+    <mj-style inline="inline">
+      .body-section { -webkit-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15); -moz-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15); box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15); }
+    </mj-style>
+    <mj-style inline="inline">
+      .text-link { color: #4d4238 }
+    </mj-style>
+    <mj-style inline="inline">
+      .footer-link { color: #4d4238 }
+    </mj-style>
+
+  </mj-head>
+  <mj-body background-color="#4d4238" >
+    <mj-section full-width="full-width" background-color="#ffdf59" padding-bottom="0">
+      <mj-column width="100%">
+        <mj-image src="https://ernte-retter.de/img/Ernteretter-Logo_03.7dcfe001.png" href="https://ernte-retter.de" align="center" width="150px" />
+      </mj-column>
+    </mj-section>
+    <mj-wrapper padding-top="0" padding-bottom="0" css-class="body-section">
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px">
+        <mj-column width="100%">
+          <mj-text font-size="16px">
+            Hallo {{name}},
+          </mj-text>
+          <mj-text font-size="16px">
+            es hat sich {{helperName}} erfolgreich bei "{{offerTitle}}" abgemeldet.
+          </mj-text>
+          <mj-text color="#a0a0a0" font-size="16px">
+          Wir wünschen euch viel Erfolg.
+            </br>Du kannst nun nicht mehr den Helfer benachrichtigen
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px" padding-top="0">
+        <mj-column width="100%">
+          <mj-divider border-color="#DFE3E8" border-width="1px" />
+        </mj-column>
+      </mj-section>
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px">
+        <mj-column width="100%">
+          <mj-text color="#282828" font-size="12px" text-transform="uppercase" font-weight="bold" padding-bottom="0">
+            adresse
+          </mj-text>
+          <mj-text color="#a0a0a0" font-size="14px" padding-top="0">
+            c/o Max-Planck-Institut für Astronomie
+            <br/> Königstuhl 17
+            <br/> 69117 Heidelberg
+          </mj-text>
+        </mj-column>
+  
+      </mj-section>
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px">
+      </mj-section>
+    </mj-wrapper>
+    <mj-wrapper full-width="full-width">
+      <mj-section>
+        <mj-column width="100%" padding="0">
+          <mj-social font-size="15px" icon-size="30px" mode="horizontal" padding="0" align="center">
+            <mj-social-element name="facebook" href="https://www.facebook.com/Ernteretter2020/" background-color="#ed9a00">
+            </mj-social-element>
+            <mj-social-element name="youtube" href="https://www.youtube.com/channel/UCYcy5b6rDekeSvZsIwmd9ZQ" background-color="#ed9a00">
+            </mj-social-element>
+            <mj-social-element name="twitter" href="https://twitter.com/ernteretter" background-color="#ed9a00">
+            </mj-social-element>
+            <mj-social-element name="instagram" href="https://www.instagram.com/ernteretter/" background-color="#ed9a00">
+            </mj-social-element>
+          </mj-social>
+          <mj-text color="#a0a0a0" font-size="11px" align="center" line-height="16px">
+            Du erhälst diese Nachricht, weil du bei ernte-retter.de angemeldet bist.
+          </mj-text>
+          <mj-text color="#a0a0a0" font-size="11px" align="center" line-height="16px">
+            &copy; ernte-retter, alle Rechte vorbehalten.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+  </mj-body>
+</mjml>
