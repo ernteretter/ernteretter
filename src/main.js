@@ -29,6 +29,7 @@ import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify'
 import Meta from 'vue-meta'
 import 'leaflet/dist/leaflet.css';
+import VueGtag from "vue-gtag";
 
 //enable plugins
 Vue.use(VueRouter)
@@ -61,6 +62,10 @@ const router = new VueRouter({
   routes,
   mode: 'history'
 })
+
+Vue.use(VueGtag, {
+  config: { id: "" }
+}, router);
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -106,6 +111,8 @@ router.beforeEach(async (to, from, next) => {
 })
 
 export default router 
+
+
 
 new Vue({
   render: h => h(App),
