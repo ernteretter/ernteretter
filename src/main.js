@@ -72,7 +72,6 @@ var firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
 Vue.config.productionTip = false
 router.beforeEach(async (to, from, next) => {
