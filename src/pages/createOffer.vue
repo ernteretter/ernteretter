@@ -209,7 +209,7 @@ export default {
         driverslicence: "",
         dates: [],
         harvestTypeSpecial: "",
-        items: ['Sonstiges', 'Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben'],
+        items: ['Sonstiges', 'Apfel', 'Aprikose', 'Aubergine', 'Birne', 'Blaubeeren', 'Blumenkohl', 'Bohnen', 'Brokkoli', 'Butterrüben', 'Erbsen', 'Erdbeeren', 'Fenchel', 'Grünkohl', 'Gruke', 'Himbeeren', 'Holdunderbeeren', 'Johannisbeeren', 'Kartoffeln', 'Karotten', 'Kirschen' , 'Kohlrabi', 'Kürbis', 'Lauch', 'Mais', 'Mangold', 'Mirabellen', 'Paprika', 'Pastinaken', 'Pflaumen', 'Radischen', 'Rhabarber', 'Rosenkohl', 'Schwarzwurzeln', 'Spargel', 'Spinat', 'Spitzkohl', 'Stachelbeeren', 'Staudensellerie', 'Steckrüben', 'Tomaten', 'Topinambur', 'Weintrauben', 'Weißkohl', 'Wirsingkohl', 'Zucchini', 'Zuckerschoten', 'Zwetschgen', 'Zwiebeln'],
         rules: {
             title: [value => !!value.trim() || 'Titel wird benötigt.'],
             description: [value => !!value || 'Beschreibung wird benötigt.'],
