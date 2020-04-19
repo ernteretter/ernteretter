@@ -1,6 +1,6 @@
 <template>
 <v-card max-width="1000px" class="mx-auto">
-    <v-container v-if="haventSendFeedback">
+    <v-form ref="form" style="width: 100%" v-if="haventSendFeedback">
         <v-card-title>Feedback</v-card-title>
         <v-text-field v-model="name" :rules="rules.name" solo single-line label="Name"></v-text-field>
         <v-text-field v-model="mail" :rules="rules.mail" solo single-line label="E-Mail"></v-text-field>
@@ -8,7 +8,7 @@
         <v-row>
             <v-btn color="primary" id="searchbutton" @click="send();" class="rounded-button-left ma-3 ml-auto" min-width="11%">Abschicken</v-btn>
         </v-row>
-    </v-container>
+    </v-form>
     <v-container v-if="!haventSendFeedback">
         <v-card-title>Danke, für ihr Feedback</v-card-title>
         <v-btn color="primary" outlined @click="$router.go(-1)">zurück</v-btn>
@@ -28,6 +28,7 @@ export default {
             mail: "",
             text: "",
             userID: null,
+            formWarning: false,
             rules: {
                 name: [value => !!value || 'Name wird benötigt.'],
                 mail: [
@@ -38,7 +39,7 @@ export default {
                     }
                 ],
                 text: [
-                    value => !!value.trim() || 'Text wird benötigt.',
+                    value => !!value.trim() || 'Text wird benötigt.',   
                     value => value.length < 2500 || 'Der Text darf maximal 2500 Zeichen betragen'
                 ],
             }
@@ -46,6 +47,10 @@ export default {
     },
     methods: {
         send() {
+            this.formWarning = !this.$refs.form.validate();
+            if (this.formWarning) {
+                return;
+            }
             firebase.firestore().collection('feedback').add({
                 name: this.name,
                 mail: this.mail,

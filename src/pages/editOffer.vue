@@ -134,7 +134,7 @@
 
             <v-card-subtitle> optionale Felder </v-card-subtitle>
 
-                <v-text-field single-line solo v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
+                <v-text-field single-line solo v-model="salary" label="Welche Vergütung wird angedacht?"></v-text-field>
 
                 <v-text-field v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
                 
@@ -211,7 +211,7 @@ export default {
         equipment: "",
         driverslicence: "",
         harvestTypeSpecial: "",
-        items: ['Sonstiges', 'Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben'],
+        items: ['Sonstiges', 'Apfel', 'Aprikose', 'Aubergine', 'Birne', 'Blaubeeren', 'Blumenkohl', 'Bohnen', 'Brokkoli', 'Butterrüben', 'Erbsen', 'Erdbeeren', 'Fenchel', 'Grünkohl', 'Gruke', 'Himbeeren', 'Holdunderbeeren', 'Johannisbeeren', 'Kartoffeln', 'Karotten', 'Kirschen' , 'Kohlrabi', 'Kürbis', 'Lauch', 'Mais', 'Mangold', 'Mirabellen', 'Paprika', 'Pastinaken', 'Pflaumen', 'Radischen', 'Rhabarber', 'Rosenkohl', 'Schwarzwurzeln', 'Spargel', 'Spinat', 'Spitzkohl', 'Stachelbeeren', 'Staudensellerie', 'Steckrüben', 'Tomaten', 'Topinambur', 'Weintrauben', 'Weißkohl', 'Wirsingkohl', 'Zucchini', 'Zuckerschoten', 'Zwetschgen', 'Zwiebeln'],
         rules: {
             title: [value => !!value.trim() || 'Titel wird benötigt.'],
             description: [value => !!value || 'Beschreibung wird benötigt.'],
@@ -395,7 +395,7 @@ export default {
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
                 minDuration: duration,
-                salary: parseInt(this.salary),
+                salary: this.salary,
                 startDate: startDate,
                 endDate: endDate,
                 workType: this.radioErnteSaat,
@@ -408,7 +408,7 @@ export default {
             let firestore = firebase.firestore();
             var newOffer = firestore.collection('offers').doc(offerId);
             newOffer.update(data).then(() => {
-                    this.$router.push("/history");
+                    this.$router.push("/account?view=offers");
                 })
                 .catch(() => {
                     alert("Konnte Datenbank nicht erreichen. Haben sie Internetzugang?");

@@ -2,14 +2,14 @@
 <div>
     <div style="z-index: 2; width: 90vw; height: 100vh; position: relative;" v-if="displaySearch">
         <v-icon class="jusitfy-center pa-0 ma-0" @click="displaySearch = false">mdi-close</v-icon>
-        <v-text-field autofocus label="PLZ" class="mx-2 mt-2" single-line solo></v-text-field>
-        <v-slider v-if="!mobil" class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
-        <v-select single-line solo v-model="harvestType" :items="items" class="mx-2" label="Was soll geerntet/gesäht werden?"></v-select>
+        <v-text-field autofocus clearable label="PLZ" v-model="zipsearch" class="mx-2 mt-2" single-line solo></v-text-field>
+        <v-slider class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
+        <v-select clearable single-line solo v-model="harvestType" :items="items" class="mx-2" label="Was soll geerntet/gesäht werden?"></v-select>
         <v-row justify="center">
             <v-col>
                 <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
                     <template v-slot:activator="{ on }">
-                        <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
+                        <v-text-field clearable single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
                     </template>
                     <v-date-picker v-model="startDate" :min="dateNow" :max="endDate" locale="de-DE">
                         <v-spacer></v-spacer>
@@ -19,7 +19,7 @@
                 </v-menu>
                 <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
                     <template v-slot:activator="{ on }">
-                        <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
+                        <v-text-field clearable single-line solo v-model="endDateText" label="Enddatum" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
                     </template>
                     <v-date-picker v-model="endDate" :min="(startDate && (startDate > dateNow)) ? startDate : dateNow" locale="de-DE">
                         <v-spacer></v-spacer>
@@ -30,7 +30,8 @@
             </v-col>
         </v-row>
         <v-container class="justify-center">
-            <v-btn v-bind="size" style="margin: 0.5vw 1vw 0vw 1vw" color="primary" id="searchbutton" @click="getOffersByFilter();" class="rounded-button-left" min-width="11%">SUCHE</v-btn>
+            <v-btn outlined color="primary" class="ma-auto" @click="searchradius = 5; harvestType = ''; harvestTypeSpecial = ''; zipsearch = ''; endDate = '', menuEndDate = false; endDateText = false; startDate = ''; menuStartDate = false; startDateText = false;">alles zurücksetzen</v-btn>
+            <v-btn v-bind="size" style="margin: 0.5vw 1vw 0vw 1vw" color="primary" id="searchbutton" @click="getOffersByFilter(); displaySearch = false" class="rounded-button-left" min-width="11%">SUCHE</v-btn>
             <v-btn v-bind="size" color="secondary" id="createbutton" @click="$router.push('/createOffer');" class="rounded-button-right ma-3 mr-0" min-width="11%">ANZEIGE ERSTELLEN</v-btn>
         </v-container>
     </div>
@@ -97,9 +98,9 @@
                                     <v-slider v-if="!mobil" class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
                                     <v-expand-transition>
                                         <v-row class="col-12" v-show="collapse">
-                                            <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                                            <v-menu ref="menuStartDate" v-model="menuStartDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="150px">
                                                 <template v-slot:activator="{ on }">
-                                                    <v-text-field single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
+                                                    <v-text-field clearable single-line solo v-model="startDateText" label="Anfangsdatum" hint="von" prepend-inner-icon="mdi-calendar" readonly v-on="on" class="col-5"  />
                                                 </template>
                                                 <v-date-picker v-model="startDate" :min="dateNow" :max="endDate" locale="de-DE">
                                                     <v-spacer></v-spacer>
@@ -107,12 +108,12 @@
                                                     <v-btn text outlined color="primary" @click="$refs.menuStartDate.save(startDate)">OK</v-btn>
                                                 </v-date-picker>
                                             </v-menu>
-                                            <v-col>
-                                                <p class="text-center px-2">bis</p>
+                                            <v-col class="px-auto mx-auto col-2 ">
+                                                <p style="text-align: center">bis</p>
                                             </v-col>
-                                            <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                                            <v-menu ref="menuEndDate" v-model="menuEndDate" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="150px">
                                                 <template v-slot:activator="{ on }">
-                                                    <v-text-field single-line solo v-model="endDateText" label="Enddatum" prepend-inner-icon="mdi-calendar" readonly v-on="on" />
+                                                    <v-text-field clearable single-line solo v-model="endDateText" label="Enddatum" prepend-inner-icon="mdi-calendar" readonly v-on="on" class="col-5" />
                                                 </template>
                                                 <v-date-picker v-model="endDate" :min="(startDate && (startDate > dateNow)) ? startDate : dateNow" locale="de-DE">
                                                     <v-spacer></v-spacer>
@@ -121,7 +122,7 @@
                                                 </v-date-picker>
                                             </v-menu>
                                             <v-row>
-                                                <v-select class="px-3" hide-details single-line solo v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
+                                                <v-select clearable class="px-3" hide-details single-line solo v-model="harvestType" :items="items" label="Was soll geerntet/gesäht werden?"></v-select>
                                                 <v-spacer></v-spacer>
                                                 <v-btn outlined color="primary" class="ma-auto" @click="searchradius = 5; harvestType = ''; harvestTypeSpecial = ''; zipsearch = ''; endDate = '', menuEndDate = false; endDateText = false; startDate = ''; menuStartDate = false; startDateText = false;">alles zurücksetzen</v-btn>
                                             </v-row>
@@ -137,7 +138,7 @@
                                     <v-btn v-if="!mobil" @click="$router.push('createOffer')" v-bind="size" color="secondary" id="createbutton" class="rounded-button-right">
                                         Anzeige erstellen
                                     </v-btn>
-                                    <v-btn v-if="!mobil" class="rounded-button-right" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="getOffersByFilter()">
+                                    <v-btn v-if="!mobil" class="rounded-button-right" v-bind="size" color="primary" id="searchbutton" min-width="11%" @click="  q()">
                                         Suche
                                     </v-btn>
                                 </v-row>
@@ -250,7 +251,7 @@ export default {
         displayMap: false,
         offerData: null,
         map: null,
-        items: ['Sonstiges', 'Äpfel', 'Birnen', 'Spargel', 'Kartoffeln', 'Erdbeeren', 'Trauben'],
+        items: ['Sonstiges', 'Apfel', 'Aprikose', 'Aubergine', 'Birne', 'Blaubeeren', 'Blumenkohl', 'Bohnen', 'Brokkoli', 'Butterrüben', 'Erbsen', 'Erdbeeren', 'Fenchel', 'Grünkohl', 'Gruke', 'Himbeeren', 'Holdunderbeeren', 'Johannisbeeren', 'Kartoffeln', 'Karotten', 'Kirschen' , 'Kohlrabi', 'Kürbis', 'Lauch', 'Mais', 'Mangold', 'Mirabellen', 'Paprika', 'Pastinaken', 'Pflaumen', 'Radischen', 'Rhabarber', 'Rosenkohl', 'Schwarzwurzeln', 'Spargel', 'Spinat', 'Spitzkohl', 'Stachelbeeren', 'Staudensellerie', 'Steckrüben', 'Tomaten', 'Topinambur', 'Weintrauben', 'Weißkohl', 'Wirsingkohl', 'Zucchini', 'Zuckerschoten', 'Zwetschgen', 'Zwiebeln'],
         collapse: false,
         harvestTypeSpecial: "",
     }),
