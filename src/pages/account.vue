@@ -56,5 +56,33 @@ export default {
             ],
         }
     },
+    watch: {
+        tab(val){
+            var url 
+            if(val == 0){
+                url = 'messages'
+            } else if(val == 1) {
+                url = 'offers'
+            } else if(val == 2) {
+                url = 'settings'
+            }
+            this.$router.replace({
+                path: 'account',
+                query: {
+                    view: url,
+                }
+            })
+        }
+    },
+    created(){
+        var url = this.$route.query.view
+            if(url == 'messages'){
+                this.tab = 0
+            } else if(url == 'offers') {
+                this.tab = 1
+            } else if(url == 'settings') {
+                this.tab = 2
+            }
+        }
 }
 </script>

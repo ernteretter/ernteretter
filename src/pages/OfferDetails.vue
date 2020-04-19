@@ -1,5 +1,5 @@
 <template>
-<div class="offer-details mx-auto">
+<div class="offer-details mx-auto ">
     <v-snackbar v-model="showRegisterMessage" color="success" top>erfolgreich angemeldet</v-snackbar>
     <v-snackbar v-model="showDisregisterMessage" color="error" top>erfolgreich abgemeldet</v-snackbar>
     <v-alert prominent color="primary" type="info" v-if="showAlert">Wollen sie diese Anzeige wirklich löschen? <v-btn outlined @click="deleteOffer()">Ja</v-btn>
@@ -14,7 +14,7 @@
             </div>
             <div class="action-section">
                 <div class="accept-cancel">
-                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoGroupchat()">
+                    <v-btn class="action-button rounded-button-left my-2" id="btn-edit" v-if="isOwner" @click=" gotoGroupchat()">
                         Gruppenchat
                     </v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="showAlert = true">
@@ -23,65 +23,86 @@
                     <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="gotoEditOffer()">
                         <v-icon>mdi-pencil-outline</v-icon>
                     </v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-edit" v-if="isOwner" @click="displayListOfHelpers ? showOfferDetails() : showListOfHelpers()">
+                        <v-icon v-if="!displayListOfHelpers">mdi-account-group</v-icon>
+                        <v-icon v-if="displayListOfHelpers">mdi-eye-outline</v-icon>
+                    </v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isOwner" @click="gotoChat()">Chat</v-btn>
                     <v-btn class="action-button rounded-button-left" id="btn-cancel" v-if="isAccepted && !isOwner" @click="removeMe">Abmelden</v-btn>
-                    <v-btn class="action-button rounded-button-left" id="btn-accept" v-if="!isAccepted && !isOwner" @click="addMe">Anmelden</v-btn>
+                    <v-btn class="action-button rounded-button-left" id="btn-accept" :disabled="offer.maxHelpers == offer.helperCount" v-if="!isAccepted && !isOwner" @click="addMe">Anmelden</v-btn>
                 </div>
                 <div class="status-chip" v-if="offer.maxHelpers">
-                    <b>{{ offer.maxHelpers - helperCount }}</b>
+                    <b>{{ offer.maxHelpers - offer.helperCount }}</b>
                     Helfer fehlen noch
                 </div>
             </div>
         </div>
-
-        <section class="harvesttype" v-if="offer.harvestType">
-            <div class="equipment-header section-header">
-                <div class="section-headline">Ernte/Saat-Typ</div>
-            </div>
-            <div class="equipment-body section-body">
-                {{
+        <!-- List of Helpers -->
+        <div v-show="displayListOfHelpers" class="col-12">
+            <v-row class="underline py-0">
+                <p class="col-4 col-md-3 px-0 mb-0 text-left">Name</p>
+                <p class="col-8 col-md-3 px-0 mb-0 text-right">Erfahrung</p>
+                <p class="col-4 col-md-3 px-0 mb-0 text-left">Bewerbungsdatum</p>
+                <p class="col-8 col-md-3 px-0 mb-0 text-right">Chat</p>
+            </v-row>
+            <v-col v-for="(helper, index) in helpers" :key="index" class="pa-0">
+                <v-row class="underline">
+                    <p class="col-4 col-md-3 px-0 mb-0 text-left">{{helper.name}}</p>
+                    <p class="col-8 col-md-3 px-0 mb-0 text-right">{{helper.experience}}</p>
+                    <p class="col-9 col-md-3 px-0 mb-0 text-left">{{helper.acceptDate}}</p>
+                    <v-btn class="action-button rounded-button-left col-2 px-0 mx-0 my-md-auto" id="btn-accept" @click="$router.push('/chat/' + helper.uid)">Chat</v-btn>
+                </v-row>
+            </v-col>
+            <v-card-text v-show="offer.helperCount == 0" class="text-center title">Es haben sich noch keine Helfer beworben</v-card-text>
+        </div>
+        <!-- Offer Details -->
+        <div v-show="!displayListOfHelpers">
+            <section class="harvesttype" v-if="offer.harvestType">
+                <div class="equipment-header section-header">
+                    <div class="section-headline">Ernte/Saat-Typ</div>
+                </div>
+                <div class="equipment-body section-body">
+                    {{
             offer.harvestType
           }}
-            </div>
-        </section>
+                </div>
+            </section>
 
-        <section class="salary" v-if="offer.salary">
-            <div class="equipment-header section-header">
-                <div class="section-headline">Vergütung</div>
-            </div>
-            <div class="equipment-body section-body">
-                {{
-            offer.salary
-          }} €
-            </div>
-        </section>
+            <section class="salary" v-if="offer.salary">
+                <div class="equipment-header section-header">
+                    <div class="section-headline">Vergütung</div>
+                </div>
+                <div class="equipment-body section-body">
+                    {{offer.salary}}
+                </div>
+            </section>
 
-        <section class="equipment" v-if="offer.equipment">
-            <div class="equipment-header section-header">
-                <div class="section-headline">Benötigtes Equipment</div>
-            </div>
-            <div class="equipment-body section-body">
-                {{
+            <section class="equipment" v-if="offer.equipment">
+                <div class="equipment-header section-header">
+                    <div class="section-headline">Benötigtes Equipment</div>
+                </div>
+                <div class="equipment-body section-body">
+                    {{
             Array.isArray(offer.equipment)
               ? offer.equipment.join(", ")
               : offer.equipment
           }}
-            </div>
-        </section>
+                </div>
+            </section>
 
-        <section class="driverslicence" v-if="offer.driverslicence">
-            <div class="equipment-header section-header">
-                <div class="section-headline">Benötigter Führerschein</div>
-            </div>
-            <div class="equipment-body section-body">
-                {{
+            <section class="driverslicence" v-if="offer.driverslicence">
+                <div class="equipment-header section-header">
+                    <div class="section-headline">Benötigter Führerschein</div>
+                </div>
+                <div class="equipment-body section-body">
+                    {{
             offer.driverslicence
           }}
-            </div>
-        </section>
+                </div>
+            </section>
 
-        <section>
-            <!-- 
+            <section>
+                <!-- 
                 <div class="section-header">
                 <div class="section-headline">Zeitraum</div>
                 <p v-if="offer.minDuration">
@@ -90,45 +111,46 @@
                 </p>
             </div>
             -->
-            <div class="section-body">
-                <p v-if="offer.startDate">
-                    <v-icon>mdi-calendar</v-icon>{{ new Date(offer.startDate.seconds * 1000) | formatDate }}
-                    <span v-if="offer.endDate">
-                        bis
-                        {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
-                    </span>
-                </p>
-            </div>
-        </section>
+                <div class="section-body">
+                    <p v-if="offer.startDate">
+                        <v-icon>mdi-calendar</v-icon>{{ new Date(offer.startDate.seconds * 1000) | formatDate }}
+                        <span v-if="offer.endDate">
+                            bis
+                            {{ new Date(offer.endDate.seconds * 1000) | formatDate }}
+                        </span>
+                    </p>
+                </div>
+            </section>
 
-        <section class="description">
-            <div class="description-header section-header">
-                <div class="section-headline">Beschreibung</div>
-            </div>
-            <div class="description-body section-body">
-                <span v-html="offer.description"></span>
-            </div>
-        </section>
-        <section>
-            <div class="section-header">
-                <div class="section-headline">Kontakt</div>
-            </div>
-            <div class="section-body">
-                <div class="address" v-if="offer.address">
-                    {{ agrarian.name }}
-                    <br />
-                    {{ offer.address.street + " " + offer.address.number }}
-                    <br />
-                    {{ offer.address.postCode + " " + offer.address.city }}
+            <section class="description">
+                <div class="description-header section-header">
+                    <div class="section-headline">Beschreibung</div>
                 </div>
-                <div class="email">
-                    <a :href="'mailto:' + agrarian.publicEmail">
-                        {{ agrarian.publicEmail }}
-                    </a>
+                <div class="description-body section-body">
+                    <span v-html="offer.description"></span>
                 </div>
-            </div>
-        </section>
-        <v-col class="my-5 map" style="height:30vh;">
+            </section>
+            <section>
+                <div class="section-header">
+                    <div class="section-headline">Kontakt</div>
+                </div>
+                <div class="section-body">
+                    <div class="address" v-if="offer.address">
+                        {{ agrarian.name }}
+                        <br />
+                        {{ offer.address.street + " " + offer.address.number }}
+                        <br />
+                        {{ offer.address.postCode + " " + offer.address.city }}
+                    </div>
+                    <div class="email">
+                        <a :href="'mailto:' + agrarian.publicEmail">
+                            {{ agrarian.publicEmail }}
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <v-col v-show="!displayListOfHelpers" class="my-5" style="height:30vh;">
             <l-map style="z-index:0;" :zoom="zoom" :center="offer.geoPointNew">
                 <l-tile-layer :url="url"></l-tile-layer>
                 <l-marker :lat-lng="markerLatLng"></l-marker>
@@ -171,9 +193,11 @@ export default {
             isAccepted: false,
             isOwner: false,
             uid: false,
-            helperCount: 0,
             showRegisterMessage: false,
             showDisregisterMessage: false,
+            displayListOfHelpers: false,
+            helpers: [],
+            helpersAlreadyLoaded: false,
         }
     },
     components: {
@@ -264,15 +288,13 @@ export default {
                 if (!snapshot.empty) {
                     this.isAccepted = true;
                 }
+            }).then(() => {
+                if (this.$route.query.helpers == 'true') {
+                    this.showListOfHelpers()
+                } else {
+                    this.showOfferDetails()
+                }
             })
-        firebase
-            .firestore()
-            .collection("acceptedOffers")
-            .where("offerId", "==", offerId)
-            .get()
-            .then(snapshot => {
-                this.helperCount = snapshot.size;
-            });
     },
     filters: {
         formatDate: d =>
@@ -319,7 +341,7 @@ export default {
                     this.showRegisterMessage = true
                     this.showDisregisterMessage = false
                     this.isAccepted = true;
-                    this.helperCount++;
+                    this.offer.helperCount++;
                 });
         },
         removeMe() {
@@ -339,10 +361,44 @@ export default {
                                 this.showRegisterMessage = false
                                 this.showDisregisterMessage = true
                                 this.isAccepted = false;
-                                this.helperCount--;
+                                this.offer.helperCount--;
                             });
                     }
                 });
+        },
+        showListOfHelpers() {
+            this.$router.replace({
+                path: this.offer.id,
+                query: {
+                    helpers: true,
+                }
+            })
+            this.displayListOfHelpers = true;
+            if (this.helpersAlreadyLoaded == false) {
+                firebase.firestore().collection('acceptedOffers').where('offerId', '==', this.offer.id).get().then((acceptedOffers) => {
+                    acceptedOffers.forEach((acceptedOffer) => {
+                        firebase.firestore().collection('helpers').where('uid', '==', acceptedOffer.data().helperId).get().then((helper) => {
+                            helper.forEach((oneHelper) => {
+                                var data = oneHelper.data()
+                                data.acceptDate = acceptedOffer.data().acceptDate.toDate().toLocaleDateString()
+                                this.helpers.push(data)
+                            })
+                        })
+                        console.log(this.helpers);
+                    })
+                }).then(() => {
+                    this.helpersAlreadyLoaded = true
+                })
+            }
+        },
+        showOfferDetails() {
+            this.$router.replace({
+                path: this.offer.id,
+                query: {
+                    helpers: false,
+                }
+            })
+            this.displayListOfHelpers = false;
         }
     }
 };
@@ -364,10 +420,6 @@ a {
         flex-direction: column;
         align-items: flex-start;
     }
-}
-
-.map {
-    width: 100vw;
 }
 
 section {
@@ -413,6 +465,10 @@ section {
     align-items: flex-start;
     width: 100%;
     justify-content: space-between;
+    border-bottom: 2px solid #ed9a00;
+}
+
+.underline {
     border-bottom: 2px solid #ed9a00;
 }
 

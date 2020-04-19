@@ -133,7 +133,7 @@
 
             <v-card-subtitle> optionale Felder </v-card-subtitle>
 
-                <v-text-field single-line solo v-model="salary" label="Welche Vergütung wird angedacht? (Euro pro Stunde)"></v-text-field>
+                <v-text-field single-line solo v-model="salary" label="Welche Vergütung wird angedacht?"></v-text-field>
 
                 <v-text-field v-model="equipment" label="Welche Ausrüstung sollen die Helfer mitbringen?" single-line solo></v-text-field>
                 <v-text-field v-model="driverslicence" label="Welche Führerscheinklasse sollen die Helfer haben?" single-line solo></v-text-field>
@@ -374,7 +374,7 @@ export default {
                 helperCount: 0,
                 maxHelpers: parseInt(this.maxHelpers),
                 minDuration: duration,
-                salary: parseInt(this.salary),
+                salary: this.salary,
                 startDate: startDate,
                 endDate: endDate,
                 workType: this.radioErnteSaat,
@@ -384,7 +384,7 @@ export default {
             let firestore = firebase.firestore();
             var newOffer = firestore.collection('offers').doc();
             newOffer.set(data).then(() => {
-                    this.$router.push("/history");
+                    this.$router.push("/account?view=offers");
                 })
                 .catch(function (error) {
                     console.error("Error writing Document: ", error);

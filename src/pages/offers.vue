@@ -3,7 +3,7 @@
     <div style="z-index: 2; width: 90vw; height: 100vh; position: relative;" v-if="displaySearch">
         <v-icon class="jusitfy-center pa-0 ma-0" @click="displaySearch = false">mdi-close</v-icon>
         <v-text-field autofocus clearable label="PLZ" v-model="zipsearch" class="mx-2 mt-2" single-line solo></v-text-field>
-        <v-slider v-if="!mobil" class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
+        <v-slider class="px-10 mr-5 ml-3 ma-md-0 mr-md-0 xs-ma-0 xs-pa-0" v-model="searchradius" label="Radius (km)" :min_="1" :max="100" thumb-label="always" thumb-size="24" thumb-color="primary"></v-slider>
         <v-select clearable single-line solo v-model="harvestType" :items="items" class="mx-2" label="Was soll geerntet/gesäht werden?"></v-select>
         <v-row justify="center">
             <v-col>
