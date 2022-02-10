@@ -15,7 +15,7 @@
     "geocoordinate": "^1.2.1",
     "leaflet": "^1.6.0",
     "mjml": "^4.6.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "vue": "^2.6.11",
     "vue-cookie-law": "^1.12.0",
     "vue-gtag": "^1.6.2",
